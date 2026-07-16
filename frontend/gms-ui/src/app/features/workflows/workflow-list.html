@@ -1,0 +1,102 @@
+<gms-page [contextPanel]="true" [panelTitle]="'common.context' | transloco">
+
+  <gms-page-header
+    header
+    [title]="'workflows.list.pageTitle' | transloco"
+    [subtitle]="'workflows.list.pageSubtitle' | transloco"
+    [breadcrumbs]="[{ label: ('workflows.list.breadcrumbManagement' | transloco) }, { label: ('workflows.list.pageTitle' | transloco) }]"
+    [status]="{ label: filteredRows().length + ' ' + ('workflows.list.statusSuffix' | transloco), tone: 'info' }"
+    [lastUpdated]="'workflows.list.justNow' | transloco">
+    <button secondary gmsButton variant="ghost" (click)="onRefresh()"><gms-icon name="activity" [size]="16" /> {{ 'common.refresh' | transloco }}</button>
+    <button actions gmsButton variant="primary" (click)="openCreate()"><gms-icon name="plus" [size]="16" /> {{ 'workflows.list.newWorkflow' | transloco }}</button>
+  </gms-page-header>
+
+  <!-- Reusable filter experience -->
+  <div toolbar>
+    <gms-filter-bar
+      [search]="fSearch()" (searchChange)="fSearch.set($event)"
+      [placeholder]="'workflows.list.searchPlaceholder' | transloco"
+      [hasAdvanced]="true"
+      [savedViews]="[('workflows.list.savedView.all' | transloco), ('workflows.list.savedView.active' | transloco), ('workflows.list.savedView.drafts' | transloco)]"
+      (reset)="onResetFilters()">
+      <div advanced>
+        <label class="ff"><span>{{ 'workflows.list.filter.typeLabel' | transloco }}</span>
+          <select [ngModel]="fCategory()" (ngModelChange)="fCategory.set($event)" [ngModelOptions]="{ standalone: true }">
+            <option value="">{{ 'workflows.list.filter.all' | transloco }}</option>
+            @for (c of categories; track c.key) { <option [value]="c.key">{{ categoryLabel(c.key) }}</option> }
+          </select>
+        </label>
+        <label class="ff"><span>{{ 'workflows.list.filter.statusLabel' | transloco }}</span>
+          <select [ngModel]="fStatus()" (ngModelChange)="fStatus.set($event)" [ngModelOptions]="{ standalone: true }">
+            <option value="">{{ 'workflows.list.filter.all' | transloco }}</option>
+            @for (s of statuses; track s) { <option [value]="s">{{ statusLabel(s) }}</option> }
+          </select>
+        </label>
+      </div>
+      <gms-menu actions [items]="exportItems()" (select)="onExport($event)">
+        <button trigger type="button" class="gms-btn gms-btn--ghost gms-btn--sm"><gms-icon name="document" [size]="15" /> {{ 'dataGrid.export' | transloco }}</button>
+      </gms-menu>
+    </gms-filter-bar>
+  </div>
+
+  @if (!loading() && rows().length === 0) {
+    <div class="gms-card">
+      <gms-state variant="empty" iconOverride="share" [title]="'workflows.list.empty.title' | transloco"
+        [text]="'workflows.list.empty.text' | transloco"
+        [steps]="[('workflows.list.empty.step1' | transloco), ('workflows.list.empty.step2' | transloco), ('workflows.list.empty.step3' | transloco)]">
+        <button gmsButton variant="primary" (click)="openCreate()"><gms-icon name="plus" [size]="15" /> {{ 'workflows.list.newWorkflow' | transloco }}</button>
+      </gms-state>
+    </div>
+  } @else {
+    <gms-data-grid
+      [rows]="filteredRows()" [columns]="columns()" idKey="id" [loading]="loading()" [searchable]="false"
+      [selectable]="true" [rowActions]="rowActions"
+      emptyIcon="search" [emptyTitle]="'workflows.list.gridEmpty.title' | transloco" [emptyText]="'workflows.list.gridEmpty.text' | transloco"
+      (rowAction)="onRowAction($event)" (rowClick)="openWorkflow($event)">
+      <ng-template [gmsCell]="'category'" let-row>
+        <span class="cat-chip"><gms-icon name="share" [size]="13" /> {{ categoryLabel(row.category) }}</span>
+      </ng-template>
+      <ng-template [gmsCell]="'updatedAt'" let-row>{{ row.updatedAt | date: 'dd.MM.yyyy' }}</ng-template>
+      <ng-template [gmsCell]="'usedBy'" let-row>
+        <span class="used">{{ row.usedBy }} {{ 'workflows.list.usageSuffix' | transloco }}</span>
+      </ng-template>
+    </gms-data-grid>
+  }
+
+  <ng-container panel>
+    <gms-context-section [title]="'workflows.list.panel.recentActivity' | transloco" icon="activity">
+      <gms-activity-feed [items]="panelActivity()" />
+    </gms-context-section>
+    <gms-context-section [title]="'workflows.list.panel.activeWorkflows' | transloco" icon="share" [count]="activeWorkflows().length">
+      <gms-item-list [items]="activeWorkflows()" />
+    </gms-context-section>
+    <gms-context-section [title]="'workflows.list.panel.totalWorkflows' | transloco" icon="folder">
+      <p class="muted">{{ rows().length }} {{ 'workflows.list.panel.totalWorkflowsText' | transloco }}</p>
+    </gms-context-section>
+  </ng-container>
+
+  <!-- Create modal -->
+  <gms-modal [open]="createOpen()" [title]="'workflows.list.createModal.title' | transloco" size="md" (closed)="createOpen.set(false)">
+    <div class="wf-form">
+      <gms-form-section [title]="'workflows.list.createModal.sectionTitle' | transloco" [description]="'workflows.list.createModal.sectionDesc' | transloco">
+        <gms-field [label]="'workflows.list.createModal.nameLabel' | transloco" [required]="true" class="wf-form__full">
+          <input gmsInput type="text" [placeholder]="'workflows.list.createModal.namePlaceholder' | transloco" [value]="formName()" (input)="formName.set($any($event.target).value)" />
+        </gms-field>
+        <gms-field [label]="'workflows.list.createModal.categoryLabel' | transloco" [required]="true">
+          <select gmsInput [value]="formCategory()" (change)="formCategory.set($any($event.target).value)">
+            @for (c of categories; track c.key) { <option [value]="c.key">{{ categoryLabel(c.key) }}</option> }
+          </select>
+        </gms-field>
+        <gms-field [label]="'workflows.list.createModal.descLabel' | transloco" [hint]="'workflows.list.createModal.descHint' | transloco" class="wf-form__full">
+          <textarea gmsInput rows="2" [placeholder]="'workflows.list.createModal.descPlaceholder' | transloco" [value]="formDescription()" (input)="formDescription.set($any($event.target).value)"></textarea>
+        </gms-field>
+      </gms-form-section>
+      @if (createError()) { <p class="wf-form__error">{{ createError() }}</p> }
+    </div>
+    <div footer>
+      <button gmsButton variant="ghost" (click)="createOpen.set(false)">{{ 'common.cancel' | transloco }}</button>
+      <button gmsButton variant="primary" [loading]="submitting()" [disabled]="!canCreate()" (click)="onCreate()">{{ 'workflows.list.createModal.create' | transloco }}</button>
+    </div>
+  </gms-modal>
+
+</gms-page>

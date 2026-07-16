@@ -1,0 +1,221 @@
+<gms-page [contextPanel]="true" [panelTitle]="'common.context' | transloco">
+
+  <gms-page-header
+    header
+    [title]="'administration.pageTitle' | transloco"
+    [subtitle]="'administration.pageSubtitle' | transloco"
+    [breadcrumbs]="[{ label: ('administration.breadcrumbManagement' | transloco) }, { label: ('administration.pageTitle' | transloco) }]"
+    [status]="{ label: activeMeta().label, tone: 'info' }"
+    [lastUpdated]="'administration.justNow' | transloco">
+    <button secondary gmsButton variant="ghost" (click)="onExport()">
+      <gms-icon name="document" [size]="16" /> {{ 'dataGrid.export' | transloco }}
+    </button>
+  </gms-page-header>
+
+  <div class="admin">
+    <!-- Secondary navigation (reusable) -->
+    <gms-section-nav [groups]="navGroups()" [active]="activeSection()" (activeChange)="onSectionChange($event)" [ariaLabel]="'administration.navAriaLabel' | transloco" />
+
+    <!-- Section content -->
+    <section class="admin-content">
+      @switch (activeSection()) {
+
+        @case ('general') {
+          @if (system(); as sys) {
+            <div class="stat-grid">
+              <gms-stat [label]="'administration.stat.platformVersion' | transloco" [value]="sys.platformVersion" icon="hub" />
+              <gms-stat [label]="'administration.stat.environment' | transloco" [value]="sys.environment" icon="server" />
+              <gms-stat [label]="'administration.stat.appHealth' | transloco" [value]="sys.appHealth + '%'" icon="activity" tone="up" [spark]="[95,97,96,98,99,99]" />
+              <gms-stat [label]="'administration.stat.uptime' | transloco" [value]="sys.uptime" icon="clock" tone="up" />
+            </div>
+
+            <div class="gms-grid gms-grid--2">
+              <div class="gms-card">
+                <h3 class="gms-section-title">{{ 'administration.general.serviceStatus' | transloco }}</h3>
+                <ul class="health">
+                  <li>
+                    <span class="health__name"><gms-icon name="server" [size]="15" /> {{ 'administration.general.database' | transloco }}</span>
+                    <span class="badge" [class]="'badge--' + healthTone(sys.databaseStatus)"><span class="dot"></span>{{ healthLabel(sys.databaseStatus) }}</span>
+                  </li>
+                  <li>
+                    <span class="health__name"><gms-icon name="share" [size]="15" /> {{ 'administration.general.apiService' | transloco }}</span>
+                    <span class="badge" [class]="'badge--' + healthTone(sys.apiStatus)"><span class="dot"></span>{{ healthLabel(sys.apiStatus) }}</span>
+                  </li>
+                  <li>
+                    <span class="health__name"><gms-icon name="activity" [size]="15" /> {{ 'administration.stat.appHealth' | transloco }}</span>
+                    <span class="health__bar"><span class="health__bar-fill" [style.width.%]="sys.appHealth"></span></span>
+                  </li>
+                </ul>
+              </div>
+
+              <div class="gms-card">
+                <h3 class="gms-section-title">{{ 'administration.general.maintenanceTitle' | transloco }}</h3>
+                <dl class="kv">
+                  <div><dt>{{ 'administration.general.lastBackup' | transloco }}</dt><dd>{{ sys.lastBackup }} <span class="ph-chip">placeholder</span></dd></div>
+                  <div><dt>{{ 'administration.general.license' | transloco }}</dt><dd>{{ sys.license }} <span class="ph-chip">placeholder</span></dd></div>
+                  <div><dt>{{ 'administration.stat.environment' | transloco }}</dt><dd>{{ sys.environment }}</dd></div>
+                  <div><dt>{{ 'administration.stat.platformVersion' | transloco }}</dt><dd>{{ sys.platformVersion }}</dd></div>
+                </dl>
+              </div>
+            </div>
+          }
+        }
+
+        @case ('customers') {
+          <div class="sec-toolbar">
+            <div class="filters">
+              <div class="filters__search">
+                <gms-icon name="search" [size]="17" />
+                <input type="text" [placeholder]="'administration.search.customers' | transloco" [ngModel]="fCustSearch()" (ngModelChange)="fCustSearch.set($event)" [ngModelOptions]="{ standalone: true }" />
+              </div>
+              <select class="filters__select" [ngModel]="fCustStatus()" (ngModelChange)="fCustStatus.set($event)" [ngModelOptions]="{ standalone: true }">
+                <option value="">{{ 'administration.filter.allStatuses' | transloco }}</option>
+                @for (s of statuses; track s) { <option [value]="s">{{ statusLabel(s) }}</option> }
+              </select>
+              @if (fCustSearch() || fCustStatus()) { <button type="button" class="gms-btn gms-btn--ghost gms-btn--sm" (click)="resetCustomerFilters()">{{ 'filterBar.reset' | transloco }}</button> }
+            </div>
+            <div class="sec-toolbar__actions">
+              <button gmsButton variant="ghost" (click)="onExport()"><gms-icon name="document" [size]="15" /> {{ 'dataGrid.export' | transloco }}</button>
+              <button gmsButton variant="primary" (click)="openCustModal()"><gms-icon name="plus" [size]="15" /> {{ 'administration.newCustomer' | transloco }}</button>
+            </div>
+          </div>
+          <gms-data-grid [rows]="filteredCustomers()" [columns]="customerColumns()" idKey="id" [searchable]="false"
+            [rowActions]="rowActions" emptyIcon="briefcase" [emptyTitle]="'administration.empty.customersTitle' | transloco" [emptyText]="'administration.empty.customersText' | transloco"
+            (rowAction)="onRowAction($event, 'customer')">
+            <ng-template [gmsCell]="'createdAt'" let-row>{{ row.createdAt | date: 'dd.MM.yyyy' }}</ng-template>
+          </gms-data-grid>
+        }
+
+        @case ('projects') {
+          <div class="sec-toolbar">
+            <div class="filters">
+              <div class="filters__search">
+                <gms-icon name="search" [size]="17" />
+                <input type="text" [placeholder]="'administration.search.projects' | transloco" [ngModel]="fProjSearch()" (ngModelChange)="fProjSearch.set($event)" [ngModelOptions]="{ standalone: true }" />
+              </div>
+              <select class="filters__select" [ngModel]="fProjCustomer()" (ngModelChange)="fProjCustomer.set($event)" [ngModelOptions]="{ standalone: true }">
+                <option value="">{{ 'administration.filter.allCustomers' | transloco }}</option>
+                @for (c of customerOptions(); track c) { <option [value]="c">{{ c }}</option> }
+              </select>
+              <select class="filters__select" [ngModel]="fProjStatus()" (ngModelChange)="fProjStatus.set($event)" [ngModelOptions]="{ standalone: true }">
+                <option value="">{{ 'administration.filter.allStatuses' | transloco }}</option>
+                @for (s of statuses; track s) { <option [value]="s">{{ statusLabel(s) }}</option> }
+              </select>
+              @if (fProjSearch() || fProjCustomer() || fProjStatus()) { <button type="button" class="gms-btn gms-btn--ghost gms-btn--sm" (click)="resetProjectFilters()">{{ 'filterBar.reset' | transloco }}</button> }
+            </div>
+            <div class="sec-toolbar__actions">
+              <button gmsButton variant="primary" (click)="onNewProject()"><gms-icon name="plus" [size]="15" /> {{ 'administration.newProject' | transloco }}</button>
+            </div>
+          </div>
+          <gms-data-grid [rows]="filteredProjects()" [columns]="projectColumns()" idKey="id" [searchable]="false"
+            [rowActions]="rowActions" emptyIcon="folder" [emptyTitle]="'administration.empty.projectsTitle' | transloco" [emptyText]="'administration.empty.projectsText' | transloco"
+            (rowAction)="onRowAction($event, 'project')" />
+        }
+
+        @case ('environments') {
+          <div class="sec-head">
+            <p class="sec-desc">{{ 'administration.environments.desc' | transloco }}</p>
+          </div>
+          <gms-data-grid [rows]="environments()" [columns]="environmentColumns()" idKey="id" [searchable]="true"
+            [rowActions]="rowActions" emptyIcon="server" [emptyTitle]="'administration.empty.environmentsTitle' | transloco" [emptyText]="'administration.empty.environmentsText' | transloco"
+            (rowAction)="onRowAction($event, 'environment')">
+            <ng-template [gmsCell]="'lastDeployment'" let-row>{{ row.lastDeployment | date: 'dd.MM.yyyy HH:mm' }}</ng-template>
+          </gms-data-grid>
+        }
+
+        @case ('users') {
+          <div class="sec-toolbar">
+            <div class="filters">
+              <div class="filters__search">
+                <gms-icon name="search" [size]="17" />
+                <input type="text" [placeholder]="'administration.search.users' | transloco" [ngModel]="fUserSearch()" (ngModelChange)="fUserSearch.set($event)" [ngModelOptions]="{ standalone: true }" />
+              </div>
+              <select class="filters__select" [ngModel]="fUserRole()" (ngModelChange)="fUserRole.set($event)" [ngModelOptions]="{ standalone: true }">
+                <option value="">{{ 'administration.filter.allRoles' | transloco }}</option>
+                @for (r of roles; track r) { <option [value]="r">{{ r }}</option> }
+              </select>
+              <select class="filters__select" [ngModel]="fUserStatus()" (ngModelChange)="fUserStatus.set($event)" [ngModelOptions]="{ standalone: true }">
+                <option value="">{{ 'administration.filter.allStatuses' | transloco }}</option>
+                @for (s of statuses; track s) { <option [value]="s">{{ statusLabel(s) }}</option> }
+              </select>
+              @if (fUserSearch() || fUserRole() || fUserStatus()) { <button type="button" class="gms-btn gms-btn--ghost gms-btn--sm" (click)="resetUserFilters()">{{ 'filterBar.reset' | transloco }}</button> }
+            </div>
+          </div>
+          <gms-data-grid [rows]="filteredUsers()" [columns]="userColumns()" idKey="id" [searchable]="false"
+            [rowActions]="rowActions" emptyIcon="employees" [emptyTitle]="'administration.empty.usersTitle' | transloco" [emptyText]="'administration.empty.usersText' | transloco"
+            (rowAction)="onRowAction($event, 'user')">
+            <ng-template [gmsCell]="'lastLogin'" let-row>{{ row.lastLogin | date: 'dd.MM.yyyy HH:mm' }}</ng-template>
+          </gms-data-grid>
+        }
+
+        @case ('roles') {
+          <div class="sec-head">
+            <p class="sec-desc">{{ 'administration.roles.desc' | transloco }}</p>
+          </div>
+          <gms-data-grid [rows]="rolesList()" [columns]="roleColumns()" idKey="id" [searchable]="true"
+            emptyIcon="lock" [emptyTitle]="'administration.empty.rolesTitle' | transloco" [emptyText]="'administration.empty.rolesText' | transloco">
+            <ng-template [gmsCell]="'permissions'" let-row>
+              <span class="perm-chip"><gms-icon name="lock" [size]="12" /> {{ row.permissions }} {{ 'administration.permissionsSuffix' | transloco }}</span>
+            </ng-template>
+          </gms-data-grid>
+        }
+
+        @default {
+          <div class="gms-card">
+            <gms-state variant="empty" [iconOverride]="activeMeta().icon" [title]="(activeMeta().label + ' — ' + ('administration.comingSoon' | transloco))"
+              [text]="placeholderText()">
+            </gms-state>
+          </div>
+
+          @if (futureFeatures().length) {
+            <div class="future">
+              <span class="future__title">{{ 'administration.plannedCapabilities' | transloco }}</span>
+              <div class="future__grid">
+                @for (f of futureFeatures(); track f.name) {
+                  <div class="future__card">
+                    <span class="future__icon"><gms-icon [name]="f.icon" [size]="16" /></span>
+                    <div class="future__meta">
+                      <span class="future__name">{{ f.name }}</span>
+                      <span class="future__desc">{{ f.description }}</span>
+                    </div>
+                    <span class="future__soon">{{ 'administration.comingSoon' | transloco }}</span>
+                  </div>
+                }
+              </div>
+            </div>
+          }
+        }
+      }
+    </section>
+  </div>
+
+  <!-- Right context panel (reusable) -->
+  <ng-container panel>
+    <gms-context-section [title]="'administration.panel.recentConfigs' | transloco" icon="clock" [count]="recentConfigs().length">
+      <gms-item-list [items]="recentConfigs()" />
+    </gms-context-section>
+    <gms-context-section [title]="'administration.panel.systemActivity' | transloco" icon="activity">
+      <gms-activity-feed [items]="systemActivity()" />
+    </gms-context-section>
+    <gms-context-section [title]="'administration.panel.recentChanges' | transloco" icon="change" [count]="recentChanges.length">
+      <gms-item-list [items]="recentChanges" />
+    </gms-context-section>
+  </ng-container>
+
+  <!-- New customer modal -->
+  <gms-modal [open]="custModalOpen()" [title]="'administration.createModal.title' | transloco" size="md" (closed)="custModalOpen.set(false)">
+    <div class="cust-form">
+      <gms-form-section [title]="'administration.createModal.sectionTitle' | transloco" [description]="'administration.createModal.sectionDesc' | transloco">
+        <gms-field [label]="'administration.createModal.nameLabel' | transloco" [required]="true" class="cust-form__full">
+          <input gmsInput type="text" [placeholder]="'administration.createModal.namePlaceholder' | transloco" [value]="custName()" (input)="custName.set($any($event.target).value)" />
+        </gms-field>
+      </gms-form-section>
+      @if (custError()) { <p class="cust-form__error">{{ custError() }}</p> }
+    </div>
+    <div footer>
+      <button gmsButton variant="ghost" (click)="custModalOpen.set(false)">{{ 'common.cancel' | transloco }}</button>
+      <button gmsButton variant="primary" [loading]="submitting()" [disabled]="!custName().trim()" (click)="onCreateCustomer()">{{ 'administration.createModal.create' | transloco }}</button>
+    </div>
+  </gms-modal>
+
+</gms-page>

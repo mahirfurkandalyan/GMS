@@ -1,0 +1,82 @@
+{
+  "class": {
+    "Standard": "Standard",
+    "Normal": "Normal",
+    "Emergency": "Emergency"
+  },
+  "type": {
+    "ApplicationDeployment": "Application Deployment",
+    "DatabaseSchemaChange": "Database Schema Change",
+    "SqlDataFix": "SQL Data Fix",
+    "StoredProcedureFunctionChange": "Stored Procedure / Function Change",
+    "ApiChange": "API Change",
+    "ConfigurationChange": "Configuration Change",
+    "InfrastructureChange": "Infrastructure Change",
+    "IntegrationChange": "Integration Change",
+    "DocumentSopChange": "Document / SOP Change",
+    "Other": "Other"
+  },
+  "priority": {
+    "Low": "Low",
+    "Medium": "Medium",
+    "High": "High",
+    "Critical": "Critical"
+  },
+  "audit": {
+    "ChangeCreated": "Change created",
+    "ChangeUpdated": "Change updated",
+    "ChangeSubmitted": "Submitted for review",
+    "ChangeCancelled": "Change cancelled",
+    "RevisionCreated": "Revision created",
+    "ApprovalRequested": "Approval requested",
+    "ChangeApproved": "Change approved",
+    "ChangeApprovalRejected": "Approval rejected",
+    "ChangeRevisionRequested": "Revision requested",
+    "ChangeScheduled": "Scheduled to release",
+    "ChangeImplemented": "Implemented",
+    "ChangeUnscheduled": "Removed from plan"
+  },
+  "readiness": {
+    "title": "Readiness Assessment",
+    "score": "Readiness Score",
+    "noFindings": "No readiness findings. The change is ready to submit.",
+    "critical": "Critical",
+    "warning": "Warning",
+    "recommendation": "Recommendation",
+    "blockingTitle": "Submission blocked",
+    "blockingText": "The change cannot be submitted until the following critical readiness findings are resolved."
+  },
+  "risk": {
+    "title": "Risk",
+    "score": "Risk Score",
+    "authoritative": "The official risk value is calculated by the backend."
+  },
+  "workflow": {
+    "title": "Workflow Status",
+    "instance": "Workflow instance",
+    "currentStep": "Active step",
+    "assignee": "Assignee",
+    "role": "Role",
+    "status": "Status",
+    "none": "No workflow has been started for this change yet.",
+    "view": "View workflow",
+    "timeline": "Workflow timeline"
+  },
+  "actions": {
+    "edit": "Edit",
+    "submit": "Submit for Review",
+    "cancel": "Cancel",
+    "revision": "New Revision",
+    "save": "Save",
+    "saving": "Saving…",
+    "reload": "Load current data",
+    "confirmSubmitTitle": "Submit change",
+    "confirmSubmitText": "The change will be submitted for review and the governance workflow will start. Continue?",
+    "confirmCancelTitle": "Cancel change",
+    "confirmCancelText": "This change will be cancelled and any active workflow will be terminated. Continue?",
+    "submitted": "Change submitted for review.",
+    "cancelled": "Change cancelled.",
+    "updated": "Change updated.",
+    "revisionCreated": "New revision created."
+  }
+}

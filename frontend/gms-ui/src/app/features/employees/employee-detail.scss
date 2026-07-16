@@ -1,0 +1,159 @@
+:host {
+  display: block;
+}
+
+.muted {
+  margin: 0;
+  color: var(--text-muted);
+  font-size: 0.85rem;
+}
+
+.back-link {
+  align-self: flex-start;
+  color: var(--brand-600);
+  font-weight: 600;
+  font-size: 0.85rem;
+  text-decoration: none;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+.profile-hero {
+  display: flex;
+  align-items: center;
+  gap: var(--s-5);
+  flex-wrap: wrap;
+
+  &__avatar {
+    width: 76px;
+    height: 76px;
+    font-size: 1.6rem;
+  }
+
+  &__info {
+    flex: 1;
+    min-width: 200px;
+  }
+
+  &__name {
+    margin: 0 0 4px;
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--text-strong);
+  }
+
+  &__title {
+    margin: 0 0 var(--s-3);
+    color: var(--text-muted);
+    font-size: 0.9rem;
+  }
+
+  &__badges {
+    display: flex;
+    gap: var(--s-2);
+    flex-wrap: wrap;
+  }
+
+  &__actions {
+    display: flex;
+    flex-direction: column;
+    gap: var(--s-2);
+  }
+}
+
+/* Key-value */
+.kv {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+
+  div {
+    display: flex;
+    justify-content: space-between;
+    gap: var(--s-4);
+    padding: 0.55rem 0;
+    border-bottom: 1px solid var(--border);
+
+    &:last-child { border-bottom: 0; }
+  }
+
+  dt {
+    margin: 0;
+    color: var(--text-muted);
+    font-size: 0.85rem;
+  }
+
+  dd {
+    margin: 0;
+    font-weight: 600;
+    color: var(--text-strong);
+    font-size: 0.85rem;
+    text-align: right;
+  }
+}
+
+/* Skills */
+.skills {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-3);
+
+  &__row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  &__name {
+    font-weight: 600;
+    color: var(--text);
+    font-size: 0.88rem;
+  }
+}
+
+.star {
+  color: #d7dee8;
+  font-size: 1rem;
+
+  &--on {
+    color: #f5a623;
+  }
+}
+
+/* Bullets */
+.bullet-list {
+  margin: 0;
+  padding-left: 1.1rem;
+  color: var(--text);
+  font-size: 0.88rem;
+  line-height: 1.9;
+}
+
+/* Mini blocks */
+.mini-block {
+  padding: var(--s-3) 0;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-2);
+
+  &:last-child { border-bottom: 0; }
+
+  &__label {
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+    color: var(--text-faint);
+  }
+}
+
+.tag-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s-2);
+}

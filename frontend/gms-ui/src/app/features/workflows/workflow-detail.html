@@ -1,0 +1,178 @@
+@if (loading()) {
+  <section class="gms-page"><div class="gms-card"><gms-state variant="loading" /></div></section>
+} @else if (notFound()) {
+  <section class="gms-page">
+    <div class="gms-card">
+      <gms-state variant="error" [title]="'workflows.detail.notFoundTitle' | transloco" [text]="'workflows.detail.notFoundText' | transloco">
+        <button gmsButton variant="secondary" (click)="back()"><gms-icon name="chevron-left" [size]="15" /> {{ 'workflows.detail.backButton' | transloco }}</button>
+      </gms-state>
+    </div>
+  </section>
+} @else if (workflow(); as w) {
+  <gms-page [contextPanel]="true" [panelTitle]="'workflows.detail.propertiesPanelTitle' | transloco">
+
+    <gms-page-header
+      header
+      [title]="w.name"
+      [subtitle]="w.code + ' · ' + categoryLabel(w.category)"
+      [breadcrumbs]="breadcrumbs()"
+      [status]="{ label: statusLabel(), tone: statusTone() }"
+      [context]="headerContext()"
+      [lastUpdated]="w.version">
+      <gms-menu secondary [items]="extraActions()" (select)="onExtra()" />
+      <button actions gmsButton variant="primary" (click)="activeTab.set('designer')">
+        <gms-icon name="share" [size]="16" /> {{ 'workflows.detail.openDesigner' | transloco }}
+      </button>
+    </gms-page-header>
+
+    <div toolbar class="wd-toolbar">
+      <gms-relationship-strip [nodes]="relationChain()" />
+    </div>
+
+    <gms-tabs [tabs]="tabs()" [(active)]="activeTab" />
+
+    @switch (activeTab()) {
+
+      @case ('overview') {
+        <div class="gms-grid gms-grid--2">
+          <div class="gms-card">
+            <h3 class="gms-section-title">{{ 'workflows.detail.overview.infoTitle' | transloco }}</h3>
+            <dl class="kv">
+              <div><dt>{{ 'workflows.detail.overview.category' | transloco }}</dt><dd><span class="cat-chip"><gms-icon name="share" [size]="13" /> {{ categoryLabel(w.category) }}</span></dd></div>
+              <div><dt>{{ 'workflows.detail.overview.currentVersion' | transloco }}</dt><dd>{{ w.version }}</dd></div>
+              <div><dt>{{ 'workflows.detail.overview.status' | transloco }}</dt><dd><span class="badge" [class]="'badge--' + statusTone()">{{ statusLabel() }}</span></dd></div>
+              <div><dt>{{ 'workflows.detail.overview.createdBy' | transloco }}</dt><dd>{{ w.createdBy }}</dd></div>
+              <div><dt>{{ 'workflows.detail.overview.createdAt' | transloco }}</dt><dd>{{ w.createdAt | date: 'dd.MM.yyyy' }}</dd></div>
+              <div><dt>{{ 'workflows.detail.overview.updatedAt' | transloco }}</dt><dd>{{ w.updatedAt | date: 'dd.MM.yyyy' }}</dd></div>
+              <div><dt>{{ 'workflows.detail.overview.stepCount' | transloco }}</dt><dd>{{ w.nodes.length }}</dd></div>
+              <div><dt>{{ 'workflows.detail.overview.usage' | transloco }}</dt><dd>{{ w.usedBy }} {{ 'workflows.detail.overview.usageSuffix' | transloco }}</dd></div>
+              <div class="kv__full"><dt>{{ 'workflows.detail.overview.description' | transloco }}</dt><dd>{{ w.description }}</dd></div>
+            </dl>
+          </div>
+
+          <div class="wd-side">
+            <div class="gms-card">
+              <h3 class="gms-section-title">{{ 'workflows.detail.overview.modulesTitle' | transloco }}</h3>
+              <div class="chips">
+                @for (m of w.usedModules; track m) { <span class="chip">{{ m }}</span> }
+              </div>
+            </div>
+            <div class="gms-card">
+              <h3 class="gms-section-title">{{ 'workflows.detail.overview.summaryTitle' | transloco }}</h3>
+              <div class="wd-metrics">
+                <div class="wd-metric"><span class="wd-metric__v">{{ w.nodes.length }}</span><span class="wd-metric__l">{{ 'workflows.detail.overview.step' | transloco }}</span></div>
+                <div class="wd-metric"><span class="wd-metric__v">{{ w.edges.length }}</span><span class="wd-metric__l">{{ 'workflows.detail.overview.connection' | transloco }}</span></div>
+                <div class="wd-metric"><span class="wd-metric__v">{{ w.variables.length }}</span><span class="wd-metric__l">{{ 'workflows.detail.overview.variable' | transloco }}</span></div>
+              </div>
+              <button class="wd-open" gmsButton variant="secondary" (click)="activeTab.set('designer')">
+                <gms-icon name="share" [size]="15" /> {{ 'workflows.detail.overview.viewInDesigner' | transloco }}
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="gms-card">
+          <h3 class="gms-section-title">{{ 'workflows.detail.overview.timelineTitle' | transloco }}</h3>
+          <gms-timeline [items]="timeline()" />
+        </div>
+      }
+
+      @case ('designer') {
+        <div class="gms-card gms-card--flush designer">
+          <div class="designer__bar">
+            <span class="designer__hint"><gms-icon name="share" [size]="15" /> {{ 'workflows.detail.designer.hint' | transloco }}</span>
+            <span class="designer__badge">{{ 'workflows.detail.designer.dragDropSoon' | transloco }}</span>
+          </div>
+
+          <!-- Visual canvas: SVG edge layer + positioned node cards -->
+          <div class="canvas" [style.width.px]="canvas().width" [style.height.px]="canvas().height">
+            <svg class="canvas__edges" [attr.width]="canvas().width" [attr.height]="canvas().height">
+              <defs>
+                <marker id="wf-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+                  <path d="M 0 0 L 10 5 L 0 10 z" fill="var(--text-subtle)" />
+                </marker>
+              </defs>
+              @for (e of edges(); track e.from + '-' + e.to) {
+                <path [attr.d]="e.path" class="canvas__edge" marker-end="url(#wf-arrow)" />
+                @if (e.label) {
+                  <foreignObject [attr.x]="e.midX - 26" [attr.y]="e.midY - 12" width="52" height="20">
+                    <span class="canvas__edge-label">{{ e.label }}</span>
+                  </foreignObject>
+                }
+              }
+            </svg>
+
+            @for (n of nodes(); track n.id) {
+              <button type="button" class="node" [class]="'node--' + nodeMeta(n.type).tone"
+                [class.node--selected]="selectedNodeId() === n.id"
+                [style.left.px]="n.x" [style.top.px]="n.y" [style.width.px]="nodeW" [style.height.px]="nodeH"
+                (click)="selectNode(n.id)">
+                <span class="node__icon"><gms-icon [name]="nodeMeta(n.type).icon" [size]="15" /></span>
+                <span class="node__meta">
+                  <span class="node__type">{{ nodeLabel(n.type) }}</span>
+                  <span class="node__label">{{ n.label }}</span>
+                </span>
+              </button>
+            }
+          </div>
+
+          <!-- Node palette (future toolbox — non-functional) -->
+          <div class="palette">
+            <span class="palette__title">{{ 'workflows.detail.designer.paletteTitle' | transloco }}</span>
+            <div class="palette__items">
+              @for (t of ['start','approval','validation','execution','notification','decision','manual','end']; track t) {
+                <span class="palette__item" [class]="'palette__item--' + nodeMeta(t).tone" [attr.title]="nodeDesc(t)">
+                  <gms-icon [name]="nodeMeta(t).icon" [size]="13" /> {{ nodeLabel(t) }}
+                </span>
+              }
+            </div>
+          </div>
+        </div>
+      }
+
+      @default {
+        <div class="gms-card">
+          <gms-state variant="empty" [iconOverride]="activeTabMeta().icon ?? 'inbox'" [title]="(activeTabMeta().label + ' — ' + ('workflows.detail.comingSoon' | transloco))"
+            [text]="'workflows.detail.placeholderText' | transloco">
+          </gms-state>
+        </div>
+      }
+    }
+
+    <!-- Right panel (reusable): selected node properties -->
+    <ng-container panel>
+      @if (selectedNode(); as n) {
+        <gms-context-section [title]="'workflows.detail.panel.selectedNode' | transloco" icon="share">
+          <div class="sel">
+            <span class="sel__icon" [class]="'sel__icon--' + nodeMeta(n.type).tone"><gms-icon [name]="nodeMeta(n.type).icon" [size]="18" /></span>
+            <div class="sel__meta">
+              <span class="sel__label">{{ n.label }}</span>
+              <span class="sel__type">{{ nodeLabel(n.type) }}</span>
+            </div>
+          </div>
+        </gms-context-section>
+        <gms-context-section [title]="'workflows.detail.panel.properties' | transloco" icon="filter">
+          <dl class="props">
+            <div><dt>{{ 'workflows.detail.panel.type' | transloco }}</dt><dd>{{ nodeLabel(n.type) }}</dd></div>
+            <div><dt>{{ 'workflows.detail.panel.nodeId' | transloco }}</dt><dd><span class="mono">{{ n.id }}</span></dd></div>
+            <div><dt>{{ 'workflows.detail.panel.config' | transloco }}</dt><dd>{{ n.config || '—' }}</dd></div>
+          </dl>
+        </gms-context-section>
+        <gms-context-section [title]="'workflows.detail.panel.description' | transloco" icon="document">
+          <p class="muted">{{ nodeDesc(n.type) }}</p>
+        </gms-context-section>
+        <gms-context-section [title]="'workflows.detail.panel.configTitle' | transloco" icon="lock">
+          <div class="cfg-ph">
+            <gms-icon name="lock" [size]="16" />
+            <span>{{ 'workflows.detail.panel.configPlaceholderText' | transloco }}</span>
+          </div>
+        </gms-context-section>
+      } @else {
+        <gms-context-section [title]="'workflows.detail.panel.selectedNode' | transloco" icon="share">
+          <p class="muted">{{ 'workflows.detail.panel.selectHint' | transloco }}</p>
+        </gms-context-section>
+      }
+    </ng-container>
+
+  </gms-page>
+}

@@ -1,0 +1,78 @@
+<section class="gms-page">
+
+  <gms-page-header
+    [title]="'training.pageTitle' | transloco"
+    [subtitle]="'training.pageSubtitle' | transloco"
+    [breadcrumbs]="[{ label: ('training.breadcrumbWorkspace' | transloco) }, { label: ('training.pageTitle' | transloco) }]">
+  </gms-page-header>
+
+  <!-- Tabs -->
+  <div class="tabs">
+    @for (tab of tabs; track tab.key) {
+      <button
+        type="button"
+        class="tab"
+        [class.tab--active]="activeTab() === tab.key"
+        (click)="activeTab.set(tab.key)">
+        {{ tab.labelKey | transloco }}
+        <span class="tab__count">{{ count(tab.key) }}</span>
+      </button>
+    }
+  </div>
+
+  <!-- Training cards -->
+  @if (filtered().length === 0) {
+    <div class="gms-card">
+      <div class="empty-state">
+        <span class="empty-state__icon"><gms-icon name="training" [size]="22" /></span>
+        <span class="empty-state__title">{{ 'training.emptyTitle' | transloco }}</span>
+        <span class="empty-state__text">{{ 'training.emptyText' | transloco }}</span>
+      </div>
+    </div>
+  } @else {
+    <div class="gms-grid gms-grid--cards">
+      @for (t of filtered(); track t.id) {
+        <div class="train-card gms-hover">
+          <div class="train-card__head">
+            <span class="badge" [class]="meta[t.status].badge">{{ meta[t.status].labelKey | transloco }}</span>
+            <span class="train-card__cat">{{ t.category }}</span>
+          </div>
+          <h3 class="train-card__title">{{ t.title }}</h3>
+          <div class="progress">
+            <span class="progress__bar" [style.width.%]="t.progress"></span>
+          </div>
+          <div class="train-card__foot">
+            <span>%{{ t.progress }} {{ 'training.completed' | transloco }}</span>
+            <span>{{ 'training.dueDate' | transloco }}: {{ t.dueDate | date: 'dd.MM.yyyy' }}</span>
+          </div>
+        </div>
+      }
+    </div>
+  }
+
+  <!-- Certificates -->
+  <div>
+    <h2 class="gms-section-title">{{ 'training.certificates' | transloco }}</h2>
+    @if (certificates().length === 0) {
+      <div class="gms-card">
+        <div class="empty-state empty-state--inline">
+          <span class="empty-state__icon"><gms-icon name="shield" [size]="18" /></span>
+          <span class="empty-state__text">{{ 'training.noCertificates' | transloco }}</span>
+        </div>
+      </div>
+    } @else {
+      <div class="gms-grid gms-grid--cards">
+        @for (c of certificates(); track c.id) {
+          <div class="cert-card gms-hover">
+            <span class="cert-card__icon"><gms-icon name="shield" [size]="18" /></span>
+            <div>
+              <span class="cert-card__name">{{ c.name }}</span>
+              <span class="cert-card__meta">{{ c.issuedBy }} · {{ 'training.validUntil' | transloco }}: {{ c.validUntil | date: 'MM.yyyy' }}</span>
+            </div>
+          </div>
+        }
+      </div>
+    }
+  </div>
+
+</section>

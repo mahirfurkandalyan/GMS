@@ -1,0 +1,24 @@
+{
+  "pageTitle": "Leave & Team Calendar",
+  "pageSubtitle": "Team availability, meeting, and leave status.",
+  "breadcrumbOrg": "Organization",
+  "breadcrumbTitle": "Leave Calendar",
+  "statusManager": "Manager View",
+  "statusStandard": "Standard View",
+  "sectionThisWeek": "This Week",
+  "sectionBalances": "Leave Balances",
+  "managerBadge": "Manager",
+  "colEmployee": "Employee",
+  "colEntitled": "Entitled",
+  "colUsed": "Used",
+  "colRemaining": "Remaining",
+  "days": "days",
+  "restrictedText": "Leave balance information is only visible to managers and admins.",
+  "calendarType": {
+    "available": "Available",
+    "meeting": "Meeting",
+    "leave": "On Leave",
+    "remote": "Remote",
+    "travel": "Travel"
+  }
+}

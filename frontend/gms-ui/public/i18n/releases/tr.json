@@ -1,0 +1,40 @@
+{
+  "type": {
+    "Major": "Majör",
+    "Minor": "Minör",
+    "Patch": "Yama",
+    "Hotfix": "Acil Düzeltme",
+    "Emergency": "Acil"
+  },
+  "audit": {
+    "ReleaseCreated": "Yayın oluşturuldu",
+    "ReleaseUpdated": "Yayın güncellendi",
+    "ReleaseScheduled": "Yayın zamanlandı",
+    "ReleaseExecutionStarted": "Yürütme başladı",
+    "ReleaseCompleted": "Yayın tamamlandı",
+    "ReleaseValidationStarted": "Doğrulama başladı",
+    "ReleaseValidationFailed": "Doğrulama başarısız",
+    "ReleaseAccepted": "Yayın kabul edildi",
+    "ReleaseCancelled": "Yayın iptal edildi"
+  },
+  "risk": {
+    "title": "Risk",
+    "score": "Risk Puanı",
+    "authoritative": "Resmî risk değeri backend tarafından hesaplanır."
+  },
+  "actions": {
+    "edit": "Düzenle",
+    "schedule": "Zamanla",
+    "cancel": "İptal Et",
+    "save": "Kaydet",
+    "saving": "Kaydediliyor…",
+    "reload": "Güncel veriyi yükle",
+    "confirmScheduleTitle": "Yayını zamanla",
+    "confirmScheduleText": "Bu yayın planı zamanlanacak (Scheduled). Devam edilsin mi?",
+    "confirmCancelTitle": "Yayını iptal et",
+    "confirmCancelText": "Bu yayın iptal edilecek ve bağlı zamanlanmış değişiklikler onaylı (Approved) duruma geri dönecek. Devam edilsin mi?",
+    "scheduled": "Yayın zamanlandı.",
+    "cancelled": "Yayın iptal edildi.",
+    "updated": "Yayın güncellendi."
+  }
+}

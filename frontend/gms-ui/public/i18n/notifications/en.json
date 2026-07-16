@@ -1,0 +1,85 @@
+{
+  "pageTitle": "Notification Center",
+  "pageSubtitle": "View and manage system-generated notifications.",
+  "breadcrumbComm": "Communication",
+  "unread": "unread",
+  "lastUpdated": "a few seconds ago",
+  "rulesButton": "Notification Rules",
+  "markAllRead": "Mark All as Read",
+  "panelTitle": "Notification Detail",
+  "searchPlaceholder": "Search notifications, descriptions, or related objects…",
+  "savedViewAll": "All Notifications",
+  "savedViewAttention": "Needs Attention",
+  "viewsAriaLabel": "Notification views",
+  "filter": {
+    "category": "Category",
+    "priority": "Priority",
+    "status": "Status",
+    "module": "Module",
+    "date": "Date",
+    "all": "All"
+  },
+  "nav": {
+    "all": "All",
+    "unread": "Unread",
+    "read": "Read",
+    "critical": "Critical",
+    "modulesTitle": "Modules"
+  },
+  "type": {
+    "info": "Info",
+    "success": "Success",
+    "warning": "Warning",
+    "critical": "Critical"
+  },
+  "status": {
+    "unread": "Unread",
+    "read": "Read",
+    "archived": "Archived"
+  },
+  "module": {
+    "release": "Release",
+    "change": "Change",
+    "approval": "Approval",
+    "validation": "Validation",
+    "execution": "Execution",
+    "workflow": "Workflow",
+    "document": "Document",
+    "audit": "Audit",
+    "system": "System"
+  },
+  "column": {
+    "priority": "Priority",
+    "title": "Title",
+    "module": "Module",
+    "related": "Related Object",
+    "createdAt": "Date",
+    "status": "Status"
+  },
+  "action": {
+    "openRelated": "Open related object",
+    "markRead": "Mark as read",
+    "archive": "Archive"
+  },
+  "emptyTitle": "No notifications",
+  "emptyText": "There are no notifications to display for this view.",
+  "detail": {
+    "module": "Module",
+    "priority": "Priority",
+    "status": "Status",
+    "date": "Date",
+    "related": "Related Object",
+    "openRelated": "Open Related Object",
+    "markRead": "Mark as Read",
+    "archive": "Archive"
+  },
+  "selectPrompt": "Select a notification to see its details.",
+  "toast": {
+    "markedRead": "Marked as read.",
+    "archived": "{{name}} archived.",
+    "undone": "Undone.",
+    "noRelated": "This notification has no related object.",
+    "allMarkedRead": "All notifications marked as read.",
+    "refreshed": "Notifications refreshed."
+  }
+}

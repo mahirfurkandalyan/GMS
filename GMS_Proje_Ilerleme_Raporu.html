@@ -1,0 +1,943 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GMS — Proje İlerleme, Teknik Mimari ve Yol Haritası Raporu</title>
+<style>
+  :root {
+    --navy: #10233f;
+    --navy-2: #1c3a63;
+    --steel: #2f5384;
+    --ink: #1f2733;
+    --muted: #5b6675;
+    --line: #d9dee6;
+    --bg-soft: #f4f6f9;
+    --ok: #1a7f52;
+    --ok-bg: #e4f3ea;
+    --warn: #9a6b12;
+    --warn-bg: #f8efd9;
+    --info: #1f5aa8;
+    --info-bg: #e5eef9;
+    --plan: #6b6f76;
+    --plan-bg: #eceef1;
+    --danger: #a5322a;
+    --danger-bg: #f7e4e2;
+  }
+
+  * { box-sizing: border-box; }
+  html { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  body {
+    margin: 0;
+    font-family: "Segoe UI", "Calibri", "Helvetica Neue", Arial, sans-serif;
+    color: var(--ink);
+    font-size: 10.5pt;
+    line-height: 1.5;
+    background: #fff;
+  }
+
+  /* ---------- Print / page setup ---------- */
+  @page {
+    size: A4;
+    margin: 20mm 16mm 18mm 16mm;
+  }
+  @media print {
+    .no-print { display: none !important; }
+    .cover, .section { break-inside: auto; }
+    h2 { break-after: avoid; }
+    table { break-inside: auto; }
+    tr, .kv-row, .risk-row { break-inside: avoid; }
+    thead { display: table-header-group; }
+    .page-break { break-before: page; }
+  }
+
+  /* ---------- Screen shell ---------- */
+  .sheet {
+    max-width: 210mm;
+    margin: 0 auto;
+    padding: 14mm 16mm;
+  }
+  @media screen {
+    body { background: #e9ecf1; }
+    .sheet { background: #fff; margin: 12px auto; box-shadow: 0 2px 18px rgba(0,0,0,.12); }
+  }
+
+  /* ---------- Typography ---------- */
+  h1, h2, h3, h4 { color: var(--navy); font-weight: 700; line-height: 1.25; }
+  h2 {
+    font-size: 16pt; margin: 26px 0 10px;
+    padding-bottom: 6px; border-bottom: 2px solid var(--navy);
+  }
+  h2 .num { color: var(--steel); font-weight: 700; margin-right: 8px; }
+  h3 { font-size: 12.5pt; margin: 18px 0 6px; color: var(--navy-2); }
+  h4 { font-size: 11pt; margin: 12px 0 4px; color: var(--steel); }
+  p { margin: 6px 0; }
+  ul, ol { margin: 6px 0 6px 0; padding-left: 20px; }
+  li { margin: 3px 0; }
+  strong { color: var(--navy-2); }
+  small { color: var(--muted); }
+  code {
+    font-family: "Consolas", "Courier New", monospace;
+    font-size: 9pt; background: var(--bg-soft); padding: 1px 5px; border-radius: 3px;
+    border: 1px solid var(--line);
+  }
+
+  /* ---------- Cover ---------- */
+  .cover {
+    min-height: 252mm;
+    background: linear-gradient(160deg, var(--navy) 0%, var(--navy-2) 60%, var(--steel) 100%);
+    color: #fff; border-radius: 4px;
+    padding: 30mm 22mm; display: flex; flex-direction: column; justify-content: space-between;
+  }
+  .cover .brand { font-size: 12pt; letter-spacing: 3px; text-transform: uppercase; opacity: .85; }
+  .cover h1 { color: #fff; font-size: 27pt; line-height: 1.18; margin: 10mm 0 4mm; }
+  .cover .subtitle { font-size: 14pt; font-weight: 400; opacity: .92; }
+  .cover .rule { width: 70px; height: 4px; background: #6f9bd8; margin: 8mm 0; border-radius: 2px; }
+  .cover .meta { display: grid; grid-template-columns: auto 1fr; gap: 4px 16px; font-size: 11pt; }
+  .cover .meta dt { opacity: .7; }
+  .cover .meta dd { margin: 0; font-weight: 600; }
+  .cover .status-pill {
+    display: inline-block; background: rgba(255,255,255,.14); border: 1px solid rgba(255,255,255,.35);
+    padding: 4px 12px; border-radius: 20px; font-size: 10pt; font-weight: 600; letter-spacing: .5px;
+  }
+  .cover .foot { font-size: 9.5pt; opacity: .8; border-top: 1px solid rgba(255,255,255,.25); padding-top: 6mm; }
+
+  /* ---------- TOC ---------- */
+  .toc { columns: 1; }
+  .toc ol { list-style: none; padding: 0; counter-reset: toc; }
+  .toc li { display: flex; justify-content: space-between; padding: 4px 0; border-bottom: 1px dotted var(--line); font-size: 10.5pt; }
+  .toc li span:first-child { color: var(--ink); }
+  .toc li .tnum { color: var(--steel); font-weight: 700; width: 26px; display: inline-block; }
+
+  /* ---------- Callouts ---------- */
+  .exec {
+    background: var(--bg-soft); border-left: 4px solid var(--steel);
+    padding: 12px 16px; border-radius: 0 4px 4px 0; margin: 10px 0;
+  }
+  .note {
+    background: var(--info-bg); border: 1px solid #c9ddf3; border-radius: 4px;
+    padding: 8px 12px; margin: 10px 0; font-size: 10pt;
+  }
+  .note.warn { background: var(--warn-bg); border-color: #ecd9a8; }
+
+  /* ---------- Tables ---------- */
+  table { width: 100%; border-collapse: collapse; margin: 10px 0; font-size: 9.7pt; }
+  th, td { border: 1px solid var(--line); padding: 6px 8px; text-align: left; vertical-align: top; }
+  thead th { background: var(--navy); color: #fff; font-weight: 600; }
+  tbody tr:nth-child(even) { background: var(--bg-soft); }
+  td.center, th.center { text-align: center; }
+
+  /* ---------- Status badges ---------- */
+  .badge {
+    display: inline-block; font-size: 8.3pt; font-weight: 700; padding: 2px 8px;
+    border-radius: 11px; white-space: nowrap; letter-spacing: .2px;
+  }
+  .b-ok { background: var(--ok-bg); color: var(--ok); }
+  .b-info { background: var(--info-bg); color: var(--info); }
+  .b-warn { background: var(--warn-bg); color: var(--warn); }
+  .b-plan { background: var(--plan-bg); color: var(--plan); }
+  .b-danger { background: var(--danger-bg); color: var(--danger); }
+
+  /* ---------- Diagrams ---------- */
+  .diagram { border: 1px solid var(--line); border-radius: 6px; padding: 14px; margin: 12px 0; background: #fff; }
+  .diagram .cap { font-size: 9pt; color: var(--muted); text-align: center; margin-top: 8px; }
+
+  .flow { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 6px; }
+  .flow .node {
+    background: var(--navy); color: #fff; border-radius: 6px; padding: 8px 12px;
+    font-size: 9.3pt; font-weight: 600; text-align: center; min-width: 92px;
+  }
+  .flow .node small { display: block; color: #b9cbe6; font-weight: 400; font-size: 7.6pt; }
+  .flow .arrow { color: var(--steel); font-size: 15pt; font-weight: 700; }
+
+  .modgrid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+  .modgrid .cell {
+    border: 1px solid var(--line); border-radius: 5px; padding: 8px; font-size: 9pt; text-align: center; background: var(--bg-soft);
+  }
+  .modgrid .cell.core { background: var(--navy); color: #fff; border-color: var(--navy); }
+  .modgrid .cell.shared { background: #e9eef6; border-color: #cdd9ea; }
+  .modgrid .cell b { display: block; font-size: 9.4pt; }
+  .modgrid .cell small { font-size: 7.7pt; color: var(--muted); }
+  .modgrid .cell.core small { color: #b9cbe6; }
+
+  .lane-title { font-weight: 700; color: var(--navy); margin: 12px 0 4px; font-size: 10pt; }
+
+  .phasebar { display: flex; flex-direction: column; gap: 6px; }
+  .phase { display: grid; grid-template-columns: 120px 1fr; gap: 10px; align-items: start; }
+  .phase .plabel { font-weight: 700; color: #fff; background: var(--steel); border-radius: 4px; padding: 6px 8px; font-size: 9pt; text-align: center; }
+  .phase.p1 .plabel { background: var(--ok); }
+  .phase.p2 .plabel { background: var(--info); }
+  .phase.p3 .plabel { background: var(--warn); }
+  .phase.p4 .plabel { background: var(--steel); }
+  .phase.p5 .plabel { background: var(--navy); }
+  .phase .pbody { font-size: 9.4pt; }
+
+  .legend { font-size: 8.6pt; color: var(--muted); margin-top: 6px; display: flex; gap: 12px; flex-wrap: wrap; }
+  .legend span { display: inline-flex; align-items: center; gap: 4px; }
+  .swatch { width: 10px; height: 10px; border-radius: 2px; display: inline-block; }
+
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 6px 22px; }
+  @media print { .two-col { display: block; } }
+
+  .kicker { font-size: 8.6pt; text-transform: uppercase; letter-spacing: 1.5px; color: var(--steel); font-weight: 700; }
+  .footer-note { margin-top: 26px; padding-top: 8px; border-top: 1px solid var(--line); font-size: 8.6pt; color: var(--muted); }
+  .appendix code { display: inline-block; margin: 1px 0; }
+</style>
+</head>
+<body>
+
+<!-- ============ COVER ============ -->
+<div class="sheet">
+  <div class="cover">
+    <div>
+      <div class="brand">CENTRA YAZILIM A.Ş.</div>
+      <div class="rule"></div>
+      <h1>GMS — Kurumsal Yönetişim ve Release Management Platformu</h1>
+      <div class="subtitle">Proje İlerleme, Teknik Mimari ve Yol Haritası Raporu</div>
+    </div>
+    <div>
+      <dl class="meta">
+        <dt>Hazırlayan</dt><dd>Mahir Furkan Dalyan</dd>
+        <dt>Kurum / Staj</dt><dd>CENTRA YAZILIM A.Ş.</dd>
+        <dt>Tarih</dt><dd>16 Temmuz 2026</dd>
+        <dt>Sürüm</dt><dd>1.0</dd>
+        <dt>Durum</dt><dd><span class="status-pill">Aktif Geliştirme (Active Development)</span></dd>
+      </dl>
+    </div>
+    <div class="foot">
+      Bu belge teknik bir mentöre yönelik hazırlanmış bir proje ilerleme raporudur. İçerik, deponun (repository)
+      güncel durumu — kaynak kod, veritabanı göçleri (migrations), otomatik testler ve proje yapısı — incelenerek
+      doğrulanmıştır. Belge, ürünün tam üretime hazır (production-ready) veya resmî GxP doğrulaması yapılmış olduğunu iddia etmez.
+    </div>
+  </div>
+</div>
+
+<!-- ============ TOC ============ -->
+<div class="sheet page-break">
+  <div class="kicker">İçindekiler</div>
+  <h2 style="border:none; margin-top:4px;">İçindekiler</h2>
+  <div class="toc">
+    <ol>
+      <li><span><span class="tnum">—</span>Yönetici Özeti</span></li>
+      <li><span><span class="tnum">1</span>Proje Tanımı</span></li>
+      <li><span><span class="tnum">2</span>Proje Hedefleri</span></li>
+      <li><span><span class="tnum">3</span>Teknoloji Yığını (Technology Stack)</span></li>
+      <li><span><span class="tnum">4</span>Mimari Yaklaşım</span></li>
+      <li><span><span class="tnum">5</span>Tamamlanan Backend Alanları (Domains)</span></li>
+      <li><span><span class="tnum">6</span>Frontend Durumu</span></li>
+      <li><span><span class="tnum">7</span>Uçtan Uca İş Akışı</span></li>
+      <li><span><span class="tnum">8</span>Paylaşılan Platform Yetenekleri</span></li>
+      <li><span><span class="tnum">9</span>Veritabanı ve Veri Bütünlüğü</span></li>
+      <li><span><span class="tnum">10</span>Güvenlik Kontrolleri</span></li>
+      <li><span><span class="tnum">11</span>Test ve Kalite Sonuçları</span></li>
+      <li><span><span class="tnum">12</span>Çözülen Önemli Teknik Problemler</span></li>
+      <li><span><span class="tnum">13</span>Güncel Proje Durumu</span></li>
+      <li><span><span class="tnum">14</span>Sonraki Geliştirme Planı (Yol Haritası)</span></li>
+      <li><span><span class="tnum">15</span>Riskler ve Açık Maddeler</span></li>
+      <li><span><span class="tnum">16</span>Kişisel Katkı ve Öğrenimler</span></li>
+      <li><span><span class="tnum">17</span>Mentör ile Tartışma Konuları</span></li>
+      <li><span><span class="tnum">18</span>Sonuç</span></li>
+      <li><span><span class="tnum">EK</span>Teknik Kanıtlar</span></li>
+    </ol>
+  </div>
+
+  <!-- Executive summary -->
+  <h2 class="page-break"><span class="num">—</span>Yönetici Özeti</h2>
+  <div class="exec">
+    <p><strong>GMS (Governance Management System)</strong>, başlangıçta bir <strong>Release Management</strong> (yayın yönetimi)
+    platformu olarak tasarlanmış; zamanla <strong>modüler bir kurumsal yönetişim platformuna</strong> dönüşmüştür. Bugün,
+    gerçek bir backend yaşam döngüsünü kapsamaktadır:
+    <strong>Change (Değişiklik) → Workflow (İş Akışı) → Release (Yayın) → Execution (Yürütme) → Validation (Doğrulama)</strong>.</p>
+  </div>
+  <ul>
+    <li>Kimlik/RBAC, Doküman Yönetimi, Bildirim Motoru, Birleşik Denetim (Unified Audit), Raporlama, Entegrasyon Merkezi (Integration Hub)
+        ve Arka Plan İşleme (Background Processing), tüm alanların ortak kullandığı <strong>paylaşılan platform servisleri</strong> olarak geliştirildi.</li>
+    <li>Backend, <strong>gerçek SQL Server</strong> üzerinde çalışır; çekirdek yaşam döngüsü uçtan uca doğrulanmıştır.</li>
+    <li>Angular tarafında <strong>kimlik doğrulama (authentication) temeli</strong> gerçek backend'e bağlanmış; ardından
+        <strong>Change ve İş Akışı Görevleri (Workflow Tasks)</strong> modülleri de gerçek API'ye entegre edilerek uçtan uca doğrulanmıştır.</li>
+    <li>Şu anki aktif faz, <strong>özellik-özellik (feature-by-feature) Angular entegrasyonudur</strong>; kalan modüller kademeli olarak taşınmaktadır.</li>
+    <li>Ürün, <strong>henüz tam üretime hazır (production-ready) veya GxP doğrulaması yapılmış olarak sunulmamaktadır</strong>;
+        bunlar sonraki fazların konusudur.</li>
+  </ul>
+  <p><small>Bu rapor boyunca ilerleme durumu dört ayrı sınıfta netleştirilmiştir:
+  <span class="badge b-ok">Tamamlandı ve Doğrulandı</span>
+  <span class="badge b-info">Backend Hazır / Frontend Bekliyor</span>
+  <span class="badge b-warn">Kısmen Tamamlandı</span>
+  <span class="badge b-plan">Planlandı / Kapsam Dışı</span></small></p>
+</div>
+
+<!-- ============ 1. PROJECT DEFINITION ============ -->
+<div class="sheet page-break">
+  <h2><span class="num">1</span>Proje Tanımı</h2>
+  <p>GMS, bir kurumun yazılım ve altyapı üzerinde yaptığı <strong>değişiklikleri</strong> baştan sona kontrollü, izlenebilir ve
+  onaya dayalı bir şekilde yönetmesini sağlayan bir <strong>yönetişim platformudur</strong>. Basit bir dille: "Bir şeyi
+  değiştirmeden önce kim talep etti, kim onayladı, ne zaman, hangi risklerle ve hangi kanıtlarla uygulandı?" sorularının
+  tamamının kayıt altında olmasını sağlar.</p>
+
+  <h3>Temel Kavramlar</h3>
+  <ul>
+    <li><strong>Governance Management (Yönetişim Yönetimi):</strong> Değişikliklerin keyfî değil, tanımlı kurallar, roller ve
+        onay süreçleri içinde yürütülmesi.</li>
+    <li><strong>Change Management (Değişiklik Yönetimi):</strong> Bir değişiklik talebinin oluşturulması, risk/hazırlık
+        değerlendirmesi, revizyonlanması ve incelemeye gönderilmesi.</li>
+    <li><strong>Release Management (Yayın Yönetimi):</strong> Onaylanmış değişikliklerin bir yayın planı (release plan) altında
+        gruplanıp planlanması.</li>
+    <li><strong>Workflow Management (İş Akışı Yönetimi):</strong> Onay ve görev adımlarının, sürümlenmiş (versioned) iş akışı
+        tanımlarıyla otomatik yürütülmesi.</li>
+    <li><strong>Execution (Yürütme):</strong> Onaylı değişikliğin hedef ortama adım adım uygulanması ve gerektiğinde geri alınması (rollback).</li>
+    <li><strong>Validation (Doğrulama):</strong> Uygulama sonrası kontrol/kanıt kayıtlarıyla sonucun kabul edilmesi.</li>
+  </ul>
+
+  <h3>Kimler Kullanır?</h3>
+  <p>Değişiklik talep edenler (Requester), mimarlar (Architect), kalite uzmanları (QA), yayın yöneticileri (Release Manager),
+  uygulayıcılar (Executor), doğrulayıcılar (Validator), denetçiler (Auditor) ve yöneticiler (Admin). Özellikle
+  <strong>düzenlemeye tabi (regülasyonlu) sektörlerde</strong> — örneğin ilaç/GxP — kontrollü değişiklik ve tam izlenebilirlik zorunludur.</p>
+
+  <h3>Önlediği Problemler</h3>
+  <div class="two-col">
+    <ul>
+      <li>Kontrolsüz değişiklikler</li>
+      <li>Eksik onaylar</li>
+      <li>Belirsiz sorumluluk</li>
+      <li>Yayın (release) riskleri</li>
+      <li>Kayıt altına alınmamış dağıtım adımları</li>
+    </ul>
+    <ul>
+      <li>Eksik doğrulama kanıtı</li>
+      <li>Zayıf izlenebilirlik (traceability)</li>
+      <li>Kopuk dokümanlar</li>
+      <li>Dağınık bildirimler</li>
+      <li>Eksik denetim izleri (audit trail)</li>
+    </ul>
+  </div>
+
+  <div class="note">
+    <strong>Somut Örnek.</strong> Bir şirket, üretime (production) bir <em>veritabanı + uygulama</em> değişikliği çıkmak istiyor.
+    GMS'te akış şöyle işler: Requester bir <strong>Change</strong> oluşturur (etkilenen varlıklar, SQL/rollback betiği, iş gerekçesi);
+    backend <strong>risk ve hazırlık</strong> puanını hesaplar; Change <strong>incelemeye gönderilince</strong> ilgili
+    <strong>iş akışı</strong> başlar ve mimar (Architect) onayına düşer; onay sonrası Change <strong>Approved</strong> olur;
+    bir <strong>Release Plan</strong>'a alınır; <strong>Execution</strong> ile adım adım uygulanır; <strong>Validation</strong> ile
+    kanıtlar toplanır ve sonuç kabul edilir. Her adım, gerçek aktör adlarıyla <strong>denetim kaydına</strong> yazılır.
+  </div>
+</div>
+
+<!-- ============ 2. OBJECTIVES ============ -->
+<div class="sheet">
+  <h2><span class="num">2</span>Proje Hedefleri</h2>
+  <table>
+    <thead><tr><th style="width:34%">Hedef</th><th>Açıklama</th></tr></thead>
+    <tbody>
+      <tr><td>Tek doğruluk kaynağı (Single source of truth)</td><td>Tüm yönetişim verisi backend'te; frontend yalnızca görüntüler/işletir.</td></tr>
+      <tr><td>Kontrollü yaşam döngüsü</td><td>Durum geçişleri (status transitions) kurallarla korunur; keyfî atlamalar engellenir.</td></tr>
+      <tr><td>Rol tabanlı yetkilendirme (RBAC)</td><td>Her işlem, izin (permission) ve rol bazında backend'te zorlanır.</td></tr>
+      <tr><td>Tam izlenebilirlik</td><td>Append-only (yalnızca ekleme) denetim kayıtları ve birleşik zaman çizelgesi.</td></tr>
+      <tr><td>Yeniden kullanılabilir platform servisleri</td><td>Audit, Notification, Workflow, Documents, Integration her alan tarafından paylaşılır.</td></tr>
+      <tr><td>Modüler büyüme</td><td>Yeni alan, mevcut mimariyi bozmadan eklenebilir (modüler monolit).</td></tr>
+      <tr><td>Entegrasyona hazırlık</td><td>Sağlayıcı (provider) tabanlı Integration Hub ile dış sistemlere açık.</td></tr>
+      <tr><td>GxP / farmasötik hazırlık temeli</td><td>Kontrollü değişiklik, denetim ve iş akışı temeli kurulmuştur.</td></tr>
+      <tr><td>Gelecekteki yapay zekâ (AI) yetenekleri</td><td>Güvenilir veri + iş akışı üzerine inşa edilecek sonraki katman.</td></tr>
+    </tbody>
+  </table>
+  <div class="note">Mevcut çalışma <strong>teknik temeli</strong> kurmaktadır. <strong>Resmî regülasyon doğrulaması (GxP validasyonu)</strong>
+  ayrı ve sonraki bir fazdır; bu raporda tamamlanmış olarak sunulmaz.</div>
+</div>
+
+<!-- ============ 3. STACK ============ -->
+<div class="sheet page-break">
+  <h2><span class="num">3</span>Teknoloji Yığını (Technology Stack)</h2>
+  <p>Aşağıdaki teknolojiler depo incelenerek doğrulanmıştır (yalnızca fiilen mevcut olanlar listelenmiştir).</p>
+  <div class="two-col">
+    <div>
+      <h4>Backend</h4>
+      <ul>
+        <li>ASP.NET Core 8 (Web API)</li>
+        <li>Entity Framework Core (ORM / Unit-of-Work)</li>
+        <li>SQL Server 2022 (gerçek ilişkisel veritabanı)</li>
+        <li>JWT tabanlı kimlik doğrulama</li>
+        <li>ASP.NET Core Data Protection (sır/gizli anahtar koruması)</li>
+        <li><code>BackgroundService</code> tabanlı worker altyapısı</li>
+        <li>OpenTelemetry (izleme/metrik)</li>
+        <li>xUnit + <code>WebApplicationFactory</code> (entegrasyon testleri)</li>
+        <li>Swagger / OpenAPI (geliştirme ortamında)</li>
+        <li>ASP.NET Core Rate Limiting (hız sınırlama)</li>
+      </ul>
+    </div>
+    <div>
+      <h4>Frontend</h4>
+      <ul>
+        <li>Angular 22</li>
+        <li>Standalone bileşenler (components)</li>
+        <li>Signals (reaktif durum)</li>
+        <li>RxJS (akış/asenkron)</li>
+        <li>Fonksiyonel interceptor ve guard'lar</li>
+        <li>Transloco (i18n — TR/EN)</li>
+        <li>Vitest (birim testleri)</li>
+        <li>Mevcut kurumsal tasarım sistemi (design system)</li>
+      </ul>
+      <h4>Altyapı</h4>
+      <ul>
+        <li>Docker / Docker Compose</li>
+        <li>SQL Server container (<code>mcr.microsoft.com/mssql/server:2022</code>)</li>
+        <li>Yerel dosya depolama soyutlaması (<code>IFileStorage</code> / <code>LocalFileStorage</code>)</li>
+        <li>Gerçek SQL Server entegrasyon-test veritabanı</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- ============ 4. ARCHITECTURE ============ -->
+<div class="sheet">
+  <h2><span class="num">4</span>Mimari Yaklaşım</h2>
+  <p>GMS, <strong>modüler monolit (modular monolith)</strong> olarak tasarlanmıştır: tek bir dağıtılabilir uygulama içinde,
+  alan-odaklı (domain-oriented) modüller net sınırlarla ayrılır.</p>
+  <ul>
+    <li><strong>İnce controller'lar (thin controllers):</strong> HTTP uçları küçüktür; iş mantığı servis katmanındadır.</li>
+    <li><strong>Servislerde iş mantığı:</strong> Risk, hazırlık, iş akışı yürütmesi, entegrasyon dağıtımı gibi kurallar servislerde.</li>
+    <li><strong>EF Core kalıcılık/Unit-of-Work:</strong> Kayıtlar tek transaction içinde tutarlı yazılır.</li>
+    <li><strong>DTO sınırları:</strong> Dış dünyaya varlıklar (entities) değil, DTO'lar döner.</li>
+    <li><strong>Backend sistem-kaydı (system of record):</strong> Doğruluk kaynağı backend'tir.</li>
+    <li><strong>JWT + izin tabanlı RBAC:</strong> Yetkilendirme policy'lerle backend'te zorlanır.</li>
+    <li><strong>İyimser eşzamanlılık (optimistic concurrency):</strong> <code>RowVersion</code> ile kayıp güncelleme (lost update) tespiti (409).</li>
+    <li><strong>Korumalı durum geçişleri:</strong> Geçersiz durum atlamaları engellenir.</li>
+    <li><strong>Append-only denetim:</strong> Denetim kayıtları eklenir, değiştirilmez.</li>
+    <li><strong>Merkezî bildirim, sürümlü iş akışı motoru, sağlayıcı tabanlı entegrasyon, arka plan worker'ları + outbox'a hazır işleme.</strong></li>
+  </ul>
+
+  <h3>Neden Mikroservis / Kafka / CQRS / Event Sourcing Kullanılmadı?</h3>
+  <p>Bu aşamada ürün, <strong>tek ekip tarafından hızlı ve güvenilir biçimde</strong> geliştirilmekte ve doğrulanmaktadır.
+  Mikroservisler, Kafka gibi mesaj kuyrukları, CQRS framework'leri ve Event Sourcing; operasyonel karmaşıklık, dağıtık
+  transaction ve gözlemlenebilirlik maliyeti getirir. Mevcut ölçekte bunlar <strong>erken optimizasyon</strong> olurdu.
+  Bunun yerine mimari <strong>kasıtlı olarak pragmatik ve genişletilebilir</strong> tutuldu: entegrasyon ve bildirim kayıtları
+  <em>outbox'a hazır</em> tasarlandı; ilerleyen fazlarda gerçek bir mesaj altyapısına veya servis ayrıştırmasına geçiş,
+  mevcut sınırlar korunarak yapılabilir.</p>
+
+  <div class="diagram">
+    <div class="lane-title" style="margin-top:0">Şekil 1 — GMS Modül Mimarisi</div>
+    <div class="lane-title">Çekirdek Yaşam Döngüsü Modülleri</div>
+    <div class="modgrid">
+      <div class="cell core"><b>Change</b><small>Değişiklik</small></div>
+      <div class="cell core"><b>Workflow</b><small>İş Akışı</small></div>
+      <div class="cell core"><b>Release</b><small>Yayın</small></div>
+      <div class="cell core"><b>Execution</b><small>Yürütme</small></div>
+    </div>
+    <div class="modgrid" style="margin-top:8px; grid-template-columns: repeat(2,1fr); max-width:50%;">
+      <div class="cell core"><b>Validation</b><small>Doğrulama</small></div>
+      <div class="cell core"><b>Approval</b><small>Geçmiş Onay Kayıtları</small></div>
+    </div>
+    <div class="lane-title">Paylaşılan Platform Servisleri</div>
+    <div class="modgrid">
+      <div class="cell shared"><b>Identity / RBAC</b><small>Kimlik & Yetki</small></div>
+      <div class="cell shared"><b>Documents</b><small>Doküman</small></div>
+      <div class="cell shared"><b>Notifications</b><small>Bildirim</small></div>
+      <div class="cell shared"><b>Unified Audit</b><small>Denetim</small></div>
+      <div class="cell shared"><b>Reporting</b><small>Raporlama</small></div>
+      <div class="cell shared"><b>Integration Hub</b><small>Entegrasyon</small></div>
+      <div class="cell shared"><b>Background/Workers</b><small>Arka Plan</small></div>
+      <div class="cell shared"><b>Observability</b><small>Gözlemlenebilirlik</small></div>
+    </div>
+    <div class="cap">Tüm çekirdek modüller, alttaki paylaşılan platform servislerini yeniden kullanır.</div>
+  </div>
+</div>
+
+<!-- ============ 5. BACKEND DOMAINS ============ -->
+<div class="sheet page-break">
+  <h2><span class="num">5</span>Tamamlanan Backend Alanları (Domains)</h2>
+  <p>Aşağıdaki alanların tümü backend'te tamamlanmış ve gerçek SQL Server üzerinde otomatik testlerle doğrulanmıştır.
+  Frontend entegrasyon durumu ayrıca <strong>Bölüm 6 ve 13</strong>'te belirtilir.</p>
+
+  <h3>5.1 Change Management <span class="badge b-ok">Backend + Frontend Entegre</span></h3>
+  <p><strong>Amaç:</strong> Değişiklik taleplerinin kontrollü yönetimi. <strong>Ana varlıklar:</strong> ChangeRequest, ChangeRevision,
+  ChangeAffectedAsset, ChangeDocument, ChangeAuditEvent. <strong>Yaşam döngüsü:</strong> Draft → Submitted → UnderReview → Approved →
+  Scheduled → Implemented (ve Cancelled). <strong>İş kuralları:</strong> risk ve hazırlık (readiness) backend'te hesaplanır; kritik
+  hazırlık bulgusu olan bir değişiklik gönderilemez; revizyon numarası artar; durum geçişleri korunur. <strong>API:</strong> list/detail/create/update/submit/cancel/revisions/audit.
+  <strong>Entegrasyon:</strong> submit anında Workflow Engine tetiklenir. <strong>Durum:</strong> uçtan uca doğrulandı.</p>
+
+  <h3>5.2 Approval Management <span class="badge b-info">Geçmiş Kayıt (okunur)</span></h3>
+  <p><strong>Amaç:</strong> Onay kararları ve imza anlamı (signature meaning) kayıtları. Başlangıçta onay orkestrasyonu ApprovalService
+  ile yapılıyordu; <strong>Workflow Stratejisi A</strong> benimsendikten sonra yeni Change gönderimlerinin orkestrasyon sahipliği
+  <strong>Workflow Engine'e</strong> devredildi. Mevcut ApprovalRequest kayıtları <strong>okunabilir</strong> kalır (geçmiş).
+  Böylece <strong>iki rakip aktif onay motoru bulunmaz</strong>; yeni onaylar iş akışı görevidir.</p>
+
+  <h3>5.3 Release Planning <span class="badge b-info">Backend Hazır / Frontend Bekliyor</span></h3>
+  <p><strong>Varlıklar:</strong> ReleasePlan ve bağlı değişiklikler. <strong>Kurallar:</strong> yalnızca <em>Approved</em> değişiklikler;
+  aynı müşteri/proje/ortam kısıtı; risk hesabı; planlama ve iptal; Change durum entegrasyonu (Scheduled). <strong>Durum:</strong>
+  backend tamam, gerçek DB testli; frontend mock.</p>
+
+  <h3>5.4 Execution / Deployment <span class="badge b-info">Backend Hazır / Frontend Bekliyor</span></h3>
+  <p><strong>Varlıklar:</strong> DeploymentRun ve sıralı DeploymentStep'ler. <strong>Yetenekler:</strong> adım sırası, başarı/başarısızlık,
+  geri alma (rollback), Release ve Change durum entegrasyonu. <strong>Durum:</strong> backend tamam; frontend mock.</p>
+
+  <h3>5.5 Validation <span class="badge b-info">Backend Hazır / Frontend Bekliyor</span></h3>
+  <p><strong>Varlıklar:</strong> ValidationRun, kontroller (checks), kanıt (evidence) metası. <strong>Kurallar:</strong> geç/başarısız (pass/fail),
+  Release kabulü; <strong>doğrulama başarısızlığında otomatik rollback yapılmaz</strong> (bilinçli karar). <strong>Durum:</strong> backend tamam; frontend mock.</p>
+
+  <h3>5.6 Identity, Authentication & RBAC <span class="badge b-ok">Backend + Frontend Entegre</span></h3>
+  <p><strong>Yetenekler:</strong> gerçek e-posta/parola girişi, parola hash'leme, JWT access token, refresh-token rotasyonu, hesap kilitleme
+  (lockout), roller, izinler, <code>ICurrentUser</code>, backend yetkilendirme zorlaması, güvenlik denetimi, hız sınırlama.
+  <strong>Durum:</strong> backend + frontend tam entegre; uçtan uca doğrulandı.</p>
+
+  <h3>5.7 Document Management <span class="badge b-info">Backend Hazır / Frontend Bekliyor</span></h3>
+  <p><strong>Yetenekler:</strong> paylaşılan doküman sistemi, sürümleme, SHA-256 bütünlük, indirme doğrulaması, soft delete (yumuşak silme),
+  alan nesnelerine bağlama, depolama soyutlaması (<code>IFileStorage</code>) + <code>LocalFileStorage</code>.
+  <strong>Sınırlamalar:</strong> antivirüs/bulut depolama entegrasyonu henüz yok. <strong>Durum:</strong> backend tamam; frontend mock.</p>
+
+  <h3>5.8 Notification Engine <span class="badge b-info">Backend Hazır / Frontend Bekliyor</span></h3>
+  <p><strong>Yetenekler:</strong> uygulama-içi (in-app) + e-posta teslim modeli, şablonlar, kullanıcı tercihleri, rol/kullanıcı/broadcast bildirimleri,
+  okundu/arşiv, arka plan e-posta teslimi, geliştirmede dummy sağlayıcı. <strong>Durum:</strong> backend tamam; frontend mock.</p>
+
+  <h3>5.9 Unified Audit & Reporting <span class="badge b-info">Backend Hazır / Frontend Bekliyor</span></h3>
+  <p><strong>Yetenekler:</strong> alan denetim tabloları yetkilidir; birleşik okuma görünümü (SQL view) / birleşik zaman çizelgesi;
+  operasyonel raporlar; CSV dışa aktarım + CSV injection koruması; izinle korunan güvenlik raporlaması. <strong>Durum:</strong> backend tamam; frontend mock.</p>
+
+  <h3>5.10 Workflow Engine <span class="badge b-ok">Backend + Görev UI Entegre</span></h3>
+  <p><strong>Yetenekler:</strong> sürümlü tanımlar, yayımlanmış sürümlerin değişmezliği (immutable), örnekler (instances), rol/kullanıcı ataması,
+  koşullar (conditions), duraklat/sürdür/iptal, bildirimler, Change entegrasyonu; Standard/Normal/Emergency tohumlanmış (seeded) iş akışları.
+  Workflow, <strong>güncel Change orkestrasyon kaynağıdır</strong>. <strong>Durum:</strong> backend tamam; "İş Akışı Görevleri" (Görevlerim)
+  ve örnek/görev detayı frontend'e entegre ve uçtan uca doğrulandı; iş akışı tasarımcısı (designer) ekranı hâlâ mock.</p>
+
+  <h3>5.11 Integration Hub <span class="badge b-info">Backend Hazır / Frontend Bekliyor</span></h3>
+  <p><strong>Yetenekler:</strong> sağlayıcı/adaptör mimarisi, Generic REST, gelen/giden webhook, Jira/Azure DevOps sandbox sağlayıcıları,
+  sır şifreleme (secret encryption), retry/dead-letter, dış nesne bağları (external object links), SSRF/webhook güvenliği,
+  outbox'a hazır <code>IntegrationExecution</code> kaydı. <strong>Durum:</strong> backend tamam; frontend bağlanmadı.</p>
+
+  <h3>5.12 Background Processing & Observability <span class="badge b-info">Backend Hazır / Frontend Bekliyor</span></h3>
+  <p><strong>Worker'lar:</strong> IntegrationDispatchWorker, NotificationDeliveryWorker, WorkflowSlaWorker, OperationalCleanupWorker
+  (ortak <code>BackgroundWorkerBase</code>); WorkerHeartbeat, retry/backoff. <strong>Gözlemlenebilirlik:</strong> Correlation ID,
+  yapılandırılmış loglama (structured logging), OpenTelemetry, sağlık uçları (<code>/health/live</code>, <code>/health/ready</code>),
+  operasyonel durum ucu. <strong>Durum:</strong> backend tamam; operasyon paneli frontend'e bağlanmadı.</p>
+</div>
+
+<!-- ============ 6. FRONTEND ============ -->
+<div class="sheet page-break">
+  <h2><span class="num">6</span>Frontend Durumu</h2>
+  <p>Frontend durumu, backend durumundan <strong>net biçimde ayrılmalıdır</strong>. Aşağıdaki tablo deponun güncel hâlini yansıtır.</p>
+
+  <h3>Tamamlanan (gerçek backend'e bağlı, doğrulanmış)</h3>
+  <div class="two-col">
+    <ul>
+      <li>Gerçek giriş (login), JWT, refresh rotasyonu</li>
+      <li>Oturum geri yükleme (session restoration)</li>
+      <li>Auth durumu (signal tabanlı)</li>
+      <li>İzin/rol guard'ları + <code>*gmsHasPermission</code> direktifleri</li>
+      <li>Logout / logout-all, parola değiştirme</li>
+    </ul>
+    <ul>
+      <li>401/403 yönetimi (403 oturumu düşürmez)</li>
+      <li>Normalize API hata modeli (<code>ApiError</code>)</li>
+      <li>Merkezî API URL (<code>API_BASE_URL</code>)</li>
+      <li><strong>Change modülü</strong> (liste/detay/sihirbaz) — gerçek API</li>
+      <li><strong>Workflow Görevleri</strong> (Görevlerim + örnek/görev detayı) — gerçek API</li>
+    </ul>
+  </div>
+  <div class="note">Angular <strong>production derlemesi 0 hata / 0 uyarı</strong>; <strong>42 birim testi</strong> yeşildir. Change ve
+  Workflow lifecycle (oluştur → gönder → onay → Approved) gerçek backend'e karşı tarayıcı ile uçtan uca doğrulanmıştır.</div>
+
+  <h3>Hâlâ mock/localStorage veya henüz tam entegre değil</h3>
+  <table>
+    <thead><tr><th>Modül</th><th class="center">Frontend Durumu</th></tr></thead>
+    <tbody>
+      <tr><td>Release Planning</td><td class="center"><span class="badge b-plan">Mock / entegre değil</span></td></tr>
+      <tr><td>Execution</td><td class="center"><span class="badge b-plan">Mock / entegre değil</span></td></tr>
+      <tr><td>Validation</td><td class="center"><span class="badge b-plan">Mock / entegre değil</span></td></tr>
+      <tr><td>Documents</td><td class="center"><span class="badge b-plan">Mock / entegre değil</span></td></tr>
+      <tr><td>Notifications</td><td class="center"><span class="badge b-plan">Mock / entegre değil</span></td></tr>
+      <tr><td>Audit / Reports</td><td class="center"><span class="badge b-plan">Mock / entegre değil</span></td></tr>
+      <tr><td>Integrations</td><td class="center"><span class="badge b-plan">Mock / entegre değil</span></td></tr>
+      <tr><td>Operations (operasyon paneli)</td><td class="center"><span class="badge b-plan">Mock / entegre değil</span></td></tr>
+      <tr><td>Workflow Designer (tanım tasarımcısı)</td><td class="center"><span class="badge b-plan">Mock / entegre değil</span></td></tr>
+      <tr><td>Approval sayfası</td><td class="center"><span class="badge b-warn">Mock — "Geçmiş Kayıt" etiketli</span></td></tr>
+    </tbody>
+  </table>
+  <p><small>Not: Release ve Reports ekranları hâlâ eski bir mock <code>ChangeService</code>'ten beslenmektedir; bu, ilgili modüller
+  taşınana kadar kalan bilinçli bir geçiş durumudur. Change/Workflow ekranları bu mock'a bağlı değildir.</small></p>
+  <p>Frontend modülleri, <strong>riskli bir topyekûn yeniden yazımdan (big-bang rewrite) kaçınmak için kademeli (incremental)</strong>
+  olarak gerçek API'ye taşınmaktadır. Paylaşılan temel (auth, interceptor'lar, <code>ApiError</code>, <code>PagedResult</code>,
+  guard/direktifler) hazır olduğundan her modül düşük riskle bağlanabilmektedir.</p>
+</div>
+
+<!-- ============ 7. END-TO-END ============ -->
+<div class="sheet">
+  <h2><span class="num">7</span>Uçtan Uca İş Akışı</h2>
+  <div class="diagram">
+    <div class="lane-title" style="margin-top:0">Şekil 2 — Uçtan Uca Yaşam Döngüsü</div>
+    <div class="flow">
+      <div class="node">Change Request<small>Talep</small></div>
+      <div class="arrow">→</div>
+      <div class="node">Readiness &amp; Risk<small>Hazırlık/Risk</small></div>
+      <div class="arrow">→</div>
+      <div class="node">Workflow Approval<small>İş Akışı Onayı</small></div>
+      <div class="arrow">→</div>
+      <div class="node">Release Planning<small>Yayın Planı</small></div>
+      <div class="arrow">→</div>
+      <div class="node">Execution<small>Yürütme</small></div>
+      <div class="arrow">→</div>
+      <div class="node">Validation<small>Doğrulama</small></div>
+      <div class="arrow">→</div>
+      <div class="node" style="background:var(--ok)">Accepted<small>Kabul</small></div>
+    </div>
+    <div class="cap">Backend'te uçtan uca desteklenir. Change→Workflow→Approved kısmı frontend'te de doğrulanmıştır.</div>
+  </div>
+
+  <h3>Roller</h3>
+  <table>
+    <thead><tr><th style="width:22%">Rol</th><th>Sorumluluk</th></tr></thead>
+    <tbody>
+      <tr><td>Requester</td><td>Değişiklik talebi oluşturur, revizyonlar, incelemeye gönderir.</td></tr>
+      <tr><td>Architect</td><td>İş akışında mimari onay adımını yürütür (onay/ret).</td></tr>
+      <tr><td>QA</td><td>Kalite/doğrulama adımlarını değerlendirir.</td></tr>
+      <tr><td>Release Manager</td><td>Yayın planlar, yüksek riskli akışlarda onay verir.</td></tr>
+      <tr><td>Executor</td><td>Onaylı değişikliği hedef ortamda uygular.</td></tr>
+      <tr><td>Validator</td><td>Uygulama sonrası kontrol ve kanıtları toplar.</td></tr>
+      <tr><td>Auditor</td><td>Denetim izlerini ve raporları inceler.</td></tr>
+      <tr><td>Admin</td><td>Kullanıcı/rol/izin yönetimi ve operasyonel kontrol.</td></tr>
+    </tbody>
+  </table>
+
+  <div class="note">
+    <strong>Pratik Senaryo (doğrulanmış).</strong> Requester "E2E Standart Değişiklik" oluşturdu → backend risk/hazırlık hesapladı →
+    incelemeye gönderildi (<em>UnderReview</em>) → "Standart Değişiklik Akışı" başladı ve <em>Mimari Onayı</em> Architect'e düştü →
+    Architect "Görevlerim"den görevi tamamladı → iş akışı tamamlandı → Change durumu <strong>Approved</strong> oldu → denetim zaman
+    çizelgesi "Requester User" ve "Architect User" gerçek adlarını gösterdi.
+  </div>
+</div>
+
+<!-- ============ 8. SHARED ============ -->
+<div class="sheet page-break">
+  <h2><span class="num">8</span>Paylaşılan Platform Yetenekleri</h2>
+  <p>GMS, tek amaçlı bir ekran seti değil; <strong>genişletilebilir bir platform</strong> olarak tasarlanmıştır. Aşağıdaki yetenekler
+  her alan tarafından yeniden kullanılır:</p>
+  <table>
+    <thead><tr><th style="width:26%">Yetenek</th><th>Yeniden Kullanım</th></tr></thead>
+    <tbody>
+      <tr><td>Authentication / Authorization</td><td>Tüm uçlar JWT + izin policy'leriyle korunur.</td></tr>
+      <tr><td>Current-user kimliği (<code>ICurrentUser</code>)</td><td>Aktör her yerde JWT'den çözülür; istemciden gönderilmez.</td></tr>
+      <tr><td>Durum geçişleri</td><td>Change, Release, Workflow, Execution ortak korumalı geçiş desenini kullanır.</td></tr>
+      <tr><td>Eşzamanlılık (RowVersion)</td><td>Kritik varlıklarda kayıp güncelleme koruması.</td></tr>
+      <tr><td>Numara üretimi</td><td><code>SequentialNumberGenerator</code> ile CHG/REL/WFI numaraları.</td></tr>
+      <tr><td>Audit (<code>AuditFactory</code>)</td><td>Tüm alanlar append-only denetim olayı üretir.</td></tr>
+      <tr><td>Notification</td><td>İş akışı/onay olayları merkezî bildirim motorunu kullanır.</td></tr>
+      <tr><td>Documents</td><td>Paylaşılan doküman + hash + depolama soyutlaması.</td></tr>
+      <tr><td>Workflow</td><td>Change orkestrasyonu ve gelecekte diğer nesneler için ortak motor.</td></tr>
+      <tr><td>Integration Hub</td><td>Dış sistem bağlantıları için sağlayıcı tabanlı ortak katman.</td></tr>
+      <tr><td>Background workers</td><td>Asenkron teslim, SLA hatırlatma, dağıtım — ortak worker temeli.</td></tr>
+      <tr><td>Reporting</td><td>Birleşik denetim görünümü üzerinden ortak raporlama.</td></tr>
+      <tr><td>Observability</td><td>Correlation ID + structured logging + OpenTelemetry her istekte.</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- ============ 9. DATABASE ============ -->
+<div class="sheet">
+  <h2><span class="num">9</span>Veritabanı ve Veri Bütünlüğü</h2>
+  <ul>
+    <li><strong>SQL Server gerçek kalıcılık katmanıdır</strong> (Docker container, 2022). EF Core InMemory ilişkisel entegrasyon testlerinde kullanılmaz.</li>
+    <li><strong>Göçler (migrations):</strong> 17 adet sıralı migration ile şema sürümlenir (bkz. Teknik Kanıtlar).</li>
+    <li><strong>Yabancı anahtarlar (foreign keys)</strong> ve <strong>benzersiz indeksler (unique indexes)</strong> ile ilişkisel bütünlük.</li>
+    <li><strong>Restrict/Cascade kararları</strong> ilişki türüne göre bilinçli seçilmiştir (örn. denetim/geçmiş kayıtları korunur).</li>
+    <li><strong>RowVersion eşzamanlılık</strong> jetonları kritik varlıklarda (Change, Workflow örneği vb.) mevcuttur.</li>
+    <li><strong>Append-only / değişmez denetim niyeti:</strong> denetim kayıtları güncellenmez, yalnızca eklenir.</li>
+    <li><strong>Sürümlü kayıtlar:</strong> iş akışı tanımları yayımlandığında değişmez (immutable) hâle gelir.</li>
+    <li><strong>Backend domain kalıcılığı için localStorage kullanılmaz;</strong> istemci yalnızca oturum/taslak/tercih saklar.</li>
+  </ul>
+  <div class="note">Bağlantı dizeleri (connection strings) ve kimlik bilgileri bu raporda paylaşılmaz; ortam değişkenleri/gizli anahtarlar ile yönetilir.</div>
+</div>
+
+<!-- ============ 10. SECURITY ============ -->
+<div class="sheet page-break">
+  <h2><span class="num">10</span>Güvenlik Kontrolleri</h2>
+  <h3>Doğrulanmış Kontroller</h3>
+  <div class="two-col">
+    <ul>
+      <li>Parola hash'leme</li>
+      <li>JWT doğrulama</li>
+      <li>Refresh-token rotasyonu</li>
+      <li>Hesap kilitleme (lockout)</li>
+      <li>İzin policy'leri + rol zorlaması</li>
+      <li>Nesne/atama düzeyinde zorlama (ör. iş akışı görev ataması)</li>
+      <li>Sır şifreleme (secret encryption)</li>
+    </ul>
+    <ul>
+      <li>HMAC webhook doğrulaması</li>
+      <li>Hız sınırlama (rate limiting)</li>
+      <li>SSRF kontrolleri (giden isteklerde)</li>
+      <li>Parola/token/sır loglanmaz</li>
+      <li>CSV injection koruması</li>
+      <li>Doküman hash (SHA-256) doğrulaması</li>
+      <li>Correlation ID izlenebilirliği</li>
+    </ul>
+  </div>
+  <h3>Bilinen Üretim-Güvenliği Görevleri (henüz yapılmadı)</h3>
+  <ul>
+    <li>Üretim gizli anahtar yönetimi (secrets)</li>
+    <li>HTTPS zorlaması (uçtan uca)</li>
+    <li>Kalıcı Data Protection anahtarları (çok düğümlü)</li>
+    <li>httpOnly refresh çerezleri (şu an refresh token sessionStorage'da)</li>
+    <li>Çok faktörlü kimlik doğrulama (MFA)</li>
+    <li>Parola sıfırlama / e-posta doğrulama</li>
+    <li>Antivirüs / dosya içerik (magic-byte) taraması</li>
+  </ul>
+</div>
+
+<!-- ============ 11. TESTS ============ -->
+<div class="sheet">
+  <h2><span class="num">11</span>Test ve Kalite Sonuçları</h2>
+  <p>Aşağıdaki sayılar depodan doğrulanmıştır (güncel).</p>
+  <table>
+    <thead><tr><th>Alan</th><th>Doğrulama Yöntemi</th><th class="center">Sonuç</th></tr></thead>
+    <tbody>
+      <tr><td>Backend derleme</td><td>dotnet build</td><td class="center"><span class="badge b-ok">0 hata / 0 uyarı*</span></td></tr>
+      <tr><td>Backend otomatik testler</td><td>xUnit + WebApplicationFactory (gerçek SQL Server)</td><td class="center"><span class="badge b-ok">105 test</span></td></tr>
+      <tr><td>Frontend derleme (production)</td><td>ng build --configuration production</td><td class="center"><span class="badge b-ok">0 hata / 0 uyarı</span></td></tr>
+      <tr><td>Frontend otomatik testler</td><td>Vitest (4 spec dosyası)</td><td class="center"><span class="badge b-ok">42 test</span></td></tr>
+      <tr><td>Gerçek SQL Server uçtan uca senaryolar</td><td>Entegrasyon testleri + manuel/tarayıcı E2E</td><td class="center"><span class="badge b-ok">Başarılı</span></td></tr>
+      <tr><td>Arka plan worker testleri</td><td>xUnit (BackgroundProcessingTests)</td><td class="center"><span class="badge b-ok">Kapsandı</span></td></tr>
+      <tr><td>Entegrasyon mock sunucu testleri</td><td>xUnit (IntegrationTests)</td><td class="center"><span class="badge b-ok">Kapsandı</span></td></tr>
+    </tbody>
+  </table>
+  <p><small>*Backend derleme sonucu, önceki doğrulanmış çalıştırmalara dayanır; bu rapor sırasında backend çalışır durumda olduğundan
+  yeniden derleme yapılmamıştır (çalışan süreç dosya kilidi). Test sayısı 105, kaynak koddaki <code>[Fact]/[Theory]</code> sayımıyla doğrulanmıştır.</small></p>
+  <ul>
+    <li><strong>İzole SQL Server test veritabanı:</strong> testler gerçek ilişkisel davranışı doğrular; EF InMemory kullanılmaz.</li>
+    <li><strong>Tarayıcı/manuel frontend E2E:</strong> auth ve Change→Workflow lifecycle gerçek backend'e karşı doğrulandı.</li>
+    <li><strong>Regresyon koruması:</strong> her sprintte mevcut testler yeşil tutuldu (auth 16 + Change/Workflow 26 = 42).</li>
+    <li><strong>Temiz derlemeler:</strong> TypeScript strictness zayıflatılmadı.</li>
+  </ul>
+</div>
+
+<!-- ============ 12. TECH PROBLEMS ============ -->
+<div class="sheet page-break">
+  <h2><span class="num">12</span>Çözülen Önemli Teknik Problemler</h2>
+  <p>Aşağıdaki olaylar, mühendislik açısından öğretici örneklerdir (Problem / Kök neden / Çözüm / Öğrenim).</p>
+
+  <h4>12.1 EF Guid PK ve eşzamanlılık jetonu (ValueGeneratedNever)</h4>
+  <p><strong>Problem:</strong> İstemci tarafından üretilen GUID birincil anahtarların (PK) EF tarafından "veritabanı üretiyor"
+  varsayılması. <strong>Kök neden:</strong> varsayılan <code>ValueGeneratedOnAdd</code> davranışı. <strong>Çözüm:</strong>
+  <code>ValueGeneratedNever</code> ile istemci-üretimi GUID + <code>RowVersion</code> eşzamanlılık jetonları netleştirildi.
+  <strong>Öğrenim:</strong> ORM varsayılanları, kimlik ve eşzamanlılık stratejisiyle uyumlu olmalıdır.</p>
+
+  <h4>12.2 Risk hesabında eksik ortam navigasyonu (navigation)</h4>
+  <p><strong>Problem:</strong> Risk hesaplanırken ortam (Environment) ağırlığının hesaba katılamaması. <strong>Kök neden:</strong>
+  ilgili navigation property yüklenmeden risk servisine gidilmesi. <strong>Çözüm:</strong> ortam, risk hesabından önce açıkça yüklendi.
+  <strong>Öğrenim:</strong> hesaplamalar, bağımlı verinin yüklendiğini garanti etmelidir.</p>
+
+  <h4>12.3 RowVersion çakışma (409) yönetimi</h4>
+  <p><strong>Problem:</strong> Aynı kaydın iki kullanıcı tarafından güncellenmesi. <strong>Çözüm:</strong> istemci yüklediği
+  <code>RowVersion</code>'ı geri gönderir; uyuşmazlık 409'a dönüşür; frontend "Güncel veriyi yükle" seçeneği sunar (sessiz üzerine yazma yok).
+  <strong>Öğrenim:</strong> iyimser eşzamanlılık hem backend hem UX'te ele alınmalıdır.</p>
+
+  <h4>12.4 Broadcast bildirimde numara çakışması</h4>
+  <p><strong>Problem:</strong> Toplu bildirim üretiminde ardışık numara çakışmaları. <strong>Çözüm:</strong> numara üretimi ve
+  ekleme sırası çakışmayı önleyecek şekilde düzenlendi. <strong>Öğrenim:</strong> toplu üretimde benzersizlik garantileri kritik.</p>
+
+  <h4>12.5 SQL raporlamada AVG/alt-sorgu hatası ve CSV BOM sorunu</h4>
+  <p><strong>Problem:</strong> Rapor sorgusunda AVG/alt-sorgu çevirisi ve CSV'de Türkçe karakter/BOM. <strong>Çözüm:</strong> sorgu
+  yeniden yazıldı; CSV çıktısına doğru kodlama/BOM ve injection koruması eklendi. <strong>Öğrenim:</strong> raporlama, hem SQL
+  çevirisi hem çıktı güvenliği/kodlaması açısından test edilmelidir.</p>
+
+  <h4>12.6 İş akışında çift-orkestrasyon kararı (Workflow Strategy A)</h4>
+  <p><strong>Problem:</strong> Hem ApprovalService hem Workflow Engine'in yeni Change onaylarını yönetme riski. <strong>Çözüm:</strong>
+  yeni gönderimlerde tek orkestratör olarak Workflow Engine seçildi; Approval kayıtları geçmiş olarak okunur kaldı. <strong>Öğrenim:</strong>
+  iki rakip "doğruluk kaynağı" mimari olarak netleştirilmelidir.</p>
+
+  <h4>12.7 WebApplicationFactory yapılandırması / test veritabanı</h4>
+  <p><strong>Problem:</strong> Entegrasyon testlerinin gerçek SQL Server'a karşı yalıtılmış çalışması. <strong>Çözüm:</strong>
+  <code>WebApplicationFactory</code> yapılandırması ve izole test veritabanı ile deterministik testler. <strong>Öğrenim:</strong>
+  gerçek ilişkisel davranış, InMemory ile değil gerçek motorla doğrulanmalı.</p>
+
+  <h4>12.8 Arka plan worker lease / idempotency</h4>
+  <p><strong>Problem:</strong> Aynı işin iki worker tarafından işlenmesi. <strong>Çözüm:</strong> lease (kilit) + RowVersion + terminal
+  durum kontrolü + backoff ile çift işleme engellendi (outbox deseni). <strong>Öğrenim:</strong> asenkron işleme idempotent olmalıdır.</p>
+
+  <h4>12.9 Eşzamanlı 401'lerde tek-uçuş (single-flight) refresh</h4>
+  <p><strong>Problem:</strong> Birden çok isteğin aynı anda 401 alıp çoklu refresh tetiklemesi. <strong>Çözüm:</strong> frontend'te
+  <code>refreshInFlight</code> + <code>shareReplay(1)</code> ile tek refresh paylaşıldı. <strong>Öğrenim:</strong> token yenileme
+  yarış koşullarına (race conditions) karşı koordine edilmelidir.</p>
+
+  <h4>12.10 Angular baseline derleme hataları ve eksik i18n scope'ları</h4>
+  <p><strong>Problem:</strong> Yarım kalmış i18n refactor'ından kaynaklı derleme hataları ve eksik <code>changes</code> scope'u
+  (ham anahtarların görünmesi). <strong>Çözüm:</strong> hatalar giderildi, eksik çeviri scope'ları oluşturuldu; bir bileşende eksik
+  <code>workflows</code> scope'u E2E sırasında yakalanıp eklendi. <strong>Öğrenim:</strong> i18n kapsamı bileşen düzeyinde doğrulanmalı;
+  E2E gerçek boşlukları ortaya çıkarır.</p>
+</div>
+
+<!-- ============ 13. STATUS TABLE ============ -->
+<div class="sheet page-break">
+  <h2><span class="num">13</span>Güncel Proje Durumu</h2>
+  <table>
+    <thead>
+      <tr><th>Bileşen</th><th class="center">Backend</th><th class="center">Frontend</th><th class="center">Otomatik Test</th><th class="center">Gerçek DB</th><th class="center">Genel Durum</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>Identity / RBAC</td><td class="center">✔</td><td class="center">✔</td><td class="center">✔</td><td class="center">✔</td><td class="center"><span class="badge b-ok">Tamamlandı</span></td></tr>
+      <tr><td>Change</td><td class="center">✔</td><td class="center">✔</td><td class="center">✔</td><td class="center">✔</td><td class="center"><span class="badge b-ok">Tamamlandı</span></td></tr>
+      <tr><td>Workflow (görev/örnek)</td><td class="center">✔</td><td class="center">✔</td><td class="center">✔</td><td class="center">✔</td><td class="center"><span class="badge b-ok">Tamamlandı</span></td></tr>
+      <tr><td>Workflow Designer (tanım)</td><td class="center">✔</td><td class="center">✖ (mock)</td><td class="center">✔</td><td class="center">✔</td><td class="center"><span class="badge b-info">Backend / FE bekliyor</span></td></tr>
+      <tr><td>Release</td><td class="center">✔</td><td class="center">✖ (mock)</td><td class="center">✔</td><td class="center">✔</td><td class="center"><span class="badge b-info">Backend / FE bekliyor</span></td></tr>
+      <tr><td>Execution</td><td class="center">✔</td><td class="center">✖ (mock)</td><td class="center">✔</td><td class="center">✔</td><td class="center"><span class="badge b-info">Backend / FE bekliyor</span></td></tr>
+      <tr><td>Validation</td><td class="center">✔</td><td class="center">✖ (mock)</td><td class="center">✔</td><td class="center">✔</td><td class="center"><span class="badge b-info">Backend / FE bekliyor</span></td></tr>
+      <tr><td>Documents</td><td class="center">✔</td><td class="center">✖ (mock)</td><td class="center">✔</td><td class="center">✔</td><td class="center"><span class="badge b-info">Backend / FE bekliyor</span></td></tr>
+      <tr><td>Notifications</td><td class="center">✔</td><td class="center">✖ (mock)</td><td class="center">✔</td><td class="center">✔</td><td class="center"><span class="badge b-info">Backend / FE bekliyor</span></td></tr>
+      <tr><td>Audit / Reports</td><td class="center">✔</td><td class="center">✖ (mock)</td><td class="center">✔</td><td class="center">✔</td><td class="center"><span class="badge b-info">Backend / FE bekliyor</span></td></tr>
+      <tr><td>Approval (geçmiş)</td><td class="center">✔</td><td class="center">✖ (mock)</td><td class="center">✔</td><td class="center">✔</td><td class="center"><span class="badge b-warn">Kısmi (geçmiş kayıt)</span></td></tr>
+      <tr><td>Integration Hub</td><td class="center">✔</td><td class="center">✖</td><td class="center">✔</td><td class="center">✔</td><td class="center"><span class="badge b-info">Backend / FE bekliyor</span></td></tr>
+      <tr><td>Background Processing</td><td class="center">✔</td><td class="center">✖</td><td class="center">✔</td><td class="center">✔</td><td class="center"><span class="badge b-info">Backend / FE bekliyor</span></td></tr>
+      <tr><td>Observability</td><td class="center">✔</td><td class="center">n/a</td><td class="center">✔</td><td class="center">✔</td><td class="center"><span class="badge b-ok">Tamamlandı (altyapı)</span></td></tr>
+    </tbody>
+  </table>
+  <div class="legend">
+    <span><span class="swatch" style="background:var(--ok)"></span> Tamamlandı</span>
+    <span><span class="swatch" style="background:var(--info)"></span> Backend tamam / Frontend bekliyor</span>
+    <span><span class="swatch" style="background:var(--warn)"></span> Kısmi</span>
+    <span><span class="swatch" style="background:var(--plan)"></span> Planlandı</span>
+    <span>✔ mevcut &nbsp; ✖ yok/mock</span>
+  </div>
+</div>
+
+<!-- ============ 14. ROADMAP ============ -->
+<div class="sheet page-break">
+  <h2><span class="num">14</span>Sonraki Geliştirme Planı (Yol Haritası)</h2>
+  <div class="diagram">
+    <div class="lane-title" style="margin-top:0">Şekil 3 — Fazlı Yol Haritası</div>
+    <div class="phasebar">
+      <div class="phase p1"><div class="plabel">FAZ 1<br>Aktif</div><div class="pbody"><strong>Angular gerçek API entegrasyonu:</strong> (1) Change + Workflow Görevleri <span class="badge b-ok">tamam</span>, (2) Release Planning, (3) Execution + Validation, (4) Documents + Notifications, (5) Audit + Reports, (6) Integration + Operations, (7) Tam frontend E2E ve UX sertleştirme.</div></div>
+      <div class="phase p2"><div class="plabel">FAZ 2<br>Üretim</div><div class="pbody"><strong>Üretim sertleştirme:</strong> httpOnly çerez stratejisi, üretim gizli anahtarları, HTTPS, kalıcı Data Protection anahtarları, gerçek SMTP, OTLP collector, merkezî loglama/izleme panoları, yedekleme ve felaket kurtarma (DR), dağıtım hattı (deployment pipeline), veri saklama/temizlik (retention), çok düğümlü worker testleri.</div></div>
+      <div class="phase p3"><div class="plabel">FAZ 3<br>GxP</div><div class="pbody"><strong>GxP / farmasötik yetenekler:</strong> elektronik imza, imza anlamı + yeniden kimlik doğrulama, değişmez denetim sertleştirme, ALCOA+, IQ/OQ/PQ, izlenebilirlik matrisi, SOP yönetimi, eğitim kayıtları, sapma (deviation), CAPA, değişiklik etki değerlendirmesi, resmî validasyon paketi.</div></div>
+      <div class="phase p4"><div class="plabel">FAZ 4<br>Kurumsal</div><div class="pbody"><strong>Kurumsal genişleme:</strong> çok kiracılık (multi-tenancy), organizasyon/kiracı izolasyonu, Entra ID / SSO, MFA, gerçek Jira/Azure DevOps/GitHub/ServiceNow sağlayıcıları, Teams/Slack, gelişmiş iş akışı yetenekleri, zamanlanmış raporlar.</div></div>
+      <div class="phase p5"><div class="plabel">FAZ 5<br>AI</div><div class="pbody"><strong>Yapay zekâ katmanı:</strong> AI risk desteği, değişiklik özetleri, release notları, etki analizi, doğrulama asistanı, denetim inceleme asistanı, semantik arama/RAG.</div></div>
+    </div>
+    <div class="cap">AI katmanı, <strong>güvenilir veri, güvenlik ve iş akışları</strong> oturduktan sonra gelir.</div>
+  </div>
+</div>
+
+<!-- ============ 15. RISKS ============ -->
+<div class="sheet page-break">
+  <h2><span class="num">15</span>Riskler ve Açık Maddeler</h2>
+  <table>
+    <thead><tr><th style="width:26%">Risk</th><th>Güncel Etki</th><th class="center">Olasılık</th><th>Azaltma (Mitigation)</th><th class="center">Öncelik</th></tr></thead>
+    <tbody>
+      <tr><td>Frontend modülleri hâlâ mock/localStorage</td><td>Bazı ekranlar gerçek veriyi göstermiyor</td><td class="center">Yüksek</td><td>Faz 1 kademeli entegrasyon</td><td class="center"><span class="badge b-warn">Yüksek</span></td></tr>
+      <tr><td>Üretim gizli anahtar yönetimi</td><td>Geliştirme anahtarları üretime uygun değil</td><td class="center">Orta</td><td>Secret store + ortam ayrımı (Faz 2)</td><td class="center"><span class="badge b-warn">Yüksek</span></td></tr>
+      <tr><td>Refresh token sessionStorage'da</td><td>XSS maruziyet penceresi</td><td class="center">Orta</td><td>httpOnly çerez (Faz 2); kısa erişim ömrü + rotasyon</td><td class="center"><span class="badge b-info">Orta</span></td></tr>
+      <tr><td>Gerçek SMTP yok</td><td>E-posta yalnızca dummy sağlayıcı</td><td class="center">Düşük</td><td>SMTP sağlayıcı (Faz 2)</td><td class="center"><span class="badge b-info">Orta</span></td></tr>
+      <tr><td>Antivirüs / magic-byte taraması yok</td><td>Dosya içerik doğrulaması eksik</td><td class="center">Orta</td><td>Tarama entegrasyonu (Faz 2/3)</td><td class="center"><span class="badge b-info">Orta</span></td></tr>
+      <tr><td>Yalnızca yerel dosya depolama</td><td>Bulut/dayanıklılık yok</td><td class="center">Orta</td><td>Depolama soyutlaması hazır; bulut sağlayıcı eklenecek</td><td class="center"><span class="badge b-info">Orta</span></td></tr>
+      <tr><td>Sınırlı gerçek sağlayıcı entegrasyonu</td><td>Jira/Azure yalnızca sandbox</td><td class="center">Orta</td><td>Gerçek sağlayıcılar (Faz 4)</td><td class="center"><span class="badge b-plan">Düşük</span></td></tr>
+      <tr><td>Resmî GxP uyumu tamamlanmadı</td><td>Regülasyonlu kullanım için hazır değil</td><td class="center">Yüksek</td><td>Faz 3 validasyon paketi</td><td class="center"><span class="badge b-warn">Yüksek</span></td></tr>
+      <tr><td>Çok kiracılık yok</td><td>Tek kurum varsayımı</td><td class="center">Düşük</td><td>Faz 4 tenant izolasyonu</td><td class="center"><span class="badge b-plan">Düşük</span></td></tr>
+      <tr><td>Operasyonel dağıtım mimarisi kesinleşmedi</td><td>Prod topolojisi belirsiz</td><td class="center">Orta</td><td>Faz 2 pipeline + çok düğüm</td><td class="center"><span class="badge b-info">Orta</span></td></tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- ============ 16. PERSONAL ============ -->
+<div class="sheet page-break">
+  <h2><span class="num">16</span>Kişisel Katkı ve Öğrenimler</h2>
+  <p>Bu proje boyunca aşağıdaki alanlarda aktif rol aldım:</p>
+  <ul>
+    <li>Gereksinimlerin netleştirilmesi ve sprint planlaması.</li>
+    <li>Mimari kararların değerlendirilmesi ve tartışılması (modüler monolit, orkestrasyon sahipliği, eşzamanlılık stratejisi vb.).</li>
+    <li>Yapay zekâ destekli geliştirme için <strong>talimat/istem (prompt) tasarımı</strong> ve kapsam/kısıt belirleme.</li>
+    <li>Üretilen kod çıktılarının <strong>gözden geçirilmesi</strong> ve kabul/ret kararları.</li>
+    <li>Docker/SQL Server üzerinde <strong>göçlerin (migrations) çalıştırılması ve doğrulanması</strong>.</li>
+    <li>Test raporlarının yorumlanması, hataların tespiti ve düzeltme taleplerinin yönlendirilmesi.</li>
+    <li>Release / Change / Workflow kavramlarının ve backend↔frontend entegrasyonunun takibi.</li>
+    <li>JWT, RBAC, eşzamanlılık (concurrency), denetim (audit), iş akışı, entegrasyon ve arka plan işleme konularında pratik öğrenim.</li>
+  </ul>
+  <div class="note">
+    <strong>Şeffaflık notu.</strong> Kodun her satırını elle yazdığımı iddia etmiyorum. Geliştirmede yapay zekâ bir
+    <strong>geliştirme asistanı/aracı</strong> olarak kullanılmıştır; ancak <strong>gereksinimler, gözden geçirme, doğrulama ve
+    kararlar</strong> proje ekibi/kullanıcı sorumluluğunda kalmıştır. Katkım; yönlendirme, doğrulama, karar ve entegrasyon
+    takibinde yoğunlaşmıştır.
+  </div>
+</div>
+
+<!-- ============ 17. MENTOR ============ -->
+<div class="sheet">
+  <h2><span class="num">17</span>Mentör ile Tartışma Konuları</h2>
+  <ul>
+    <li>Modüler monolit sınırları uygun mu; hangi noktada servis ayrıştırması düşünülmeli?</li>
+    <li>Sıradaki entegre edilecek frontend modülü hangisi olmalı (Release mi, Execution/Validation mı)?</li>
+    <li>Üretim kimlik doğrulamada httpOnly çerez stratejisine geçilmeli mi?</li>
+    <li>Çok kiracılık (multi-tenancy) ne zaman devreye alınmalı?</li>
+    <li>Beklenen GxP yetenek seviyesi nedir (hangi ALCOA+/IQ-OQ-PQ kapsamı)?</li>
+    <li>Hangi dış entegrasyon önceliklendirilmeli (Jira, Azure DevOps, ServiceNow)?</li>
+    <li>Hedeflenen dağıtım ortamı (on-prem, bulut, hibrit) nedir?</li>
+    <li>Paydaşlar için en önemli raporlar hangileri?</li>
+    <li>İlk pilot için kabul kriterleri (acceptance criteria) ne olmalı?</li>
+  </ul>
+</div>
+
+<!-- ============ 18. CONCLUSION ============ -->
+<div class="sheet page-break">
+  <h2><span class="num">18</span>Sonuç</h2>
+  <div class="exec">
+    <ul style="margin:0">
+      <li>Backend platform temeli <strong>geniş ve işlevseldir</strong>; on iki alan tamamlanmıştır.</li>
+      <li>Çekirdek yaşam döngüsü <strong>gerçek SQL Server</strong> üzerinde çalışır ve testlerle doğrulanır.</li>
+      <li>Kimlik doğrulama, yetkilendirme ve paylaşılan platform servisleri <strong>kurulmuştur</strong>.</li>
+      <li>Angular kimlik doğrulama temeli <strong>gerçektir</strong>; Change ve Workflow Görevleri gerçek API'ye entegre edilmiştir.</li>
+      <li>Mevcut odak, <strong>kademeli frontend API entegrasyonudur</strong>.</li>
+      <li>Resmî üretim ve GxP hazırlığı hâlâ <strong>ek fazlar gerektirir</strong>.</li>
+    </ul>
+  </div>
+  <p>Proje, <strong>tıklanabilir bir prototipten (clickable prototype) işleyen modüler bir kurumsal platforma</strong> doğru
+  ilerlemiştir. Sistemin şu anda tam üretime hazır, doğrulanmış (validated) veya regülasyonlu kullanıma uygun olduğu <strong>iddia edilmemektedir</strong>.</p>
+</div>
+
+<!-- ============ APPENDIX ============ -->
+<div class="sheet page-break appendix">
+  <h2><span class="num">EK</span>Teknik Kanıtlar</h2>
+  <p><small>Aşağıdaki kanıtlar depo incelenerek doğrulanmıştır. Gizli anahtar, parola, token veya bağlantı dizesi içermez.</small></p>
+
+  <h4>Depo Yapısı (kök)</h4>
+  <p><code>backend/ (Gms.Api, Gms.Api.Tests)</code> · <code>frontend/ (gms-ui)</code> · <code>docker-compose.yml</code> · sprint raporları (*.md)</p>
+
+  <h4>Backend Controller Grupları (19)</h4>
+  <p><code>Auth</code> · <code>ChangeRequests</code> · <code>Approvals</code> · <code>Releases</code> · <code>Deployments</code> ·
+  <code>Validations</code> · <code>WorkflowInstances</code> · <code>Workflows</code> · <code>Documents</code> · <code>Notifications</code> ·
+  <code>Audit</code> · <code>Reports</code> · <code>Integrations</code> · <code>IntegrationWebhooks</code> · <code>IntegrationExecutions</code> ·
+  <code>Operations</code> · <code>Customers</code> · <code>Projects</code> · <code>Environments</code></p>
+
+  <h4>Başlıca Servisler</h4>
+  <p><code>AuthenticationService</code>, <code>TokenService</code>, <code>PasswordService</code>, <code>PermissionService</code>,
+  <code>ChangeRiskService</code>, <code>ChangeReadinessService</code>, <code>ApprovalService</code>, <code>ReleasePlanningService</code>,
+  <code>ReleaseRiskService</code>, <code>ExecutionService</code>, <code>ValidationService</code>, <code>DocumentService</code>,
+  <code>NotificationService</code>, <code>AuditReadService</code>, <code>ReportingService</code>, <code>ReportExportService</code>,
+  <code>WorkflowDefinitionService</code>, <code>WorkflowRuntimeService</code>, <code>WorkflowConditionEvaluator</code>,
+  <code>IntegrationService</code>, <code>IntegrationDispatcher</code>, <code>SequentialNumberGenerator</code>, <code>AuditFactory</code></p>
+
+  <h4>Worker'lar (Background)</h4>
+  <p><code>IntegrationDispatchWorker</code> · <code>NotificationDeliveryWorker</code> · <code>WorkflowSlaWorker</code> ·
+  <code>OperationalCleanupWorker</code> (ortak <code>BackgroundWorkerBase</code>, <code>WorkerRegistry</code>, <code>WorkerHeartbeat</code>)</p>
+
+  <h4>Entegrasyon Sağlayıcıları (Providers)</h4>
+  <p><code>GenericRestIntegrationProvider</code> · <code>IncomingWebhookIntegrationProvider</code> · <code>OutgoingWebhookIntegrationProvider</code> ·
+  <code>JiraSandboxProvider</code> · <code>AzureDevOpsSandboxProvider</code> · <code>DummySmtpIntegrationProvider</code> (resolver ile)</p>
+
+  <h4>Veritabanı Göçleri (Migrations, 17)</h4>
+  <p><code>InitialIdentity</code> → <code>InitialBusinessFoundation</code> → <code>InitialChangeDomain</code> → <code>ChangeKeysClientGenerated</code>
+  → <code>InitialApprovalDomain</code> → <code>ReleasePlanningDomain</code> → <code>AddConcurrencyTokens</code> → <code>ExecutionDomain</code>
+  → <code>ValidationDomain</code> → <code>IdentityAndRbacDomain</code> → <code>DocumentManagementDomain</code> → <code>NotificationEngineDomain</code>
+  → <code>UnifiedAuditAndReporting</code> → <code>WorkflowEngineDomain</code> → <code>WorkflowRoleGrants</code> → <code>IntegrationHubDomain</code>
+  → <code>BackgroundProcessingAndObservability</code></p>
+
+  <h4>Sağlık ve API Uçları</h4>
+  <p><code>GET /health</code> · <code>GET /health/live</code> · <code>GET /health/ready</code> · <code>GET /api/operations</code> ·
+  Swagger UI: <code>/swagger</code> (yalnızca geliştirme) · OpenAPI: <code>/swagger/v1/swagger.json</code></p>
+
+  <h4>Frontend Yapısı</h4>
+  <p>23 özellik alanı (features) · 36 core servis · 4 test spec dosyası (<code>app.spec.ts</code>, <code>auth.spec.ts</code>,
+  <code>change-integration.spec.ts</code>, <code>workflow-integration.spec.ts</code>)</p>
+
+  <h4>Doğrulanmış Sayılar</h4>
+  <p>Backend testleri: <strong>105</strong> (<code>[Fact]/[Theory]</code> sayımı) · Frontend testleri: <strong>42</strong>
+  (<code>it()</code> sayımı) · Frontend production derleme: <strong>0 hata / 0 uyarı</strong> · Migration: <strong>17</strong></p>
+
+  <div class="footer-note">
+    Belge sonu — GMS Proje İlerleme, Teknik Mimari ve Yol Haritası Raporu v1.0 · Hazırlayan: Mahir Furkan Dalyan · CENTRA YAZILIM A.Ş. · 16 Temmuz 2026.
+    Tüm veriler depo incelemesiyle doğrulanmıştır; ürün tam üretime hazır veya GxP-validasyonlu olarak sunulmaz.
+  </div>
+</div>
+
+</body>
+</html>

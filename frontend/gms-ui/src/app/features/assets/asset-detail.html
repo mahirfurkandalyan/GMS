@@ -1,0 +1,171 @@
+@if (loading()) {
+  <section class="gms-page"><div class="gms-card"><gms-state variant="loading" /></div></section>
+} @else if (notFound()) {
+  <section class="gms-page">
+    <div class="gms-card">
+      <gms-state variant="error" [title]="'assets.detail.notFoundTitle' | transloco" [text]="'assets.detail.notFoundText' | transloco">
+        <button gmsButton variant="secondary" (click)="back()"><gms-icon name="chevron-left" [size]="15" /> {{ 'assets.detail.backToCenter' | transloco }}</button>
+      </gms-state>
+    </div>
+  </section>
+} @else if (asset(); as a) {
+  <gms-page [contextPanel]="true" [panelTitle]="'common.context' | transloco">
+
+    <gms-page-header
+      header
+      [title]="a.name"
+      [subtitle]="a.code + ' · ' + typeLabel(a.type)"
+      [breadcrumbs]="breadcrumbs()"
+      [status]="{ label: statusLabel(), tone: statusTone() }"
+      [context]="headerContext()"
+      [lastUpdated]="'assets.detail.lastChange' | transloco">
+      <gms-menu secondary [items]="extraActions()" (select)="onExtra($event)" />
+      <button actions gmsButton variant="primary" (click)="onEdit()">
+        <gms-icon name="change" [size]="16" /> {{ 'assets.detail.editButton' | transloco }}
+      </button>
+    </gms-page-header>
+
+    <div toolbar class="ad-toolbar">
+      <gms-relationship-strip [nodes]="relationChain()" />
+    </div>
+
+    <gms-tabs [tabs]="tabs()" [(active)]="activeTab" />
+
+    @switch (activeTab()) {
+      @case ('overview') {
+        <div class="gms-grid gms-grid--2">
+          <div class="gms-card">
+            <h3 class="gms-section-title">{{ 'assets.detail.generalInfo' | transloco }}</h3>
+            <dl class="kv">
+              <div><dt>{{ 'assets.detail.field.type' | transloco }}</dt><dd><span class="type-chip"><gms-icon [name]="typeIcon(a.type)" [size]="13" /> {{ typeLabel(a.type) }}</span></dd></div>
+              <div><dt>{{ 'assets.detail.field.project' | transloco }}</dt><dd>{{ a.projectName }}</dd></div>
+              <div><dt>{{ 'assets.detail.field.currentEnvironment' | transloco }}</dt><dd><span class="badge" [class]="'badge--' + (a.environment === 'PROD' ? 'danger' : a.environment === 'UAT' ? 'warning' : a.environment === 'TEST' ? 'info' : 'neutral')">{{ a.environment }}</span></dd></div>
+              <div><dt>{{ 'assets.detail.field.owner' | transloco }}</dt><dd>{{ a.owner }}</dd></div>
+              <div><dt>{{ 'assets.detail.field.criticality' | transloco }}</dt><dd><span class="badge" [class]="'badge--' + critTone()">{{ critLabel() }}</span></dd></div>
+              <div><dt>{{ 'assets.detail.field.currentStatus' | transloco }}</dt><dd><span class="badge" [class]="'badge--' + statusTone()">{{ statusLabel() }}</span></dd></div>
+              <div><dt>{{ 'assets.detail.field.createdAt' | transloco }}</dt><dd>{{ a.createdAt | date: 'dd.MM.yyyy HH:mm' }}</dd></div>
+              <div><dt>{{ 'assets.detail.field.updatedAt' | transloco }}</dt><dd>{{ a.updatedAt | date: 'dd.MM.yyyy HH:mm' }}</dd></div>
+              <div class="kv__full"><dt>{{ 'assets.detail.field.description' | transloco }}</dt><dd>{{ a.description }}</dd></div>
+            </dl>
+          </div>
+
+          <div class="ad-side">
+            <div class="gms-card">
+              <h3 class="gms-section-title">{{ 'assets.detail.impactSummary' | transloco }}</h3>
+              <div class="ad-metrics">
+                <div class="ad-metric"><span class="ad-metric__v">{{ a.releases.length }}</span><span class="ad-metric__l">{{ 'assets.detail.metric.releases' | transloco }}</span></div>
+                <div class="ad-metric"><span class="ad-metric__v">{{ a.changes.length }}</span><span class="ad-metric__l">{{ 'assets.detail.metric.changes' | transloco }}</span></div>
+                <div class="ad-metric"><span class="ad-metric__v">{{ a.dependencies.length }}</span><span class="ad-metric__l">{{ 'assets.detail.metric.dependencies' | transloco }}</span></div>
+                <div class="ad-metric"><span class="ad-metric__v">{{ a.documents.length }}</span><span class="ad-metric__l">{{ 'assets.detail.metric.documents' | transloco }}</span></div>
+              </div>
+              <p class="ad-note">{{ 'assets.detail.impactNote' | transloco: { count: a.releases.length + a.changes.length } }}</p>
+            </div>
+            <div class="gms-card">
+              <h3 class="gms-section-title">{{ 'assets.detail.criticalityAndEnvironment' | transloco }}</h3>
+              <div class="ad-badges">
+                <span class="badge" [class]="'badge--' + critTone()">{{ critLabel() }}</span>
+                <span class="badge badge--neutral">{{ a.environment }}</span>
+                <span class="badge" [class]="'badge--' + statusTone()">{{ statusLabel() }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="gms-card">
+          <h3 class="gms-section-title">{{ 'assets.detail.timelineTitle' | transloco }}</h3>
+          <gms-timeline [items]="timeline()" />
+        </div>
+      }
+
+      @case ('relationships') {
+        <div class="gms-card gms-card--flush rel-wrap">
+          <div class="rel-head">
+            <div class="rel-focus">
+              <span class="rel-focus__icon"><gms-icon [name]="typeIcon(a.type)" [size]="20" /></span>
+              <div class="rel-focus__meta">
+                <span class="rel-focus__code">{{ a.code }}</span>
+                <span class="rel-focus__name">{{ a.name }}</span>
+              </div>
+              <span class="badge" [class]="'badge--' + critTone()">{{ critLabel() }}</span>
+            </div>
+            <p class="rel-hint">{{ 'assets.detail.relationshipsHint' | transloco }}</p>
+          </div>
+
+          <div class="rel-lanes">
+            @for (g of groups(); track g.key) {
+              <section class="lane" [class]="'lane--' + g.accent">
+                <header class="lane__head">
+                  <span class="lane__icon"><gms-icon [name]="g.icon" [size]="15" /></span>
+                  <span class="lane__title">{{ g.title }}</span>
+                  @if (!g.placeholder) { <span class="lane__count">{{ g.cards.length }}</span> }
+                </header>
+
+                @if (g.placeholder) {
+                  <div class="lane__soon">
+                    <gms-icon name="hub" [size]="18" />
+                    <span>{{ 'assets.detail.futureIntegrationsSoon' | transloco }}</span>
+                  </div>
+                } @else if (g.cards.length === 0) {
+                  <p class="lane__empty">{{ 'assets.detail.noConnection' | transloco }}</p>
+                } @else {
+                  <div class="lane__cards">
+                    @for (c of g.cards; track c.code) {
+                      @if (c.route) {
+                        <a class="node" [href]="c.route">
+                          <span class="node__icon"><gms-icon [name]="c.icon" [size]="15" /></span>
+                          <span class="node__meta">
+                            <span class="node__code">{{ c.code }}</span>
+                            <span class="node__name">{{ c.name }}</span>
+                            <span class="node__rel">{{ c.meta }}</span>
+                          </span>
+                        </a>
+                      } @else {
+                        <span class="node">
+                          <span class="node__icon"><gms-icon [name]="c.icon" [size]="15" /></span>
+                          <span class="node__meta">
+                            <span class="node__code">{{ c.code }}</span>
+                            <span class="node__name">{{ c.name }}</span>
+                            <span class="node__rel">{{ c.meta }}</span>
+                          </span>
+                        </span>
+                      }
+                    }
+                  </div>
+                }
+              </section>
+            }
+          </div>
+        </div>
+      }
+
+      @default {
+        <div class="gms-card">
+          <gms-state variant="empty" [iconOverride]="activeTabMeta().icon ?? 'inbox'"
+            [title]="activeTabMeta().label"
+            [text]="'assets.detail.defaultTabText' | transloco">
+          </gms-state>
+        </div>
+      }
+    }
+
+    <!-- Right context panel (reusable) -->
+    <ng-container panel>
+      <gms-context-section [title]="'assets.detail.panel.recentChanges' | transloco" icon="change" [count]="changes$().length">
+        @if (changes$().length) { <gms-item-list [items]="changes$()" /> }
+        @else { <p class="panel-empty">{{ 'assets.detail.panel.noLinkedChanges' | transloco }}</p> }
+      </gms-context-section>
+      <gms-context-section [title]="'assets.detail.panel.recentReleases' | transloco" icon="release" [count]="releases$().length">
+        @if (releases$().length) { <gms-item-list [items]="releases$()" /> }
+        @else { <p class="panel-empty">{{ 'assets.detail.panel.noLinkedReleases' | transloco }}</p> }
+      </gms-context-section>
+      <gms-context-section [title]="'assets.detail.panel.relatedDocuments' | transloco" icon="document" [count]="documents$().length">
+        @if (documents$().length) { <gms-item-list [items]="documents$()" /> }
+        @else { <p class="panel-empty">{{ 'assets.detail.panel.noLinkedDocuments' | transloco }}</p> }
+      </gms-context-section>
+      <gms-context-section [title]="'assets.detail.panel.recentActivity' | transloco" icon="activity">
+        <gms-activity-feed [items]="activity()" />
+      </gms-context-section>
+    </ng-container>
+
+  </gms-page>
+}

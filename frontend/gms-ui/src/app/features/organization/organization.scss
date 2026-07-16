@@ -1,0 +1,152 @@
+:host {
+  display: block;
+}
+
+.org-card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-2);
+  padding: var(--s-5);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  box-shadow: var(--shadow-xs);
+
+  &__head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  &__icon {
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: var(--r-md);
+    background: var(--brand-subtle);
+    color: var(--brand);
+  }
+
+  &__name {
+    margin: var(--s-2) 0 0;
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: var(--text-strong);
+  }
+
+  &__desc {
+    margin: 0;
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    flex: 1;
+  }
+
+  &__foot {
+    margin-top: var(--s-3);
+    padding-top: var(--s-3);
+    border-top: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+  }
+
+  &__label {
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+    color: var(--text-faint);
+  }
+
+  &__value {
+    font-size: 0.88rem;
+    font-weight: 600;
+    color: var(--text-strong);
+  }
+}
+
+.team-members {
+  display: flex;
+  align-items: center;
+  margin-top: var(--s-2);
+
+  .avatar {
+    width: 32px;
+    height: 32px;
+    font-size: 0.78rem;
+    border: 2px solid var(--surface);
+    margin-left: -8px;
+
+    &:first-child {
+      margin-left: 0;
+    }
+  }
+
+  &__lead {
+    background: var(--warning-bg);
+    color: var(--warning);
+  }
+}
+
+/* Org chart */
+.chart {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--s-6);
+
+  &__node {
+    display: flex;
+    align-items: center;
+    gap: var(--s-3);
+    padding: var(--s-3) var(--s-4);
+    border: 1px solid var(--border);
+    border-radius: var(--r-md);
+    background: var(--surface-2);
+    min-width: 190px;
+
+    .avatar {
+      width: 40px;
+      height: 40px;
+      font-size: 0.85rem;
+    }
+
+    &--root {
+      background: var(--brand-600);
+      border-color: var(--brand-600);
+      color: #fff;
+
+      .chart__role {
+        color: #cdddf5;
+      }
+    }
+  }
+
+  &__branch {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: var(--s-4);
+    position: relative;
+    padding-top: var(--s-5);
+    border-top: 2px dashed var(--border-strong);
+    width: 100%;
+  }
+
+  &__name {
+    display: block;
+    font-weight: 700;
+    font-size: 0.9rem;
+  }
+
+  &__role {
+    display: block;
+    font-size: 0.78rem;
+    color: var(--text-muted);
+  }
+
+  &__note {
+    padding: var(--s-4);
+    gap: var(--s-2);
+  }
+}

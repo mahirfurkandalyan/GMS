@@ -1,0 +1,226 @@
+<section class="gms-page dash">
+
+  <!-- Header -->
+  <div class="gms-page-head">
+    <div>
+      <h1 class="gms-page-head__title">{{ greeting() }}, {{ firstName() }}</h1>
+      <p class="gms-page-head__sub">İşlerinize genel bir bakış — {{ primaryRole() }}</p>
+    </div>
+    <a class="gms-btn gms-btn--secondary gms-btn--sm" routerLink="/releases">
+      <gms-icon name="release" [size]="16" /> Yayınlara Git
+    </a>
+  </div>
+
+  <!-- Secondary KPIs — minimal stats with sparklines -->
+  <div class="stat-grid">
+    @for (stat of stats(); track stat.label) {
+      <gms-stat
+        [label]="stat.label"
+        [value]="stat.value"
+        [icon]="stat.icon"
+        [delta]="stat.delta ?? null"
+        [tone]="stat.tone ?? 'neutral'"
+        [spark]="stat.spark ?? []" />
+    }
+  </div>
+
+  <!-- Operational grid -->
+  <div class="dash__grid">
+
+    <!-- Main column -->
+    <div class="dash__col">
+
+      <!-- Recent Releases -->
+      <section class="block">
+        <div class="block__head">
+          <h2 class="block__title">Son Yayınlar</h2>
+          <a class="block__link" routerLink="/releases">Tümü</a>
+        </div>
+
+        @if (loadingReleases()) {
+          <div class="gms-card gms-card--tight">
+            @for (i of [1,2,3]; track i) {
+              <div class="skeleton-row">
+                <span class="skeleton skeleton--line" style="width:30%"></span>
+                <span class="skeleton skeleton--line" style="width:20%"></span>
+                <span class="skeleton skeleton--line" style="width:15%"></span>
+              </div>
+            }
+          </div>
+        } @else if (recentReleases().length === 0) {
+          <div class="gms-card">
+            <div class="empty-state">
+              <span class="empty-state__icon"><gms-icon name="release" [size]="22" /></span>
+              <span class="empty-state__title">Henüz yayın yok</span>
+              <span class="empty-state__text">Yeni bir yayın oluşturduğunuzda burada görünür.</span>
+            </div>
+          </div>
+        } @else {
+          <div class="row-list gms-card gms-card--tight">
+            @for (r of recentReleases(); track r.id) {
+              <a class="rel-row" routerLink="/releases">
+                <span class="rel-row__icon"><gms-icon name="release" [size]="18" /></span>
+                <span class="rel-row__main">
+                  <span class="rel-row__name">{{ r.name }}</span>
+                  <span class="rel-row__meta">{{ r.projectName }} · {{ r.environmentName }} · {{ r.version }}</span>
+                </span>
+                <span class="badge" [class]="statusTone(r.status)">{{ statusLabel(r.status) }}</span>
+              </a>
+            }
+          </div>
+        }
+      </section>
+
+      <!-- Upcoming Releases -->
+      <section class="block">
+        <div class="block__head">
+          <h2 class="block__title">Yaklaşan Yayınlar</h2>
+        </div>
+        @if (upcomingReleases().length === 0) {
+          <div class="gms-card">
+            <div class="empty-state empty-state--inline">
+              <span class="empty-state__icon"><gms-icon name="calendar" [size]="18" /></span>
+              <span class="empty-state__text">Planlanmış yaklaşan yayın bulunmuyor.</span>
+            </div>
+          </div>
+        } @else {
+          <div class="row-list gms-card gms-card--tight">
+            @for (r of upcomingReleases(); track r.id) {
+              <div class="rel-row">
+                <span class="rel-row__date">
+                  <gms-icon name="calendar" [size]="15" /> {{ r.plannedDate | date: 'dd MMM' }}
+                </span>
+                <span class="rel-row__main">
+                  <span class="rel-row__name">{{ r.name }}</span>
+                  <span class="rel-row__meta">{{ r.projectName }} · {{ r.environmentName }}</span>
+                </span>
+                <span class="badge" [class]="statusTone(r.status)">{{ statusLabel(r.status) }}</span>
+              </div>
+            }
+          </div>
+        }
+      </section>
+
+      <!-- My Tasks -->
+      <section class="block">
+        <div class="block__head">
+          <h2 class="block__title">Görevlerim</h2>
+        </div>
+        @if (myTasks().length === 0) {
+          <div class="gms-card">
+            <div class="empty-state empty-state--inline">
+              <span class="empty-state__icon"><gms-icon name="check" [size]="18" /></span>
+              <span class="empty-state__text">Üzerinizde bekleyen görev yok. Harika!</span>
+            </div>
+          </div>
+        } @else {
+          <div class="row-list gms-card gms-card--tight">
+            @for (t of myTasks(); track t.id) {
+              <div class="task-row">
+                <span class="task-row__icon"><gms-icon name="training" [size]="17" /></span>
+                <span class="task-row__main">
+                  <span class="rel-row__name">{{ t.title }}</span>
+                  <span class="rel-row__meta">Eğitim · {{ t.category }}</span>
+                </span>
+                <span class="badge badge--info">%{{ t.progress }}</span>
+              </div>
+            }
+          </div>
+        }
+      </section>
+    </div>
+
+    <!-- Side column -->
+    <div class="dash__col dash__col--side">
+
+      <!-- System status -->
+      <section class="block">
+        <div class="block__head">
+          <h2 class="block__title">Sistem Durumu</h2>
+          <span class="badge badge--success"><span class="badge__dot"></span> Operasyonel</span>
+        </div>
+        <div class="gms-card gms-card--tight">
+          @for (s of systems; track s.name) {
+            <div class="sys-row">
+              <span class="dot" [class]="systemMeta(s.state).dot"></span>
+              <span class="sys-row__name">{{ s.name }}</span>
+              <span class="sys-row__state">{{ systemMeta(s.state).label }}</span>
+            </div>
+          }
+        </div>
+      </section>
+
+      <!-- Recent notifications -->
+      <section class="block">
+        <div class="block__head">
+          <h2 class="block__title">Son Bildirimler</h2>
+          <a class="block__link" routerLink="/notifications">Tümü</a>
+        </div>
+        <div class="gms-card gms-card--tight">
+          @for (n of recentNotifications(); track n.id) {
+            <div class="notif-row">
+              <span class="badge" [class]="notifMeta[n.kind].badge">{{ notifMeta[n.kind].label }}</span>
+              <span class="notif-row__main">
+                <span class="notif-row__title">{{ n.title }}</span>
+                <span class="notif-row__time">{{ n.time }}</span>
+              </span>
+            </div>
+          }
+        </div>
+      </section>
+
+      <!-- Recent activity -->
+      <section class="block">
+        <div class="block__head">
+          <h2 class="block__title">Son Aktiviteler</h2>
+        </div>
+        <div class="gms-card gms-card--tight">
+          <ul class="feed">
+            @for (a of activities; track a.who + a.time) {
+              <li class="feed__item">
+                <span class="feed__icon"><gms-icon [name]="a.icon" [size]="15" /></span>
+                <span class="feed__text"><strong>{{ a.who }}</strong> {{ a.action }}
+                  <span class="feed__time">{{ a.time }}</span>
+                </span>
+              </li>
+            }
+          </ul>
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <!-- Governance queues + announcements -->
+  <div class="gms-grid gms-grid--3">
+    <section class="block">
+      <div class="block__head"><h2 class="block__title">Bekleyen Onaylar</h2></div>
+      <div class="gms-card">
+        <div class="empty-state empty-state--inline">
+          <span class="empty-state__icon"><gms-icon name="approval" [size]="18" /></span>
+          <span class="empty-state__text">Onay Yönetimi modülü yakında aktif olacak.</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="block">
+      <div class="block__head"><h2 class="block__title">Bekleyen Değişiklikler</h2></div>
+      <div class="gms-card">
+        <div class="empty-state empty-state--inline">
+          <span class="empty-state__icon"><gms-icon name="change" [size]="18" /></span>
+          <span class="empty-state__text">Değişiklik Yönetimi modülü yakında aktif olacak.</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="block">
+      <div class="block__head"><h2 class="block__title">Şirket Duyuruları</h2></div>
+      <div class="gms-card">
+        <div class="empty-state empty-state--inline">
+          <span class="empty-state__icon"><gms-icon name="announcement" [size]="18" /></span>
+          <span class="empty-state__text">Şu an yayınlanmış bir duyuru bulunmuyor.</span>
+        </div>
+      </div>
+    </section>
+  </div>
+
+</section>

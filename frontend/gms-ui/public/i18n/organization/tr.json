@@ -1,0 +1,21 @@
+{
+  "common": {
+    "person": "kişi"
+  },
+  "departments": {
+    "pageTitle": "Departmanlar",
+    "pageSubtitle": "Organizasyon birimleri ve sorumluları.",
+    "leadLabel": "Yönetici"
+  },
+  "teams": {
+    "pageTitle": "Takımlar",
+    "pageSubtitle": "Proje ve ürün takımları.",
+    "leadLabel": "Takım Lideri"
+  },
+  "orgChart": {
+    "pageTitle": "Organizasyon Şeması",
+    "pageSubtitle": "Şirket hiyerarşisinin görsel gösterimi.",
+    "note": "Etkileşimli organizasyon şeması (sürükle-genişlet) ilerleyen sürümlerde eklenecektir.",
+    "comingSoon": "Yakında"
+  }
+}

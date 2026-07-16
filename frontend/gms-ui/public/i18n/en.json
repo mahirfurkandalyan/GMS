@@ -1,0 +1,279 @@
+{
+  "nav": {
+    "section": {
+      "workspace": "Workspace",
+      "organization": "Organization",
+      "management": "Management"
+    },
+    "hub": "GMS Hub",
+    "dashboard": "Dashboard",
+    "releases": "Release Management",
+    "changes": "Change Management",
+    "approvals": "Approval Records (History)",
+    "tasks": "Workflow Tasks",
+    "validation": "Validation Center",
+    "executions": "Execution Center",
+    "documents": "Document Center",
+    "assets": "Asset Center",
+    "training": "Training",
+    "notifications": "Notifications",
+    "employees": "Employees",
+    "departments": "Departments",
+    "teams": "Teams",
+    "orgchart": "Org Chart",
+    "leave": "Leave Calendar",
+    "reports": "Reports & Analytics",
+    "audit": "Audit Center",
+    "workflows": "Workflow Designer",
+    "notificationRules": "Notification Rules",
+    "administration": "Administration"
+  },
+  "shell": {
+    "expandMenu": "Expand menu",
+    "collapseMenu": "Collapse menu",
+    "soon": "Soon",
+    "menu": "Menu",
+    "workspaceTitle": "Workspace",
+    "workspaceName": "Centra Yazılım",
+    "workspaceEnv": "Development Environment",
+    "footerCompany": "Centra Yazılım",
+    "searchPlaceholder": "Search — employee, project, release…",
+    "pinned": "Pinned",
+    "recentSearches": "Recent Searches",
+    "clear": "Clear",
+    "suggestions": "Suggestions",
+    "noResults": "No results found",
+    "notificationsTitle": "Notifications",
+    "markAllRead": "Mark all as read",
+    "viewAllNotifications": "View all notifications",
+    "profile": "Profile",
+    "logout": "Log Out",
+    "brand": "GMS",
+    "langToggle": "TR"
+  },
+  "common": {
+    "addToFavorites": "Add to favorites",
+    "shareSoon": "Share (coming soon)",
+    "environment": "Environment",
+    "project": "Project",
+    "release": "Release",
+    "remove": "Remove",
+    "refresh": "Refresh",
+    "actions": "Actions",
+    "cancel": "Cancel",
+    "highPriority": "High priority",
+    "sections": "Sections",
+    "moveSoon": "Move (coming soon)",
+    "expand": "Expand",
+    "collapse": "Collapse",
+    "context": "Context",
+    "openContextPanel": "Open context panel",
+    "recordNotFound": "No records found",
+    "noDataToDisplay": "No data to display.",
+    "close": "Close",
+    "confirmTitle": "Confirm",
+    "confirmAction": "Confirm",
+    "contextPanel": "Context panel",
+    "closePanel": "Close panel",
+    "lastUpdated": "Last updated"
+  },
+  "badge": {
+    "status": {
+      "Draft": "Draft",
+      "Pending": "Pending",
+      "Waiting": "Waiting",
+      "Expired": "Expired",
+      "Passed": "Passed",
+      "Warning": "Warning",
+      "Failed": "Failed",
+      "Skipped": "Skipped",
+      "Open": "Open",
+      "Resolved": "Resolved",
+      "Running": "Running",
+      "Paused": "Paused",
+      "RolledBack": "Rolled Back",
+      "Active": "Active",
+      "Inactive": "Inactive",
+      "Deprecated": "Deprecated",
+      "Archived": "Archived",
+      "Planning": "Planning",
+      "Planned": "Planned",
+      "InProgress": "In Progress",
+      "Accepted": "Accepted",
+      "Validation": "Validation",
+      "InReview": "In Review",
+      "UnderReview": "Under Review",
+      "Approval": "In Approval",
+      "Submitted": "Submitted",
+      "Approved": "Approved",
+      "Scheduled": "Scheduled",
+      "Implemented": "Implemented",
+      "Created": "Created",
+      "Ready": "Ready",
+      "Executing": "Executing",
+      "Executed": "Executed",
+      "Completed": "Completed",
+      "Rejected": "Rejected",
+      "Cancelled": "Cancelled"
+    },
+    "priority": {
+      "Critical": "Critical",
+      "High": "High",
+      "Medium": "Medium",
+      "Low": "Low"
+    },
+    "risk": {
+      "Critical": "Critical Risk",
+      "High": "High Risk",
+      "Medium": "Medium Risk",
+      "Low": "Low Risk"
+    }
+  },
+  "commandPalette": {
+    "title": "Command palette",
+    "placeholder": "Go to pages, search, or run a command…",
+    "noResults": "No results found",
+    "myProfile": "My Profile",
+    "createRelease": "Create New Release",
+    "group": {
+      "nav": "Go To",
+      "create": "Create",
+      "actions": "Actions",
+      "results": "Results"
+    },
+    "hint": {
+      "workspace": "Workspace",
+      "operations": "Operations",
+      "release": "Release",
+      "organization": "Organization",
+      "development": "Development",
+      "team": "Team",
+      "notification": "Notification",
+      "account": "Account",
+      "quickCreate": "Quick create"
+    }
+  },
+  "dataGrid": {
+    "searchPlaceholder": "Search table…",
+    "records": "records",
+    "recordsSelected": "records selected",
+    "columns": "Columns",
+    "export": "Export",
+    "clearSelection": "Clear selection",
+    "selectAll": "Select all",
+    "selectRow": "Select row",
+    "page": "Page",
+    "previous": "Previous",
+    "next": "Next"
+  },
+  "filterBar": {
+    "searchPlaceholder": "Search…",
+    "advanced": "Advanced",
+    "views": "Views",
+    "reset": "Reset",
+    "allRecords": "All Records",
+    "myView": "My View",
+    "saveViewSoon": "Save View (coming soon)"
+  },
+  "notificationList": {
+    "empty": "No notifications."
+  },
+  "upload": {
+    "dragDrop": "Drag and drop files here",
+    "or": "or",
+    "chooseFile": "Choose File",
+    "hint": "Multiple uploads supported · Max. 25 MB · Version upload and replace-existing coming soon",
+    "scanned": "Scanned"
+  },
+  "quickCreate": {
+    "trigger": "New",
+    "release": "New Release",
+    "change": "New Change",
+    "project": "New Project",
+    "document": "Upload Document",
+    "template": "Create from Template"
+  },
+  "state": {
+    "empty": {
+      "title": "No records found",
+      "text": "No data to display."
+    },
+    "error": {
+      "title": "Something went wrong",
+      "text": "The operation could not be completed. Please try again."
+    },
+    "offline": {
+      "title": "Connection failed",
+      "text": "Cannot reach the server. Check your connection and try again."
+    },
+    "denied": {
+      "title": "Access denied",
+      "text": "You don't have permission to view this content."
+    },
+    "success": {
+      "title": "Completed",
+      "text": "The operation completed successfully."
+    }
+  },
+  "login": {
+    "title": "Governance Management System",
+    "subtitle": "Corporate Governance Management System",
+    "emailLabel": "Email",
+    "emailPlaceholder": "user@centra.com.tr",
+    "passwordLabel": "Password",
+    "passwordPlaceholder": "Your password",
+    "showPassword": "Show password",
+    "hidePassword": "Hide password",
+    "signingIn": "Signing in…",
+    "signIn": "Sign In",
+    "hint": "GMS — corporate governance platform",
+    "errorRequired": "Please enter your email and password.",
+    "errorInvalid": "Invalid email or password.",
+    "errorLocked": "Your account is temporarily locked after too many failed attempts. Please try again later.",
+    "errorGeneric": "Sign-in failed. Please try again."
+  },
+  "hub": {
+    "subtitle": "Your enterprise governance workspace — see what needs your attention today.",
+    "environment": "Development (DEV)",
+    "greeting": {
+      "morning": "Good morning",
+      "afternoon": "Good afternoon",
+      "evening": "Good evening",
+      "default": "Hello"
+    },
+    "widget": {
+      "myTasks": "My Tasks",
+      "upcomingReleases": "Upcoming Releases",
+      "notifications": "Notifications",
+      "recentActivity": "Recent Activity",
+      "systemStatus": "System Status",
+      "favorites": "My Favorites",
+      "recentItems": "Recently Viewed",
+      "pendingApprovals": "Pending Approvals"
+    },
+    "empty": {
+      "myTasks": "No pending tasks assigned to you.",
+      "upcomingReleases": "No upcoming releases scheduled.",
+      "favorites": "You haven't added any favorites yet.",
+      "recentItems": "No recently viewed items.",
+      "pendingApprovals": "Approval Management module will be active soon."
+    },
+    "system": {
+      "api": "API Service",
+      "database": "Database",
+      "auth": "Authentication",
+      "jobs": "Background Jobs",
+      "ok": "Operational",
+      "degraded": "Partial"
+    },
+    "trainingHint": "Training · {{progress}}%",
+    "activity": {
+      "today": "Today",
+      "yesterday": "Yesterday",
+      "createdRelease": "created a new release",
+      "gaveApproval": "gave an approval",
+      "addedDocument": "added a document",
+      "joinedProject": "joined the MES project"
+    }
+  }
+}

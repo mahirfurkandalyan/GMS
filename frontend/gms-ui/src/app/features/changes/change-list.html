@@ -1,0 +1,133 @@
+<gms-page [contextPanel]="true" panelTitle="Bağlam">
+
+  <gms-page-header
+    header
+    title="Değişiklikler"
+    subtitle="Tüm değişiklik kayıtlarını yönetin ve takip edin."
+    [breadcrumbs]="[{ label: 'Çalışma Alanı' }, { label: 'Değişiklikler' }]"
+    [status]="{ label: total() + ' değişiklik', tone: 'info' }">
+    <button actions gmsButton variant="primary" (click)="newChange()" *gmsHasPermission="'change.create'">
+      <gms-icon name="plus" [size]="16" /> Yeni Değişiklik
+    </button>
+  </gms-page-header>
+
+  <div toolbar class="chg-toolbar">
+    <div class="filters">
+      <div class="filters__search">
+        <gms-icon name="search" [size]="17" />
+        <input type="text" placeholder="Değişiklik no, başlık veya iş gerekçesi ara…"
+          [ngModel]="fSearch()" (ngModelChange)="onSearch($event)" [ngModelOptions]="{ standalone: true }" />
+      </div>
+
+      <select class="filters__select" [ngModel]="fCustomer()" (ngModelChange)="onCustomer($event)" [ngModelOptions]="{ standalone: true }">
+        <option value="">Tüm Müşteriler</option>
+        @for (c of customers(); track c.id) { <option [value]="c.id">{{ c.name }}</option> }
+      </select>
+
+      <select class="filters__select" [ngModel]="fProject()" (ngModelChange)="onProject($event)" [ngModelOptions]="{ standalone: true }" [disabled]="!fCustomer()">
+        <option value="">Tüm Projeler</option>
+        @for (p of projects(); track p.id) { <option [value]="p.id">{{ p.name }}</option> }
+      </select>
+
+      <select class="filters__select" [ngModel]="fEnvironment()" (ngModelChange)="onEnvironment($event)" [ngModelOptions]="{ standalone: true }" [disabled]="!fProject()">
+        <option value="">Tüm Ortamlar</option>
+        @for (e of environments(); track e.id) { <option [value]="e.id">{{ e.name }}</option> }
+      </select>
+
+      <select class="filters__select" [ngModel]="fStatus()" (ngModelChange)="onStatus($event)" [ngModelOptions]="{ standalone: true }">
+        <option value="">Tüm Durumlar</option>
+        @for (s of statusOptions; track s) { <option [value]="s">{{ statusLabelKey(s) | transloco }}</option> }
+      </select>
+
+      <select class="filters__select" [ngModel]="fClass()" (ngModelChange)="onClass($event)" [ngModelOptions]="{ standalone: true }">
+        <option value="">Tüm Sınıflar</option>
+        @for (c of classOptions; track c) { <option [value]="c">{{ classLabelKey(c) | transloco }}</option> }
+      </select>
+
+      <select class="filters__select" [ngModel]="fType()" (ngModelChange)="onType($event)" [ngModelOptions]="{ standalone: true }">
+        <option value="">Tüm Türler</option>
+        @for (t of typeOptions; track t) { <option [value]="t">{{ typeLabelKey(t) | transloco }}</option> }
+      </select>
+
+      <select class="filters__select" [ngModel]="fRisk()" (ngModelChange)="onRisk($event)" [ngModelOptions]="{ standalone: true }">
+        <option value="">Tüm Riskler</option>
+        @for (r of riskOptions; track r) { <option [value]="r">{{ riskLabelKey(r) | transloco }}</option> }
+      </select>
+
+      <button type="button" class="gms-btn gms-btn--ghost gms-btn--icon gms-btn--sm" (click)="reload()" title="Yenile" aria-label="Yenile">
+        <gms-icon name="clock" [size]="16" />
+      </button>
+
+      @if (hasFilters()) {
+        <button type="button" class="gms-btn gms-btn--ghost gms-btn--sm" (click)="resetFilters()">Sıfırla</button>
+      }
+    </div>
+  </div>
+
+  @if (error()) {
+    <div class="gms-card">
+      <gms-state variant="error" [title]="error()!.title" [text]="error()!.message">
+        <button gmsButton variant="primary" (click)="reload()">
+          <gms-icon name="clock" [size]="15" /> Tekrar dene
+        </button>
+      </gms-state>
+    </div>
+  } @else if (loading() && rows().length === 0) {
+    <div class="gms-card"><gms-state variant="loading" /></div>
+  } @else if (isEmpty()) {
+    <div class="gms-card">
+      <gms-state
+        variant="empty"
+        iconOverride="change"
+        [title]="hasFilters() ? 'Eşleşen değişiklik yok' : 'Henüz değişiklik yok'"
+        [text]="hasFilters() ? 'Filtre kriterlerinizi genişletmeyi deneyin.' : 'İlk değişikliğinizi oluşturarak başlayın.'">
+        @if (!hasFilters()) {
+          <button gmsButton variant="primary" (click)="newChange()" *gmsHasPermission="'change.create'">
+            <gms-icon name="plus" [size]="15" /> İlk değişikliği oluştur
+          </button>
+        }
+      </gms-state>
+    </div>
+  } @else {
+    <gms-data-grid
+      [rows]="rows()"
+      [columns]="columns()"
+      idKey="id"
+      [loading]="loading()"
+      [searchable]="false"
+      [selectable]="false"
+      [pageSize]="0"
+      [showToolbar]="false"
+      (rowClick)="openChange($event)">
+      <ng-template [gmsCell]="'changeClass'" let-row>{{ classLabelKey(row.changeClass) | transloco }}</ng-template>
+      <ng-template [gmsCell]="'changeType'" let-row><span class="type-cell">{{ typeLabelKey(row.changeType) | transloco }}</span></ng-template>
+      <ng-template [gmsCell]="'createdAt'" let-row>{{ row.createdAt | date: 'dd.MM.yyyy' }}</ng-template>
+      <ng-template [gmsCell]="'updatedAt'" let-row>{{ row.updatedAt ? (row.updatedAt | date: 'dd.MM.yyyy') : '—' }}</ng-template>
+    </gms-data-grid>
+
+    <!-- Server-side pager -->
+    <div class="chg-pager">
+      <span class="chg-pager__info">{{ rangeStart() }}–{{ rangeEnd() }} / {{ total() }}</span>
+      <div class="chg-pager__controls">
+        <button type="button" class="gms-btn gms-btn--ghost gms-btn--sm" [disabled]="page() <= 1" (click)="prevPage()">
+          <gms-icon name="chevron-left" [size]="15" /> Önceki
+        </button>
+        <span class="chg-pager__page">Sayfa {{ page() }} / {{ totalPages() }}</span>
+        <button type="button" class="gms-btn gms-btn--ghost gms-btn--sm" [disabled]="page() >= totalPages()" (click)="nextPage()">
+          Sonraki <gms-icon name="chevron-right" [size]="15" />
+        </button>
+      </div>
+    </div>
+  }
+
+  <!-- Context panel -->
+  <ng-container panel>
+    <gms-context-section title="Bilgi" icon="activity">
+      <p class="panel-empty">Değişiklikler, gerçek GMS backend'inden yüklenir. Filtreler, sıralama ve sayfalama sunucu tarafında uygulanır.</p>
+    </gms-context-section>
+    <gms-context-section title="İş Akışı" icon="approval">
+      <p class="panel-empty">Bir değişiklik gönderildiğinde yönetişim iş akışı başlar. Görevleriniz “İş Akışı Görevleri” alanında görünür.</p>
+    </gms-context-section>
+  </ng-container>
+
+</gms-page>

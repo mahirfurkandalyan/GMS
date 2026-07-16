@@ -1,0 +1,99 @@
+{
+  "pageTitle": "Bildirim Kuralları",
+  "pageSubtitle": "Modül olaylarına göre otomatik bildirim kurallarını yapılandırın.",
+  "breadcrumbAdmin": "Yönetim",
+  "notificationCenterLabel": "Bildirim Merkezi",
+  "panelContext": "Bağlam",
+  "ruleCountSuffix": "kural",
+  "lastUpdated": "birkaç dk önce",
+  "backToCenter": "Merkeze dön",
+  "newRule": "Yeni Kural",
+  "searchPlaceholder": "Kural veya tetikleyici ara…",
+  "savedViewAll": "Tüm Kurallar",
+  "savedViewActive": "Aktif Kurallar",
+  "filter": {
+    "trigger": "Tetikleyici",
+    "status": "Durum",
+    "all": "Tümü"
+  },
+  "trigger": {
+    "approval-created": "Onay Oluşturuldu",
+    "approval-completed": "Onay Tamamlandı",
+    "release-planned": "Yayın Planlandı",
+    "release-completed": "Yayın Tamamlandı",
+    "validation-failed": "Doğrulama Başarısız",
+    "execution-started": "Yürütme Başladı",
+    "execution-failed": "Yürütme Başarısız",
+    "workflow-published": "İş Akışı Yayınlandı",
+    "document-uploaded": "Doküman Yüklendi"
+  },
+  "channel": {
+    "in-app": "Uygulama İçi",
+    "email": "E-posta",
+    "teams": "Microsoft Teams",
+    "slack": "Slack",
+    "sms": "SMS",
+    "push": "Push Bildirimi"
+  },
+  "module": {
+    "release": "Yayın",
+    "change": "Değişiklik",
+    "approval": "Onay",
+    "validation": "Doğrulama",
+    "execution": "Yürütme",
+    "workflow": "İş Akışı",
+    "document": "Doküman",
+    "audit": "Denetim",
+    "system": "Sistem"
+  },
+  "comingSoon": "Yakında",
+  "column": {
+    "name": "Kural Adı",
+    "trigger": "Tetikleyici",
+    "channels": "Teslim Kanalları",
+    "status": "Durum",
+    "updatedAt": "Güncelleme"
+  },
+  "action": {
+    "view": "Detayları görüntüle",
+    "edit": "Düzenle (yakında)",
+    "duplicate": "Çoğalt"
+  },
+  "emptyTitle": "Kural yok",
+  "emptyText": "Filtrelerle eşleşen bildirim kuralı bulunmuyor.",
+  "lifecycleTitle": "Bildirim Yaşam Döngüsü",
+  "lifecycle": {
+    "created": { "title": "Bildirim Oluşturuldu", "time": "Kaynak modül olayı", "description": "Bir modül olayı kurala uyduğunda bildirim üretilir." },
+    "delivered": { "title": "İletildi", "time": "Seçili kanallar", "description": "Uygulama içi ve e-posta kanallarına iletilir." },
+    "read": { "title": "Okundu", "time": "Kullanıcı etkileşimi", "description": "Alıcı bildirimi görüntülediğinde okundu işaretlenir." },
+    "archived": { "title": "Arşivlendi", "time": "Otomatik / manuel", "description": "Saklama süresi sonunda veya manuel olarak arşivlenir." }
+  },
+  "recentNotifsTitle": "Son Bildirimler",
+  "recentRuleChangesTitle": "Son Kural Değişiklikleri",
+  "upcomingEventsTitle": "Yaklaşan Olaylar",
+  "upcoming": {
+    "releaseProdToday": "bugün üretime planlandı",
+    "approvalDueSoon": "onay son tarihi yaklaşıyor",
+    "revalidationNeeded": "yeniden doğrulama gerekiyor",
+    "today": "Bugün",
+    "tomorrow": "Yarın",
+    "in2Days": "2 gün"
+  },
+  "ruleDetailTitle": "Kural Detayı",
+  "detail": {
+    "trigger": "Tetikleyici",
+    "conditions": "Koşullar",
+    "recipients": "Alıcılar",
+    "channels": "Kanallar",
+    "priority": "Öncelik",
+    "status": "Durum"
+  },
+  "placeholderTag": "Yer Tutucu",
+  "conditionsNote": "Koşul editörü, alıcı yönetimi ve kanal yapılandırması sonraki fazda eklenecektir.",
+  "toast": {
+    "duplicated": "{{name}} çoğaltıldı.",
+    "duplicatedTitle": "Kopyalandı",
+    "editSoon": "Kural düzenleme yakında eklenecek.",
+    "newRuleSoon": "Kural oluşturma sihirbazı yakında eklenecek."
+  }
+}

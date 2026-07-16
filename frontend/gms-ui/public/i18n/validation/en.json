@@ -1,0 +1,160 @@
+{
+  "pageTitle": "Validation",
+  "pageSubtitle": "View and manage validation results for changes.",
+  "breadcrumbWorkspace": "Workspace",
+  "contextPanelTitle": "Context",
+  "healthy": "Healthy",
+  "failedSuffix": "failed",
+  "totalLabel": "Total",
+  "unit": "validations",
+  "lastUpdatedRecently": "a few minutes ago",
+  "export": "Export",
+  "refresh": "Refresh",
+  "reset": "Reset",
+  "searchPlaceholder": "Search validation, change, release, or rule…",
+  "allReleases": "All Releases",
+  "allProjects": "All Projects",
+  "allEnvironments": "All Environments",
+  "allResults": "All Results",
+  "allSeverities": "All Severities",
+  "allExecutors": "All Executors",
+  "dateFromTitle": "From execution date",
+  "empty": {
+    "title": "No validation records",
+    "text": "Validations assess whether a change is ready to be executed. They appear here once a change is validated.",
+    "step1": "Create a change",
+    "step2": "Run the validation rules",
+    "step3": "Review findings and recommendations"
+  },
+  "grid": {
+    "emptyTitle": "No matching validations",
+    "emptyText": "Try widening your filter criteria."
+  },
+  "columns": {
+    "code": "Validation No",
+    "change": "Related Change",
+    "release": "Release",
+    "project": "Project",
+    "environment": "Environment",
+    "rule": "Validation Rule",
+    "severity": "Severity",
+    "result": "Result",
+    "executedBy": "Executed By",
+    "executedAt": "Execution Date"
+  },
+  "rowActions": {
+    "open": "Open",
+    "change": "Related Change",
+    "copyLink": "Copy Link"
+  },
+  "toast": {
+    "linkCopied": "Link copied to clipboard.",
+    "exportSoon": "Export will be available soon."
+  },
+  "domainName": "Governance",
+  "moduleName": "Validation Center",
+  "relationType": {
+    "area": "Area",
+    "module": "Module",
+    "customer": "Customer",
+    "project": "Project",
+    "release": "Release",
+    "change": "Change",
+    "validation": "Validation"
+  },
+  "panel": {
+    "recentActivity": "Recent Activity",
+    "relatedChanges": "Related Changes",
+    "failedValidations": "Failed Validations",
+    "failedValidationsText": "{{count}} validations failed — review required.",
+    "recentValidations": "Recent Validations",
+    "recentValidationsNone": "No other validations.",
+    "relatedObjects": "Related Objects",
+    "relatedDocuments": "Related Documents",
+    "upcomingActions": "Upcoming Actions",
+    "upcomingActionsNone": "No pending actions."
+  },
+  "activity": {
+    "ran": "ran",
+    "foundFailed": "found failing",
+    "passed": "passed"
+  },
+  "vmActivity": {
+    "ranValidation": "ran the validation",
+    "evaluatedRules": "evaluated {{count}} rules",
+    "reviewedFinding": "reviewed a finding",
+    "systemActor": "System"
+  },
+  "detail": {
+    "notFoundTitle": "Validation not found",
+    "notFoundText": "The validation record you are looking for does not exist or may have been removed.",
+    "backToCenter": "Back to Validation Center",
+    "fallbackTitle": "Validation",
+    "viewChange": "View Related Change",
+    "ranSuffix": "ran"
+  },
+  "extra": {
+    "exportReport": "Export Report (coming soon)",
+    "rerun": "Re-validate (coming soon)",
+    "exportSoon": "Report export coming soon.",
+    "rerunSoon": "Re-validation coming soon."
+  },
+  "tabs": {
+    "overview": "Overview",
+    "findings": "Validation Findings",
+    "recommendations": "Recommendations",
+    "related": "Related Objects",
+    "timeline": "Timeline",
+    "audit": "Audit"
+  },
+  "verdict": {
+    "blocked": "Execution blocked",
+    "warn": "Can proceed with warnings",
+    "ready": "Ready to execute",
+    "passedCount": "Passed",
+    "warningCount": "Warning",
+    "failedCount": "Failed",
+    "skippedCount": "Skipped"
+  },
+  "overview": {
+    "generalInfo": "General Information",
+    "summary": "Validation Summary",
+    "riskSummary": "Risk Summary",
+    "timelineTitle": "Timeline"
+  },
+  "kv": {
+    "relatedChange": "Related Change",
+    "relatedRelease": "Related Release",
+    "project": "Project",
+    "environment": "Environment",
+    "executedBy": "Executed By",
+    "executedAt": "Execution Date",
+    "result": "Result",
+    "validationStatus": "Validation Status",
+    "completed": "Completed"
+  },
+  "metrics": {
+    "failed": "Failed",
+    "warning": "Warning",
+    "passed": "Passed"
+  },
+  "severityWord": "Severity",
+  "findings": {
+    "title": "Validation Findings",
+    "evaluatedCount": "{{count}} rules evaluated.",
+    "recommendation": "Recommendation:"
+  },
+  "moduleComingSoon": "This module will be added in a later development phase. The architecture is ready to integrate with the Validation process.",
+  "vmTimeline": {
+    "created": "Validation created",
+    "createdDesc": "Validation planned for {{change}}.",
+    "started": "Validation started",
+    "completed": "Validation completed",
+    "recommendationsCreated": "Recommendations created",
+    "notNeeded": "Not needed"
+  },
+  "vmLinks": {
+    "relatedChange": "Related Change",
+    "relatedRelease": "Related Release"
+  }
+}

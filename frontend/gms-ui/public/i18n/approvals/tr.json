@@ -1,0 +1,198 @@
+{
+  "pageTitle": "Onaylar",
+  "pageSubtitle": "Bekleyen ve tamamlanan onay süreçlerini yönetin.",
+  "breadcrumbWorkspace": "Çalışma Alanı",
+  "contextPanelTitle": "Bağlam",
+  "pendingSuffix": "bekleyen",
+  "totalLabel": "Toplam",
+  "unit": "onay",
+  "lastUpdatedRecently": "birkaç dk önce",
+  "export": "Dışa Aktar",
+  "refresh": "Yenile",
+  "reset": "Sıfırla",
+  "searchPlaceholder": "Onay, başlık, yayın veya onaycı ara…",
+  "allStatuses": "Tüm Durumlar",
+  "allReleases": "Tüm Yayınlar",
+  "allProjects": "Tüm Projeler",
+  "allEnvironments": "Tüm Ortamlar",
+  "allTypes": "Tüm Onay Türleri",
+  "allApprovers": "Tüm Onaycılar",
+  "dateFromTitle": "Oluşturma tarihinden itibaren",
+  "empty": {
+    "title": "Onay kaydı yok",
+    "text": "Onaylar; yayın ve değişikliklerin yönetişim karar süreçlerinden oluşur. Bir değişiklik gönderildiğinde burada görünür.",
+    "step1": "Bir değişiklik veya yayın gönderin",
+    "step2": "Onay zinciri otomatik başlar",
+    "step3": "Kararlar burada takip edilir"
+  },
+  "grid": {
+    "emptyTitle": "Eşleşen onay yok",
+    "emptyText": "Filtre kriterlerinizi genişletmeyi deneyin."
+  },
+  "columns": {
+    "code": "Onay No",
+    "title": "Başlık",
+    "release": "İlgili Yayın",
+    "change": "İlgili Değişiklik",
+    "stage": "Aşama",
+    "approver": "Mevcut Onaycı",
+    "priority": "Öncelik",
+    "risk": "Risk",
+    "status": "Durum",
+    "requestedAt": "Oluşturma",
+    "dueDate": "Son Tarih"
+  },
+  "rowActions": {
+    "open": "Aç",
+    "copyLink": "Bağlantıyı Kopyala"
+  },
+  "toast": {
+    "linkCopied": "Bağlantı panoya kopyalandı.",
+    "exportSoon": "Dışa aktarma yakında eklenecek."
+  },
+  "domainName": "Yönetişim",
+  "moduleName": "Onay Merkezi",
+  "relationType": {
+    "area": "Alan",
+    "module": "Modül",
+    "customer": "Müşteri",
+    "project": "Proje",
+    "release": "Yayın",
+    "change": "Değişiklik",
+    "approval": "Onay"
+  },
+  "panel": {
+    "recentActivity": "Son Aktivite",
+    "relatedReleases": "İlgili Yayınlar",
+    "pendingDecisions": "Bekleyen Kararlar",
+    "pendingDecisionsText": "{{count}} onay kararınızı bekliyor.",
+    "relatedDocuments": "İlgili Dokümanlar",
+    "relatedRecords": "İlgili Kayıtlar",
+    "pendingActions": "Bekleyen Aksiyonlar",
+    "pendingActionsNone": "Bekleyen aksiyon yok.",
+    "upcomingSteps": "Yaklaşan Adımlar",
+    "upcomingStepsNone": "Kalan adım yok."
+  },
+  "activity": {
+    "listApproved": "{{code}} onayladı",
+    "listViewedRequest": "bir talebi görüntüledi",
+    "listRejected": "{{code}} reddetti"
+  },
+  "vmActivity": {
+    "createdRequest": "onay talebini oluşturdu",
+    "viewedRequest": "talebi görüntüledi",
+    "leftComment": "yorum bıraktı",
+    "approverFallback": "Onaycı"
+  },
+  "detail": {
+    "notFoundTitle": "Onay bulunamadı",
+    "notFoundText": "Aradığınız onay kaydı mevcut değil ya da kaldırılmış olabilir.",
+    "backToCenter": "Onay Merkezi'ne dön",
+    "fallbackTitle": "Onay"
+  },
+  "decisionBar": {
+    "waitingTitle": "Kararınız bekleniyor",
+    "stageLabel": "Aşama",
+    "approverLabel": "Onaycı",
+    "dueLabel": "Son tarih",
+    "revision": "Revizyon İste",
+    "reject": "Reddet",
+    "approve": "Onayla",
+    "decisionPrefix": "Karar",
+    "doneSub": "Bu onay süreci için ek işlem gerekmiyor."
+  },
+  "extra": {
+    "delegate": "Devret (yakında)",
+    "forward": "İlet (yakında)",
+    "delegateSoon": "Devretme yakında.",
+    "forwardSoon": "İletme yakında."
+  },
+  "tabs": {
+    "overview": "Genel Bakış",
+    "flow": "Onay Akışı",
+    "comments": "Yorumlar",
+    "attachments": "Ekler",
+    "timeline": "Zaman Çizelgesi",
+    "audit": "Denetim"
+  },
+  "overview": {
+    "generalInfo": "Genel Bilgiler",
+    "riskSummary": "Risk Özeti",
+    "relatedMetrics": "İlgili Metrikler",
+    "timelineTitle": "Zaman Çizelgesi",
+    "riskNote": "Reddedilirse süreç durur ve talep sahibine geri döner. Ayrıntılı risk skorlaması sonraki fazda eklenecektir."
+  },
+  "kv": {
+    "businessReason": "İş Gerekçesi",
+    "approvalType": "Onay Türü",
+    "requestedBy": "Talep Eden",
+    "requestedAt": "Talep Tarihi",
+    "relatedRelease": "İlgili Yayın",
+    "relatedChange": "İlgili Değişiklik",
+    "currentStage": "Mevcut Aşama",
+    "currentDecision": "Mevcut Karar"
+  },
+  "metrics": {
+    "stage": "Aşama",
+    "document": "Doküman",
+    "remainingSteps": "Kalan Adım"
+  },
+  "riskWord": "Risk",
+  "priorityWord": "Öncelik",
+  "flow": {
+    "title": "Onay Akışı",
+    "dateNone": "Tarih yok",
+    "commentNone": "Yorum yok",
+    "stepStatus": {
+      "approved": "Onayladı",
+      "completed": "Tamamlandı",
+      "rejected": "Reddetti",
+      "pending": "Bekliyor",
+      "waiting": "Sırada"
+    }
+  },
+  "moduleComingSoon": "Bu modül sonraki geliştirme aşamasında eklenecektir. Mimari, Onay süreci ile ilişkili olacak şekilde hazırdır.",
+  "decisionModal": {
+    "approveTitle": "Onayı Onayla",
+    "approveConfirm": "Onayla",
+    "approveHint": "Bu aşamayı onaylıyorsunuz; süreç bir sonraki onaycıya ilerler.",
+    "rejectTitle": "Onayı Reddet",
+    "rejectConfirm": "Reddet",
+    "rejectHint": "Reddedildiğinde süreç durur ve talep sahibine geri döner.",
+    "revisionTitle": "Revizyon İste",
+    "revisionConfirm": "Revizyon İste",
+    "revisionHint": "Talep sahibinden düzeltme istenir; onay askıya alınır.",
+    "commentLabel": "Yorum",
+    "commentOptional": "(opsiyonel)",
+    "commentPlaceholder": "Kararınıza dair not ekleyin…",
+    "cancel": "Vazgeç"
+  },
+  "toastDecision": {
+    "approved": "{{code}} için onay verildi.",
+    "approvedTitle": "Karar kaydedildi",
+    "rejected": "{{code}} reddedildi.",
+    "revision": "{{code}} için revizyon istendi."
+  },
+  "decision": {
+    "approved": "Onaylandı",
+    "rejected": "Reddedildi",
+    "expired": "Süresi doldu",
+    "waiting": "Sırada bekliyor",
+    "pending": "Karar bekleniyor"
+  },
+  "timeline": {
+    "created": "Onay oluşturuldu",
+    "createdDesc": "{{by}} tarafından başlatıldı.",
+    "assigned": "Onaycıya atandı",
+    "assignedAllStages": "Tüm aşamalar",
+    "viewed": "Görüntülendi",
+    "today": "Bugün",
+    "processCompleted": "Süreç tamamlandı",
+    "pendingState": "Beklemede"
+  },
+  "vmLinks": {
+    "relatedRelease": "İlgili Yayın",
+    "relatedChange": "İlgili Değişiklik",
+    "pendingDecisionSuffix": "kararı bekliyor"
+  }
+}

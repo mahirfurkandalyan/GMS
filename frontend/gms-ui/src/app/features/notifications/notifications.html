@@ -1,0 +1,126 @@
+<gms-page [contextPanel]="true" [panelTitle]="'notifications.panelTitle' | transloco">
+
+  <gms-page-header
+    header
+    [title]="'notifications.pageTitle' | transloco"
+    [subtitle]="'notifications.pageSubtitle' | transloco"
+    [breadcrumbs]="[{ label: ('notifications.breadcrumbComm' | transloco) }, { label: ('notifications.pageTitle' | transloco) }]"
+    [status]="{ label: unreadCount() + ' ' + ('notifications.unread' | transloco), tone: unreadCount() ? 'warning' : 'success' }"
+    [lastUpdated]="'notifications.lastUpdated' | transloco">
+    <button secondary gmsButton variant="ghost" (click)="goRules()"><gms-icon name="filter" [size]="16" /> {{ 'notifications.rulesButton' | transloco }}</button>
+    <button secondary gmsButton variant="ghost" (click)="onRefresh()"><gms-icon name="activity" [size]="16" /> {{ 'common.refresh' | transloco }}</button>
+    <button actions gmsButton variant="primary" [disabled]="!unreadCount()" (click)="markAllRead()">
+      <gms-icon name="check" [size]="16" /> {{ 'notifications.markAllRead' | transloco }}
+    </button>
+  </gms-page-header>
+
+  <!-- Reusable filter experience -->
+  <div toolbar>
+    <gms-filter-bar
+      [search]="fSearch()" (searchChange)="fSearch.set($event)"
+      [placeholder]="'notifications.searchPlaceholder' | transloco"
+      [hasAdvanced]="true"
+      [savedViews]="[('notifications.savedViewAll' | transloco), ('notifications.savedViewAttention' | transloco)]"
+      (reset)="onResetFilters()">
+      <div advanced>
+        <label class="ff"><span>{{ 'notifications.filter.category' | transloco }}</span>
+          <select [ngModel]="fType()" (ngModelChange)="fType.set($event)" [ngModelOptions]="{ standalone: true }">
+            <option value="">{{ 'notifications.filter.all' | transloco }}</option>
+            @for (t of typeOptions; track t.key) { <option [value]="t.key">{{ t.labelKey | transloco }}</option> }
+          </select>
+        </label>
+        <label class="ff"><span>{{ 'notifications.filter.priority' | transloco }}</span>
+          <select [ngModel]="fPriority()" (ngModelChange)="fPriority.set($event)" [ngModelOptions]="{ standalone: true }">
+            <option value="">{{ 'notifications.filter.all' | transloco }}</option>
+            @for (p of priorityOptions; track p) { <option [value]="p">{{ priorityLabel(p) }}</option> }
+          </select>
+        </label>
+        <label class="ff"><span>{{ 'notifications.filter.status' | transloco }}</span>
+          <select [ngModel]="fStatus()" (ngModelChange)="fStatus.set($event)" [ngModelOptions]="{ standalone: true }">
+            <option value="">{{ 'notifications.filter.all' | transloco }}</option>
+            @for (s of statusOptions; track s.key) { <option [value]="s.key">{{ s.labelKey | transloco }}</option> }
+          </select>
+        </label>
+        <label class="ff"><span>{{ 'notifications.filter.module' | transloco }}</span>
+          <select [ngModel]="fModule()" (ngModelChange)="fModule.set($event)" [ngModelOptions]="{ standalone: true }">
+            <option value="">{{ 'notifications.filter.all' | transloco }}</option>
+            @for (m of moduleOptions; track m) { <option [value]="m">{{ moduleLabel(m) }}</option> }
+          </select>
+        </label>
+        <label class="ff"><span>{{ 'notifications.filter.date' | transloco }}</span>
+          <input type="date" [ngModel]="fDate()" (ngModelChange)="fDate.set($event)" [ngModelOptions]="{ standalone: true }" />
+        </label>
+      </div>
+    </gms-filter-bar>
+  </div>
+
+  <div class="nc">
+    <gms-section-nav [groups]="navGroups()" [active]="activeView()" (activeChange)="onView($event)" [ariaLabel]="'notifications.viewsAriaLabel' | transloco" />
+
+    <section class="nc-content">
+      <gms-data-grid
+        [rows]="filtered()" [columns]="columns()" idKey="id" [searchable]="false" [rowActions]="rowActions()"
+        emptyIcon="bell" [emptyTitle]="'notifications.emptyTitle' | transloco" [emptyText]="'notifications.emptyText' | transloco"
+        (rowAction)="onRowAction($event)" (rowClick)="select($event)">
+        <ng-template [gmsCell]="'title'" let-row>
+          <span class="ntitle" [class.ntitle--unread]="row.status === 'unread'">
+            <span class="ntitle__dot" [class]="'ntitle__dot--' + typeMeta(row.type).tone"></span>
+            {{ row.title }}
+          </span>
+        </ng-template>
+        <ng-template [gmsCell]="'module'" let-row>
+          <span class="mod-chip"><gms-icon [name]="moduleMeta(row.module).icon" [size]="13" /> {{ moduleLabel(row.module) }}</span>
+        </ng-template>
+        <ng-template [gmsCell]="'related'" let-row>
+          @if (row.related) { <span class="mono">{{ row.related.code }}</span> } @else { <span class="muted">—</span> }
+        </ng-template>
+        <ng-template [gmsCell]="'createdAt'" let-row>{{ row.createdAt | date: 'dd.MM.yyyy HH:mm' }}</ng-template>
+        <ng-template [gmsCell]="'status'" let-row>
+          <span class="badge" [class]="'badge--' + statusMeta(row.status).tone">{{ statusLabel(row.status) }}</span>
+        </ng-template>
+      </gms-data-grid>
+    </section>
+  </div>
+
+  <!-- Right detail panel -->
+  <ng-container panel>
+    @if (selected(); as s) {
+      <div class="nd">
+        <div class="nd__head">
+          <span class="nd__icon" [class]="'nd__icon--' + typeMeta(s.type).tone"><gms-icon [name]="typeMeta(s.type).icon" [size]="18" /></span>
+          <div class="nd__meta">
+            <span class="nd__title">{{ s.title }}</span>
+            <span class="nd__sub">{{ typeLabel(s.type) }} · {{ moduleLabel(s.module) }}</span>
+          </div>
+        </div>
+
+        <p class="nd__desc">{{ s.description }}</p>
+
+        <dl class="nd__kv">
+          <div><dt>{{ 'notifications.detail.module' | transloco }}</dt><dd><span class="mod-chip"><gms-icon [name]="moduleMeta(s.module).icon" [size]="12" /> {{ moduleLabel(s.module) }}</span></dd></div>
+          <div><dt>{{ 'notifications.detail.priority' | transloco }}</dt><dd>{{ priorityLabel(s.priority) }}</dd></div>
+          <div><dt>{{ 'notifications.detail.status' | transloco }}</dt><dd><span class="badge" [class]="'badge--' + statusMeta(s.status).tone">{{ statusLabel(s.status) }}</span></dd></div>
+          <div><dt>{{ 'notifications.detail.date' | transloco }}</dt><dd>{{ s.createdAt | date: 'dd.MM.yyyy HH:mm' }}</dd></div>
+          <div class="nd__full"><dt>{{ 'notifications.detail.related' | transloco }}</dt><dd>{{ s.related ? s.related.code + ' · ' + s.related.name : '—' }}</dd></div>
+        </dl>
+
+        <div class="nd__actions">
+          <button gmsButton variant="primary" [disabled]="!s.related" (click)="openRelated(s)">
+            <gms-icon name="chevron-right" [size]="15" /> {{ 'notifications.detail.openRelated' | transloco }}
+          </button>
+          <button gmsButton variant="secondary" [disabled]="s.status !== 'unread'" (click)="markSelectedRead()">
+            <gms-icon name="check" [size]="15" /> {{ 'notifications.detail.markRead' | transloco }}
+          </button>
+          <button gmsButton variant="ghost" [disabled]="s.status === 'archived'" (click)="archiveSelected()">
+            <gms-icon name="folder" [size]="15" /> {{ 'notifications.detail.archive' | transloco }}
+          </button>
+        </div>
+      </div>
+    } @else {
+      <gms-context-section [title]="'notifications.panelTitle' | transloco" icon="bell">
+        <p class="muted">{{ 'notifications.selectPrompt' | transloco }}</p>
+      </gms-context-section>
+    }
+  </ng-container>
+
+</gms-page>

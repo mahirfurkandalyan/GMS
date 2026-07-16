@@ -1,0 +1,107 @@
+<gms-page [contextPanel]="true" [panelTitle]="'approvals.contextPanelTitle' | transloco">
+
+  <gms-page-header
+    header
+    [title]="'approvals.pageTitle' | transloco"
+    [subtitle]="'approvals.pageSubtitle' | transloco"
+    [breadcrumbs]="[{ label: ('approvals.breadcrumbWorkspace' | transloco) }, { label: ('approvals.moduleName' | transloco) }]"
+    [status]="{ label: pendingCount() + ' ' + ('approvals.pendingSuffix' | transloco), tone: 'warning' }"
+    [context]="[{ key: ('approvals.totalLabel' | transloco), label: filteredRows().length + ' ' + ('approvals.unit' | transloco) }]"
+    [lastUpdated]="'approvals.lastUpdatedRecently' | transloco">
+    <button secondary gmsButton variant="ghost" (click)="onExport()">
+      <gms-icon name="document" [size]="16" /> {{ 'approvals.export' | transloco }}
+    </button>
+    <button actions gmsButton variant="secondary" (click)="reload()">
+      <gms-icon name="clock" [size]="16" /> {{ 'approvals.refresh' | transloco }}
+    </button>
+  </gms-page-header>
+
+  <div toolbar class="apr-toolbar">
+    <gms-relationship-strip [nodes]="relationChain()" />
+
+    <div class="filters">
+      <div class="filters__search">
+        <gms-icon name="search" [size]="17" />
+        <input type="text" [placeholder]="'approvals.searchPlaceholder' | transloco"
+          [ngModel]="fSearch()" (ngModelChange)="fSearch.set($event)" [ngModelOptions]="{ standalone: true }" />
+      </div>
+
+      <select class="filters__select" [ngModel]="fStatus()" (ngModelChange)="fStatus.set($event)" [ngModelOptions]="{ standalone: true }">
+        <option value="">{{ 'approvals.allStatuses' | transloco }}</option>
+        @for (s of statusOptions; track s) { <option [value]="s">{{ statusLabelKey(s) | transloco }}</option> }
+      </select>
+
+      <select class="filters__select" [ngModel]="fRelease()" (ngModelChange)="fRelease.set($event)" [ngModelOptions]="{ standalone: true }">
+        <option value="">{{ 'approvals.allReleases' | transloco }}</option>
+        @for (r of releaseOptions(); track r) { <option [value]="r">{{ r }}</option> }
+      </select>
+
+      <select class="filters__select" [ngModel]="fProject()" (ngModelChange)="fProject.set($event)" [ngModelOptions]="{ standalone: true }">
+        <option value="">{{ 'approvals.allProjects' | transloco }}</option>
+        @for (p of projectOptions(); track p) { <option [value]="p">{{ p }}</option> }
+      </select>
+
+      <select class="filters__select" [ngModel]="fEnv()" (ngModelChange)="fEnv.set($event)" [ngModelOptions]="{ standalone: true }">
+        <option value="">{{ 'approvals.allEnvironments' | transloco }}</option>
+        @for (e of envOptions(); track e) { <option [value]="e">{{ e }}</option> }
+      </select>
+
+      <select class="filters__select" [ngModel]="fType()" (ngModelChange)="fType.set($event)" [ngModelOptions]="{ standalone: true }">
+        <option value="">{{ 'approvals.allTypes' | transloco }}</option>
+        @for (t of typeOptions; track t) { <option [value]="t">{{ t }}</option> }
+      </select>
+
+      <select class="filters__select" [ngModel]="fOwner()" (ngModelChange)="fOwner.set($event)" [ngModelOptions]="{ standalone: true }">
+        <option value="">{{ 'approvals.allApprovers' | transloco }}</option>
+        @for (o of ownerOptions(); track o) { <option [value]="o">{{ o }}</option> }
+      </select>
+
+      <input type="date" class="filters__date" [ngModel]="fDate()" (ngModelChange)="fDate.set($event)"
+        [ngModelOptions]="{ standalone: true }" [title]="'approvals.dateFromTitle' | transloco" />
+
+      @if (hasFilters()) {
+        <button type="button" class="gms-btn gms-btn--ghost gms-btn--sm" (click)="resetFilters()">{{ 'approvals.reset' | transloco }}</button>
+      }
+    </div>
+  </div>
+
+  @if (!loading() && rows().length === 0) {
+    <div class="gms-card">
+      <gms-state variant="empty" iconOverride="approval" [title]="'approvals.empty.title' | transloco"
+        [text]="'approvals.empty.text' | transloco"
+        [steps]="[('approvals.empty.step1' | transloco), ('approvals.empty.step2' | transloco), ('approvals.empty.step3' | transloco)]" />
+    </div>
+  } @else {
+    <gms-data-grid
+      [rows]="filteredRows()"
+      [columns]="columns()"
+      idKey="id"
+      [loading]="loading()"
+      [searchable]="false"
+      [selectable]="true"
+      [rowActions]="rowActions()"
+      emptyIcon="search"
+      [emptyTitle]="'approvals.grid.emptyTitle' | transloco"
+      [emptyText]="'approvals.grid.emptyText' | transloco"
+      (rowAction)="onRowAction($event)"
+      (rowClick)="openApproval($event)"
+      (exportRequested)="onExport()">
+      <ng-template [gmsCell]="'requestedAt'" let-row>{{ row.requestedAt | date: 'dd.MM.yyyy' }}</ng-template>
+      <ng-template [gmsCell]="'dueDate'" let-row>{{ row.dueDate | date: 'dd.MM.yyyy' }}</ng-template>
+    </gms-data-grid>
+  }
+
+  <!-- Context panel -->
+  <ng-container panel>
+    <gms-context-section [title]="'approvals.panel.recentActivity' | transloco" icon="activity">
+      <gms-activity-feed [items]="panelActivity()" />
+    </gms-context-section>
+    <gms-context-section [title]="'approvals.panel.relatedReleases' | transloco" icon="release" [count]="relatedReleases.length">
+      <gms-item-list [items]="relatedReleases" />
+    </gms-context-section>
+    <gms-context-section [title]="'approvals.panel.pendingDecisions' | transloco" icon="approval" [count]="pendingCount()">
+      <p class="panel-empty">{{ 'approvals.panel.pendingDecisionsText' | transloco: { count: pendingCount() } }}</p>
+    </gms-context-section>
+  </ng-container>
+
+</gms-page>

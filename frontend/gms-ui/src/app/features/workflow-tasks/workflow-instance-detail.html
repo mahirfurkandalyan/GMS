@@ -1,0 +1,152 @@
+<gms-page [contextPanel]="true" panelTitle="Bağlam">
+
+  @if (instance(); as inst) {
+    <gms-page-header
+      header
+      [title]="inst.instanceNo"
+      [subtitle]="inst.workflowName + ' · v' + inst.versionNumber"
+      [breadcrumbs]="breadcrumbs()"
+      [status]="null">
+      <div actions class="wid-actions">
+        <gms-badge kind="status" [value]="inst.status" />
+        @if (isWaiting()) {
+          <button gmsButton variant="ghost" [disabled]="submitting()" (click)="doPause()" *gmsHasPermission="'workflow.instance.pause'">
+            <gms-icon name="clock" [size]="15" /> {{ 'workflows.runtime.pause' | transloco }}
+          </button>
+        }
+        @if (isRunning()) {
+          <button gmsButton variant="ghost" [disabled]="submitting()" (click)="doResume()" *gmsHasPermission="'workflow.instance.resume'">
+            <gms-icon name="chevron-right" [size]="15" /> {{ 'workflows.runtime.resume' | transloco }}
+          </button>
+        }
+        @if (isActive()) {
+          <button gmsButton variant="ghost" [disabled]="submitting()" (click)="doCancel()" *gmsHasPermission="'workflow.instance.cancel'">
+            <gms-icon name="close" [size]="15" /> {{ 'workflows.runtime.cancel' | transloco }}
+          </button>
+        }
+      </div>
+    </gms-page-header>
+  }
+
+  @if (loading()) {
+    <div class="gms-card"><gms-state variant="loading" /></div>
+  } @else if (error()) {
+    <div class="gms-card">
+      <gms-state [variant]="error()!.kind === 'notFound' ? 'empty' : 'error'" [title]="error()!.title" [text]="error()!.message">
+        <button gmsButton variant="ghost" (click)="back()"><gms-icon name="chevron-left" [size]="15" /> Görevlere dön</button>
+      </gms-state>
+    </div>
+  } @else if (instance(); as inst) {
+
+    <!-- Task action panel -->
+    @if (canActOnTask(); as canAct) {
+      @if (activeStep(); as step) {
+        <div class="gms-card task-panel">
+          <div class="task-panel__head">
+            <div>
+              <h3 class="card-title">{{ step.name }}</h3>
+              <p class="hint">{{ stepTypeKey(step.stepType) | transloco }}@if (step.assignedRole) { · {{ step.assignedRole }} }</p>
+            </div>
+          </div>
+
+          <label class="field">
+            <span>{{ (rejectMode() ? 'workflows.tasks.comment' : 'workflows.tasks.commentOptional') | transloco }}</span>
+            <textarea rows="3" [ngModel]="comment()" (ngModelChange)="comment.set($event)" name="comment"
+              [placeholder]="rejectMode() ? ('workflows.tasks.commentRequired' | transloco) : ''"></textarea>
+          </label>
+          @if (rejectError()) { <p class="field-error">{{ 'workflows.tasks.commentRequired' | transloco }}</p> }
+          @if (rejectMode()) { <p class="consequence"><gms-icon name="shield" [size]="14" /> {{ 'workflows.tasks.rejectConsequence' | transloco }}</p> }
+
+          <div class="task-panel__actions">
+            @if (!rejectMode()) {
+              <button gmsButton variant="primary" [disabled]="submitting()" (click)="doComplete()" *gmsHasPermission="'workflow.task.complete'">
+                <gms-icon name="check" [size]="15" /> {{ 'workflows.tasks.complete' | transloco }}
+              </button>
+              <button gmsButton variant="ghost" [disabled]="submitting()" (click)="startReject()" *gmsHasPermission="'workflow.task.reject'">
+                <gms-icon name="close" [size]="15" /> {{ 'workflows.tasks.reject' | transloco }}
+              </button>
+            } @else {
+              <button gmsButton variant="destructive" [disabled]="submitting()" (click)="doReject()" *gmsHasPermission="'workflow.task.reject'">
+                <gms-icon name="close" [size]="15" /> {{ 'workflows.tasks.reject' | transloco }}
+              </button>
+              <button gmsButton variant="ghost" [disabled]="submitting()" (click)="cancelReject()">Vazgeç</button>
+            }
+          </div>
+        </div>
+      }
+    }
+
+    <div class="wid-grid">
+      <div class="gms-card">
+        <h3 class="card-title">{{ 'workflows.runtime.pageTitle' | transloco }}</h3>
+        <dl class="info-list">
+          <div class="info-list__row"><dt>{{ 'workflows.runtime.workflow' | transloco }}</dt><dd>{{ inst.workflowName }}</dd></div>
+          <div class="info-list__row"><dt>{{ 'workflows.runtime.version' | transloco }}</dt><dd>v{{ inst.versionNumber }}</dd></div>
+          <div class="info-list__row"><dt>{{ 'workflows.runtime.status' | transloco }}</dt><dd><gms-badge kind="status" [value]="inst.status" /></dd></div>
+          @if (inst.outcome) { <div class="info-list__row"><dt>{{ 'workflows.runtime.outcome' | transloco }}</dt><dd>{{ inst.outcome }}</dd></div> }
+          <div class="info-list__row"><dt>{{ 'workflows.runtime.relatedObject' | transloco }}</dt>
+            <dd>
+              @if (inst.triggerObjectType === 'ChangeRequest' && inst.triggerObjectNumber) {
+                <a class="link" (click)="openChange()">{{ inst.triggerObjectNumber }}</a>
+              } @else { {{ inst.triggerObjectNumber ?? '—' }} }
+            </dd>
+          </div>
+          <div class="info-list__row"><dt>{{ 'workflows.runtime.createdAt' | transloco }}</dt><dd>{{ inst.createdAt | date: 'dd.MM.yyyy HH:mm' }}</dd></div>
+          @if (inst.completedAt) { <div class="info-list__row"><dt>{{ 'workflows.runtime.completedAt' | transloco }}</dt><dd>{{ inst.completedAt | date: 'dd.MM.yyyy HH:mm' }}</dd></div> }
+        </dl>
+      </div>
+
+      <div class="gms-card">
+        <h3 class="card-title">{{ 'workflows.runtime.stepsTitle' | transloco }} <span class="count">{{ inst.steps.length }}</span></h3>
+        <ul class="wf-steps">
+          @for (s of inst.steps; track s.id) {
+            <li class="wf-steps__item" [class.wf-steps__item--active]="s.status === 'Active'">
+              <gms-badge kind="status" [value]="s.status" />
+              <div class="wf-steps__body">
+                <span class="wf-steps__name">{{ s.name }}</span>
+                <span class="wf-steps__meta">{{ stepTypeKey(s.stepType) | transloco }}@if (s.assignedRole) { · {{ s.assignedRole }} }@if (s.dueAt) { · {{ 'workflows.runtime.due' | transloco }}: {{ s.dueAt | date: 'dd.MM.yyyy' }} }</span>
+                @if (s.comment) { <span class="wf-steps__comment">“{{ s.comment }}”</span> }
+              </div>
+            </li>
+          }
+        </ul>
+      </div>
+    </div>
+
+    <div class="gms-card">
+      <h3 class="card-title">{{ 'workflows.runtime.timelineTitle' | transloco }} <span class="count">{{ inst.events.length }}</span></h3>
+      @if (inst.events.length === 0) { <p class="hint">Kayıt yok.</p> }
+      @else {
+        <ul class="audit-list">
+          @for (e of inst.events; track e.id) {
+            <li class="audit-list__item">
+              <span class="audit-list__dot"></span>
+              <div class="audit-list__body">
+                <span class="audit-list__type">{{ eventKey(e.eventType) | transloco }}</span>
+                <span class="audit-list__desc">{{ e.description }}</span>
+                <span class="audit-list__meta">{{ e.actorUserName || ('workflows.runtime.unknownActor' | transloco) }} · {{ e.createdAt | date: 'dd.MM.yyyy HH:mm' }}</span>
+              </div>
+            </li>
+          }
+        </ul>
+      }
+    </div>
+  }
+
+  <ng-container panel>
+    @if (instance(); as inst) {
+      <gms-context-section title="Özet" icon="approval">
+        <dl class="mini-list">
+          <div><dt>{{ 'workflows.runtime.instanceNo' | transloco }}</dt><dd>{{ inst.instanceNo }}</dd></div>
+          <div><dt>{{ 'workflows.runtime.status' | transloco }}</dt><dd><gms-badge kind="status" [value]="inst.status" /></dd></div>
+        </dl>
+      </gms-context-section>
+      @if (inst.triggerObjectType === 'ChangeRequest' && inst.triggerObjectNumber) {
+        <gms-context-section title="İlgili Değişiklik" icon="change">
+          <a class="link" (click)="openChange()"><gms-icon name="change" [size]="14" /> {{ inst.triggerObjectNumber }}</a>
+        </gms-context-section>
+      }
+    }
+  </ng-container>
+
+</gms-page>

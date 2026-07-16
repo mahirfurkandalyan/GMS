@@ -1,0 +1,153 @@
+@if (loading()) {
+  <section class="gms-page"><div class="gms-card"><gms-state variant="loading" /></div></section>
+} @else if (notFound()) {
+  <section class="gms-page">
+    <div class="gms-card">
+      <gms-state variant="error" [title]="'documents.detail.notFoundTitle' | transloco" [text]="'documents.detail.notFoundText' | transloco">
+        <button gmsButton variant="secondary" (click)="back()"><gms-icon name="chevron-left" [size]="15" /> {{ 'documents.detail.backToCenter' | transloco }}</button>
+      </gms-state>
+    </div>
+  </section>
+} @else if (document(); as d) {
+  <gms-page [contextPanel]="true" [panelTitle]="'common.context' | transloco">
+
+    <gms-page-header
+      header
+      [title]="d.name"
+      [subtitle]="d.code + ' · ' + d.fileName"
+      [breadcrumbs]="breadcrumbs()"
+      [status]="{ label: statusLabel(), tone: statusTone() }"
+      [context]="headerContext()"
+      [lastUpdated]="d.version">
+      <gms-menu secondary [items]="extraActions()" (select)="onExtra($event)" />
+      <button actions gmsButton variant="primary" (click)="onNewVersion()">
+        <gms-icon name="plus" [size]="16" /> {{ 'documents.detail.newVersion' | transloco }}
+      </button>
+    </gms-page-header>
+
+    <div toolbar class="dd-toolbar">
+      <gms-relationship-strip [nodes]="relationChain()" />
+    </div>
+
+    <gms-tabs [tabs]="tabs()" [(active)]="activeTab" />
+
+    @switch (activeTab()) {
+      @case ('overview') {
+        <div class="gms-grid gms-grid--2">
+          <div class="gms-card">
+            <h3 class="gms-section-title">{{ 'documents.detail.generalInfo' | transloco }}</h3>
+            <dl class="kv">
+              <div><dt>{{ 'documents.detail.field.category' | transloco }}</dt><dd><span class="cat-chip"><gms-icon [name]="typeIcon(d.category)" [size]="13" /> {{ typeLabel(d.category) }}</span></dd></div>
+              <div><dt>{{ 'documents.detail.field.version' | transloco }}</dt><dd>{{ d.version }}</dd></div>
+              <div><dt>{{ 'documents.detail.field.owner' | transloco }}</dt><dd>{{ d.owner }}</dd></div>
+              <div><dt>{{ 'documents.detail.field.file' | transloco }}</dt><dd>{{ d.fileName }} · {{ d.size }}</dd></div>
+              <div><dt>{{ 'documents.detail.field.createdAt' | transloco }}</dt><dd>{{ d.createdAt | date: 'dd.MM.yyyy HH:mm' }}</dd></div>
+              <div><dt>{{ 'documents.detail.field.updatedAt' | transloco }}</dt><dd>{{ d.updatedAt | date: 'dd.MM.yyyy HH:mm' }}</dd></div>
+              <div><dt>{{ 'documents.detail.field.release' | transloco }}</dt><dd>{{ d.releaseCode || '—' }}</dd></div>
+              <div><dt>{{ 'documents.detail.field.change' | transloco }}</dt><dd>{{ d.changeCode || '—' }}</dd></div>
+              <div class="kv__full"><dt>{{ 'documents.detail.field.description' | transloco }}</dt><dd>{{ d.description }}</dd></div>
+            </dl>
+          </div>
+
+          <div class="dd-side">
+            <div class="gms-card">
+              <h3 class="gms-section-title">{{ 'documents.detail.field.status' | transloco }}</h3>
+              <div class="dd-badges">
+                <span class="badge" [class]="'badge--' + statusTone()">{{ statusLabel() }}</span>
+                <span class="badge badge--neutral">{{ d.version }}</span>
+              </div>
+              <p class="dd-note">{{ 'documents.detail.statusNote' | transloco }}</p>
+            </div>
+            <div class="gms-card">
+              <h3 class="gms-section-title">{{ 'documents.detail.relatedMetrics' | transloco }}</h3>
+              <div class="dd-metrics">
+                <div class="dd-metric"><span class="dd-metric__v">{{ versions().length }}</span><span class="dd-metric__l">{{ 'documents.detail.metric.versions' | transloco }}</span></div>
+                <div class="dd-metric"><span class="dd-metric__v">{{ related().length }}</span><span class="dd-metric__l">{{ 'documents.detail.metric.relatedObjects' | transloco }}</span></div>
+                <div class="dd-metric"><span class="dd-metric__v">{{ d.size }}</span><span class="dd-metric__l">{{ 'documents.detail.metric.size' | transloco }}</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="gms-card">
+          <h3 class="gms-section-title">{{ 'documents.detail.timelineTitle' | transloco }}</h3>
+          <gms-timeline [items]="timeline()" />
+        </div>
+      }
+
+      @case ('versions') {
+        <div class="gms-card gms-card--flush">
+          <gms-data-grid [rows]="versions()" [columns]="versionColumns()" idKey="version" [pageSize]="0"
+            [searchable]="false" emptyIcon="change" [emptyTitle]="'documents.detail.versionsEmptyTitle' | transloco" [emptyText]="'documents.detail.versionsEmptyText' | transloco" />
+        </div>
+      }
+
+      @case ('preview') {
+        <div class="preview">
+          <div class="preview__bar">
+            <span class="preview__file"><gms-icon [name]="typeIcon(d.category)" [size]="16" /> {{ d.fileName }}</span>
+            <span class="preview__size">{{ d.size }} · {{ d.version }}</span>
+            <span class="preview__spacer"></span>
+            <button gmsButton variant="ghost" (click)="onExtra('download')"><gms-icon name="document" [size]="15" /> {{ 'documents.detail.download' | transloco }}</button>
+          </div>
+          <div class="preview__stage">
+            @switch (d.preview) {
+              @case ('sql') { <pre class="preview__code">{{ previewCode() }}</pre> }
+              @case ('text') { <div class="preview__paper preview__paper--text">@for (line of previewText(); track $index) { <p>{{ line }}</p> }</div> }
+              @case ('pdf') {
+                <div class="preview__paper preview__paper--pdf">
+                  <span class="preview__badge">PDF</span>
+                  <h4>{{ d.name }}</h4>
+                  @for (line of previewText(); track $index) { <p>{{ line }}</p> }
+                </div>
+              }
+              @case ('image') {
+                <div class="preview__image">
+                  <svg viewBox="0 0 200 120" preserveAspectRatio="xMidYMid meet" [attr.aria-label]="'documents.detail.imagePreviewAlt' | transloco">
+                    <defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#dbe7ff"/><stop offset="1" stop-color="#eef4ff"/></linearGradient></defs>
+                    <rect width="200" height="120" fill="url(#g)"/>
+                    <circle cx="60" cy="45" r="14" fill="#bcd0f5"/>
+                    <path d="M20 100 L80 55 L120 90 L150 65 L185 100 Z" fill="#c7d6f2"/>
+                  </svg>
+                  <span class="preview__caption">{{ 'documents.detail.imagePreviewCaption' | transloco }}</span>
+                </div>
+              }
+              @default {
+                <div class="preview__unsupported">
+                  <span class="preview__unsupported-icon"><gms-icon [name]="typeIcon(d.category)" [size]="26" /></span>
+                  <span class="preview__unsupported-title">{{ (d.preview === 'word' ? 'documents.detail.previewWordSoon' : 'documents.detail.previewExcelSoon') | transloco }}</span>
+                  <span class="preview__unsupported-text">{{ 'documents.detail.unsupportedText' | transloco }}</span>
+                </div>
+              }
+            }
+          </div>
+        </div>
+      }
+
+      @default {
+        <div class="gms-card">
+          <gms-state variant="empty" [iconOverride]="activeTabMeta().icon ?? 'inbox'"
+            [title]="activeTabMeta().label"
+            [text]="'documents.detail.defaultTabText' | transloco">
+          </gms-state>
+        </div>
+      }
+    }
+
+    <!-- Right context panel -->
+    <ng-container panel>
+      <gms-context-section [title]="'documents.detail.panel.recentDocuments' | transloco" icon="document" [count]="recent$().length">
+        @if (recent$().length) { <gms-item-list [items]="recent$()" /> }
+        @else { <p class="panel-empty">{{ 'documents.detail.panel.noOtherDocuments' | transloco }}</p> }
+      </gms-context-section>
+      <gms-context-section [title]="'documents.detail.panel.relatedObjects' | transloco" icon="folder" [count]="related().length">
+        @if (related().length) { <gms-item-list [items]="related()" /> }
+        @else { <p class="panel-empty">{{ 'documents.detail.panel.noRelatedObjects' | transloco }}</p> }
+      </gms-context-section>
+      <gms-context-section [title]="'documents.detail.panel.recentActivity' | transloco" icon="activity">
+        <gms-activity-feed [items]="activity()" />
+      </gms-context-section>
+    </ng-container>
+
+  </gms-page>
+}

@@ -1,0 +1,87 @@
+:host { display: block; }
+
+.muted { margin: 0; font-size: var(--fs-sm); color: var(--text-muted); }
+.mono { font-family: var(--font-mono, 'Cascadia Code', monospace); font-size: var(--fs-caption); color: var(--text); }
+
+/* Two-column: reusable section nav + list */
+.nc {
+  display: grid;
+  grid-template-columns: 210px minmax(0, 1fr);
+  gap: var(--s-5);
+  align-items: start;
+}
+.nc-content { min-width: 0; }
+
+/* Advanced filter fields (inside gms-filter-bar [advanced] slot) */
+.ff {
+  display: flex; flex-direction: column; gap: 4px;
+  font-size: var(--fs-caption); color: var(--text-subtle);
+  span { text-transform: uppercase; letter-spacing: .03em; font-weight: 600; }
+  input, select {
+    height: 34px; padding: 0 8px; border: 1px solid var(--border-strong); border-radius: var(--r-sm);
+    background: var(--surface); font: inherit; font-size: var(--fs-sm); color: var(--text);
+    &:focus { outline: none; border-color: var(--brand); box-shadow: var(--focus-ring); }
+  }
+}
+
+/* Title cell: type dot + unread emphasis */
+.ntitle {
+  display: inline-flex; align-items: center; gap: 8px; color: var(--text);
+  &--unread { font-weight: 700; color: var(--text-strong); }
+  &__dot {
+    width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; background: var(--text-subtle);
+    &--info { background: var(--info, #1f6fd6); }
+    &--success { background: var(--success, #1a7f4b); }
+    &--warning { background: var(--warning, #b7791f); }
+    &--danger { background: var(--danger, #c0392b); }
+  }
+}
+
+.mod-chip {
+  display: inline-flex; align-items: center; gap: 5px; white-space: nowrap;
+  font-size: var(--fs-caption); font-weight: 500; color: var(--text);
+  background: var(--surface-sunken); border: 1px solid var(--border);
+  padding: 2px 8px; border-radius: var(--r-pill);
+  gms-icon { color: var(--text-subtle); }
+}
+
+.badge {
+  display: inline-flex; align-items: center; padding: 2px 10px; border-radius: var(--r-pill);
+  font-size: var(--fs-caption); font-weight: 600; border: 1px solid transparent;
+  &--success { background: var(--success-soft, #e6f6ec); color: var(--success, #1a7f4b); }
+  &--info    { background: var(--info-soft, #e6f0fb); color: var(--info, #1f6fd6); }
+  &--warning { background: var(--warning-soft, #fdf1e0); color: var(--warning, #b7791f); }
+  &--danger  { background: var(--danger-soft, #fdeaea); color: var(--danger, #c0392b); }
+  &--neutral { background: var(--surface-sunken); color: var(--text-muted); border-color: var(--border); }
+}
+
+/* ── Right detail panel ───────────────────────────────── */
+.nd { display: flex; flex-direction: column; gap: var(--s-4); padding: var(--s-4); }
+.nd__head { display: flex; align-items: center; gap: var(--s-3); }
+.nd__icon {
+  display: grid; place-items: center; width: 40px; height: 40px; border-radius: var(--r-sm); flex-shrink: 0;
+  background: var(--surface-sunken); border: 1px solid var(--border); color: var(--text-subtle);
+  &--info { color: var(--info, #1f6fd6); }
+  &--success { color: var(--success, #1a7f4b); }
+  &--warning { color: var(--warning, #b7791f); }
+  &--danger { color: var(--danger, #c0392b); }
+}
+.nd__meta { display: flex; flex-direction: column; gap: 1px; min-width: 0; }
+.nd__title { font-size: var(--fs-body); font-weight: 600; color: var(--text-strong); }
+.nd__sub { font-size: var(--fs-caption); color: var(--text-subtle); }
+.nd__desc { margin: 0; font-size: var(--fs-sm); color: var(--text-muted); line-height: 1.6; }
+
+.nd__kv {
+  margin: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--s-3) var(--s-4);
+  > div { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+  dt { font-size: var(--fs-caption); color: var(--text-subtle); text-transform: uppercase; letter-spacing: .03em; }
+  dd { margin: 0; font-size: var(--fs-sm); color: var(--text); }
+}
+.nd__full { grid-column: 1 / -1; }
+
+.nd__actions { display: flex; flex-direction: column; gap: var(--s-2); }
+.nd__actions button { width: 100%; justify-content: flex-start; }
+
+@media (max-width: 620px) {
+  .nc { grid-template-columns: 1fr; }
+}

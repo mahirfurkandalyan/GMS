@@ -1,0 +1,198 @@
+{
+  "pageTitle": "Approvals",
+  "pageSubtitle": "Manage pending and completed approval workflows.",
+  "breadcrumbWorkspace": "Workspace",
+  "contextPanelTitle": "Context",
+  "pendingSuffix": "pending",
+  "totalLabel": "Total",
+  "unit": "approvals",
+  "lastUpdatedRecently": "a few minutes ago",
+  "export": "Export",
+  "refresh": "Refresh",
+  "reset": "Reset",
+  "searchPlaceholder": "Search approval, title, release, or approver…",
+  "allStatuses": "All Statuses",
+  "allReleases": "All Releases",
+  "allProjects": "All Projects",
+  "allEnvironments": "All Environments",
+  "allTypes": "All Approval Types",
+  "allApprovers": "All Approvers",
+  "dateFromTitle": "From requested date",
+  "empty": {
+    "title": "No approval records",
+    "text": "Approvals arise from release and change governance decision workflows. They appear here once a change is submitted.",
+    "step1": "Submit a change or release",
+    "step2": "The approval chain starts automatically",
+    "step3": "Decisions are tracked here"
+  },
+  "grid": {
+    "emptyTitle": "No matching approvals",
+    "emptyText": "Try widening your filter criteria."
+  },
+  "columns": {
+    "code": "Approval No",
+    "title": "Title",
+    "release": "Related Release",
+    "change": "Related Change",
+    "stage": "Stage",
+    "approver": "Current Approver",
+    "priority": "Priority",
+    "risk": "Risk",
+    "status": "Status",
+    "requestedAt": "Created",
+    "dueDate": "Due Date"
+  },
+  "rowActions": {
+    "open": "Open",
+    "copyLink": "Copy Link"
+  },
+  "toast": {
+    "linkCopied": "Link copied to clipboard.",
+    "exportSoon": "Export will be available soon."
+  },
+  "domainName": "Governance",
+  "moduleName": "Approval Center",
+  "relationType": {
+    "area": "Area",
+    "module": "Module",
+    "customer": "Customer",
+    "project": "Project",
+    "release": "Release",
+    "change": "Change",
+    "approval": "Approval"
+  },
+  "panel": {
+    "recentActivity": "Recent Activity",
+    "relatedReleases": "Related Releases",
+    "pendingDecisions": "Pending Decisions",
+    "pendingDecisionsText": "{{count}} approval decisions are waiting on you.",
+    "relatedDocuments": "Related Documents",
+    "relatedRecords": "Related Records",
+    "pendingActions": "Pending Actions",
+    "pendingActionsNone": "No pending actions.",
+    "upcomingSteps": "Upcoming Steps",
+    "upcomingStepsNone": "No remaining steps."
+  },
+  "activity": {
+    "listApproved": "approved {{code}}",
+    "listViewedRequest": "viewed a request",
+    "listRejected": "rejected {{code}}"
+  },
+  "vmActivity": {
+    "createdRequest": "created the approval request",
+    "viewedRequest": "viewed the request",
+    "leftComment": "left a comment",
+    "approverFallback": "Approver"
+  },
+  "detail": {
+    "notFoundTitle": "Approval not found",
+    "notFoundText": "The approval record you are looking for does not exist or may have been removed.",
+    "backToCenter": "Back to Approval Center",
+    "fallbackTitle": "Approval"
+  },
+  "decisionBar": {
+    "waitingTitle": "Your decision is awaited",
+    "stageLabel": "Stage",
+    "approverLabel": "Approver",
+    "dueLabel": "Due date",
+    "revision": "Request Revision",
+    "reject": "Reject",
+    "approve": "Approve",
+    "decisionPrefix": "Decision",
+    "doneSub": "No further action is required for this approval process."
+  },
+  "extra": {
+    "delegate": "Delegate (coming soon)",
+    "forward": "Forward (coming soon)",
+    "delegateSoon": "Delegation coming soon.",
+    "forwardSoon": "Forwarding coming soon."
+  },
+  "tabs": {
+    "overview": "Overview",
+    "flow": "Approval Flow",
+    "comments": "Comments",
+    "attachments": "Attachments",
+    "timeline": "Timeline",
+    "audit": "Audit"
+  },
+  "overview": {
+    "generalInfo": "General Information",
+    "riskSummary": "Risk Summary",
+    "relatedMetrics": "Related Metrics",
+    "timelineTitle": "Timeline",
+    "riskNote": "If rejected, the process stops and returns to the requester. Detailed risk scoring will be added in a later phase."
+  },
+  "kv": {
+    "businessReason": "Business Reason",
+    "approvalType": "Approval Type",
+    "requestedBy": "Requested By",
+    "requestedAt": "Requested Date",
+    "relatedRelease": "Related Release",
+    "relatedChange": "Related Change",
+    "currentStage": "Current Stage",
+    "currentDecision": "Current Decision"
+  },
+  "metrics": {
+    "stage": "Stage",
+    "document": "Document",
+    "remainingSteps": "Remaining Steps"
+  },
+  "riskWord": "Risk",
+  "priorityWord": "Priority",
+  "flow": {
+    "title": "Approval Flow",
+    "dateNone": "No date",
+    "commentNone": "No comment",
+    "stepStatus": {
+      "approved": "Approved",
+      "completed": "Completed",
+      "rejected": "Rejected",
+      "pending": "Pending",
+      "waiting": "Queued"
+    }
+  },
+  "moduleComingSoon": "This module will be added in a later development phase. The architecture is ready to integrate with the Approval process.",
+  "decisionModal": {
+    "approveTitle": "Approve Request",
+    "approveConfirm": "Approve",
+    "approveHint": "You are approving this stage; the process will move to the next approver.",
+    "rejectTitle": "Reject Request",
+    "rejectConfirm": "Reject",
+    "rejectHint": "Once rejected, the process stops and returns to the requester.",
+    "revisionTitle": "Request Revision",
+    "revisionConfirm": "Request Revision",
+    "revisionHint": "The requester is asked for corrections; the approval is suspended.",
+    "commentLabel": "Comment",
+    "commentOptional": "(optional)",
+    "commentPlaceholder": "Add a note about your decision…",
+    "cancel": "Cancel"
+  },
+  "toastDecision": {
+    "approved": "Approval granted for {{code}}.",
+    "approvedTitle": "Decision saved",
+    "rejected": "{{code}} was rejected.",
+    "revision": "Revision requested for {{code}}."
+  },
+  "decision": {
+    "approved": "Approved",
+    "rejected": "Rejected",
+    "expired": "Expired",
+    "waiting": "Queued",
+    "pending": "Decision pending"
+  },
+  "timeline": {
+    "created": "Approval created",
+    "createdDesc": "Started by {{by}}.",
+    "assigned": "Assigned to approver",
+    "assignedAllStages": "All stages",
+    "viewed": "Viewed",
+    "today": "Today",
+    "processCompleted": "Process completed",
+    "pendingState": "Pending"
+  },
+  "vmLinks": {
+    "relatedRelease": "Related Release",
+    "relatedChange": "Related Change",
+    "pendingDecisionSuffix": "decision pending"
+  }
+}

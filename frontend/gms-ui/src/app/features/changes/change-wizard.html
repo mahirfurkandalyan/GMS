@@ -1,0 +1,358 @@
+<gms-page [contextPanel]="true" panelTitle="Yardım & Bağlam">
+
+  <gms-page-header
+    header
+    title="Yeni Değişiklik"
+    subtitle="Kurumsal değişiklik oluşturma sihirbazı — her yönetişim süreci buradan başlar."
+    [breadcrumbs]="[{ label: 'Çalışma Alanı' }, { label: 'Değişiklikler', route: '/changes' }, { label: 'Yeni' }]"
+    [status]="{ label: 'Ön izleme: ' + riskLabel() + ' risk', tone: riskMeta().tone }"
+    [lastUpdated]="'Adım ' + step() + ' / 6'">
+    <button actions gmsButton variant="ghost" (click)="cancel()"><gms-icon name="close" [size]="16" /> İptal</button>
+  </gms-page-header>
+
+  <div class="wz">
+    <!-- Left step navigation -->
+    <nav class="stepper" aria-label="Sihirbaz adımları">
+      <div class="stepper__progress"><span class="stepper__bar" [style.width.%]="(step() / 6) * 100"></span></div>
+      @for (s of steps; track s.n) {
+        <button type="button" class="stepper__item" [class.stepper__item--active]="step() === s.n"
+          [class.stepper__item--done]="stepComplete(s.n) && step() !== s.n" (click)="goStep(s.n)">
+          <span class="stepper__num">
+            @if (stepComplete(s.n) && step() !== s.n) { <gms-icon name="check" [size]="14" /> } @else { {{ s.n }} }
+          </span>
+          <span class="stepper__meta">
+            <span class="stepper__label">{{ s.title }}</span>
+            <span class="stepper__hint">Adım {{ s.n }}</span>
+          </span>
+        </button>
+      }
+    </nav>
+
+    <!-- Step content -->
+    <section class="wz-content">
+      @switch (currentStep().key) {
+
+        @case ('general') {
+          <div class="gms-card">
+            <gms-form-section title="Genel Bilgiler" description="Değişikliğin temel tanımı ve yönetişim bağlamı.">
+              <gms-field label="Değişiklik Başlığı" [required]="true" class="col-full">
+                <input gmsInput type="text" placeholder="Örn. Batch tablosu şema güncellemesi" [value]="title()" (input)="title.set($any($event.target).value)" />
+              </gms-field>
+              <gms-field label="İş Gerekçesi" [required]="true" class="col-full">
+                <textarea gmsInput rows="2" placeholder="Bu değişiklik neden gerekli?" [value]="businessReason()" (input)="businessReason.set($any($event.target).value)"></textarea>
+              </gms-field>
+
+              <gms-field label="Müşteri" [required]="true">
+                <select gmsInput [value]="customerId()" (change)="onCustomer($any($event.target).value)">
+                  <option value="">Seçin…</option>
+                  @for (c of customers(); track c.id) { <option [value]="c.id">{{ c.name }}</option> }
+                </select>
+              </gms-field>
+              <gms-field label="Proje" [required]="true" hint="Müşteriye göre gelir">
+                <select gmsInput [value]="projectId()" (change)="onProject($any($event.target).value)" [disabled]="!customerId()">
+                  <option value="">Seçin…</option>
+                  @for (p of projects(); track p.id) { <option [value]="p.id">{{ p.name }}</option> }
+                </select>
+              </gms-field>
+              <gms-field label="Ortam" [required]="true" hint="Projeye göre gelir">
+                <select gmsInput [value]="environmentId()" (change)="onEnvironment($any($event.target).value)" [disabled]="!projectId()">
+                  <option value="">Seçin…</option>
+                  @for (e of environments(); track e.id) { <option [value]="e.id">{{ e.name }}</option> }
+                </select>
+              </gms-field>
+              <gms-field label="Öncelik" [required]="true">
+                <select gmsInput [value]="priority()" (change)="priority.set($any($event.target).value)">
+                  @for (p of priorities; track p) { <option [value]="p">{{ priorityLabel(p) }}</option> }
+                </select>
+              </gms-field>
+
+              <gms-field label="Değişiklik Sınıfı" [required]="true">
+                <select gmsInput [value]="changeClass()" (change)="changeClass.set($any($event.target).value)">
+                  @for (c of classes; track c.key) { <option [value]="c.key">{{ c.label }}</option> }
+                </select>
+              </gms-field>
+              <gms-field label="Değişiklik Türü" [required]="true">
+                <select gmsInput [value]="changeType()" (change)="changeType.set($any($event.target).value)">
+                  @for (t of types; track t.key) { <option [value]="t.key">{{ t.label }}</option> }
+                </select>
+              </gms-field>
+              <gms-field label="Planlanan Uygulama Tarihi" [required]="true">
+                <input gmsInput type="datetime-local" [value]="plannedDate()" (input)="plannedDate.set($any($event.target).value)" />
+              </gms-field>
+              <gms-field label="Kaynak Sistem" hint="Opsiyonel">
+                <input gmsInput type="text" placeholder="Örn. JIRA" [value]="sourceSystem()" (input)="sourceSystem.set($any($event.target).value)" />
+              </gms-field>
+              <gms-field label="Kaynak Referansı" hint="Opsiyonel">
+                <input gmsInput type="text" placeholder="Örn. JIRA-1042" [value]="sourceReference()" (input)="sourceReference.set($any($event.target).value)" />
+              </gms-field>
+              <gms-field label="Açıklama" hint="Opsiyonel" class="col-full">
+                <textarea gmsInput rows="3" placeholder="Ek açıklama" [value]="description()" (input)="description.set($any($event.target).value)"></textarea>
+              </gms-field>
+            </gms-form-section>
+          </div>
+        }
+
+        @case ('technical') {
+          <div class="gms-card">
+            <div class="wz-head">
+              <div>
+                <h3 class="gms-section-title">Teknik Detaylar</h3>
+                <p class="wz-sub">Alanlar <strong>{{ changeTypeLabel(changeType()) }}</strong> türüne göre uyarlanır.</p>
+              </div>
+              <span class="type-chip"><gms-icon name="server" [size]="13" /> {{ changeTypeLabel(changeType()) }}</span>
+            </div>
+            <div class="tech-grid">
+              @for (f of techDefs(); track f.key) {
+                @switch (f.kind) {
+                  @case ('textarea') {
+                    <gms-field [label]="f.label" class="col-full">
+                      <textarea gmsInput rows="3" [placeholder]="f.placeholder ?? ''" [value]="getTech(f.key)" (input)="setTech(f.key, $any($event.target).value)"></textarea>
+                    </gms-field>
+                  }
+                  @case ('select') {
+                    <gms-field [label]="f.label">
+                      <select gmsInput [value]="getTech(f.key)" (change)="setTech(f.key, $any($event.target).value)">
+                        <option value="">Seçin…</option>
+                        @for (o of f.options ?? []; track o) { <option [value]="o">{{ o }}</option> }
+                      </select>
+                    </gms-field>
+                  }
+                  @case ('toggle') {
+                    <div class="toggle-field">
+                      <span class="toggle-field__label">{{ f.label }}</span>
+                      <button type="button" class="toggle" [class.toggle--on]="getTechBool(f.key)" (click)="toggleTech(f.key)">
+                        <span class="toggle__dot"></span><span class="toggle__txt">{{ getTechBool(f.key) ? 'Evet' : 'Hayır' }}</span>
+                      </button>
+                    </div>
+                  }
+                  @default {
+                    <gms-field [label]="f.label">
+                      <input gmsInput type="text" [placeholder]="f.placeholder ?? ''" [value]="getTech(f.key)" (input)="setTech(f.key, $any($event.target).value)" />
+                    </gms-field>
+                  }
+                }
+              }
+            </div>
+          </div>
+        }
+
+        @case ('assets') {
+          <div class="gms-grid gms-grid--2">
+            <div class="gms-card">
+              <div class="wz-head">
+                <h3 class="gms-section-title">Etkilenen Varlıklar</h3>
+                <span class="count-chip">{{ assets().length }} seçili</span>
+              </div>
+              <div class="asset-search">
+                <gms-icon name="search" [size]="16" />
+                <input type="text" placeholder="Varlık ara…" [value]="assetSearch()" (input)="assetSearch.set($any($event.target).value)" />
+              </div>
+              <ul class="asset-list">
+                @for (a of filteredAssets(); track a.id) {
+                  <li class="asset" [class.asset--on]="isAssetSelected(a.id)" (click)="toggleAsset(a)">
+                    <span class="asset__check"><gms-icon [name]="isAssetSelected(a.id) ? 'check' : 'plus'" [size]="13" /></span>
+                    <span class="asset__meta">
+                      <span class="asset__name">{{ a.name }}</span>
+                      <span class="asset__sub">{{ a.code }} · {{ assetTypeLabel(a.type) }} · {{ a.environment }}</span>
+                    </span>
+                    <span class="badge" [class]="'badge--' + (a.criticality === 'Critical' ? 'danger' : a.criticality === 'High' ? 'warning' : 'neutral')">{{ a.criticality }}</span>
+                  </li>
+                } @empty {
+                  <li class="asset-empty">Eşleşen varlık yok.</li>
+                }
+              </ul>
+            </div>
+
+            <div class="impact">
+              <div class="gms-card">
+                <h3 class="gms-section-title">Etki Özeti</h3>
+                <div class="impact-metrics">
+                  <div class="impact-metric"><span class="impact-metric__v">{{ assets().length }}</span><span class="impact-metric__l">Varlık</span></div>
+                  <div class="impact-metric"><span class="impact-metric__v">{{ criticalAssetCount() }}</span><span class="impact-metric__l">Kritik</span></div>
+                  <div class="impact-metric"><span class="impact-metric__v">{{ impactEnvironments().length }}</span><span class="impact-metric__l">Ortam</span></div>
+                </div>
+                <dl class="impact-kv">
+                  <div><dt>Tahmini Kesinti</dt><dd>{{ estimatedDowntime() }}</dd></div>
+                  <div><dt>Ortamlar</dt><dd>{{ impactEnvironments().length ? impactEnvironments().join(', ') : '—' }}</dd></div>
+                  <div><dt>Hesaplanan Risk</dt><dd><span class="badge" [class]="'badge--' + riskMeta().tone">{{ riskLabel() }}</span></dd></div>
+                </dl>
+              </div>
+            </div>
+          </div>
+        }
+
+        @case ('documents') {
+          <div class="gms-card">
+            <div class="wz-head">
+              <div>
+                <h3 class="gms-section-title">Destekleyici Dokümanlar</h3>
+                <p class="wz-sub">Kaynak kod yüklenmez. Bu adım doküman kanıtı mimarisini hazırlar; dosya deposu sonraki fazda bağlanacaktır.</p>
+              </div>
+              <span class="count-chip">{{ docs().length }} seçili</span>
+            </div>
+            <div class="doc-grid">
+              @for (d of docCategories; track d.key) {
+                <button type="button" class="doc" [class.doc--on]="isDocSelected(d.key)" (click)="toggleDoc(d.key)">
+                  <span class="doc__icon"><gms-icon [name]="d.icon" [size]="16" /></span>
+                  <span class="doc__label">{{ d.label }}</span>
+                  <span class="doc__check"><gms-icon [name]="isDocSelected(d.key) ? 'check' : 'plus'" [size]="14" /></span>
+                </button>
+              }
+            </div>
+          </div>
+        }
+
+        @case ('precheck') {
+          <div class="gms-grid gms-grid--2">
+            <div class="gms-card readiness">
+              <h3 class="gms-section-title">Hazırlık Durumu</h3>
+              <div class="ring" [class]="'ring--' + readinessTone()">
+                <svg viewBox="0 0 120 120">
+                  <circle class="ring__bg" cx="60" cy="60" r="52" />
+                  <circle class="ring__fg" cx="60" cy="60" r="52" [style.stroke-dashoffset]="327 - (327 * readinessScore() / 100)" />
+                </svg>
+                <div class="ring__label"><span class="ring__val">{{ readinessScore() }}%</span><span class="ring__cap">Hazırlık</span></div>
+              </div>
+              <p class="readiness__note">Hazırlık puanı yalnızca UI göstergesidir; gönderimi engellemez.</p>
+            </div>
+
+            <div class="gms-card">
+              <h3 class="gms-section-title">Gereksinim Kontrolleri</h3>
+              <ul class="checks">
+                @for (c of checks(); track c.label) {
+                  <li class="check" [class.check--ok]="c.ok" [class.check--bad]="!c.ok">
+                    <span class="check__icon"><gms-icon [name]="c.ok ? 'check' : 'close'" [size]="14" /></span>
+                    <span class="check__label">{{ c.label }}</span>
+                    @if (!c.ok) { <span class="badge" [class]="'badge--' + (c.kind === 'required' ? 'danger' : 'warning')">{{ c.kind === 'required' ? 'Gerekli' : 'Uyarı' }}</span> }
+                  </li>
+                }
+              </ul>
+            </div>
+          </div>
+
+          @if (warnings().length) {
+            <div class="gms-card warns">
+              <h3 class="gms-section-title">Uyarılar ({{ warnings().length }})</h3>
+              <ul class="warn-list">
+                @for (w of warnings(); track w.label) {
+                  <li><gms-icon name="shield" [size]="14" /> {{ w.label }}</li>
+                }
+              </ul>
+            </div>
+          }
+        }
+
+        @case ('review') {
+          <div class="gms-card">
+            <div class="wz-head">
+              <h3 class="gms-section-title">Gözden Geçir & Gönder</h3>
+              <span class="badge" [class]="'badge--' + riskMeta().tone">{{ riskLabel() }} Risk</span>
+            </div>
+
+            <div class="review">
+              <div class="review__sec">
+                <span class="review__h">Genel Bilgiler</span>
+                <dl class="review__kv">
+                  <div><dt>Başlık</dt><dd>{{ title() || '—' }}</dd></div>
+                  <div><dt>Sınıf</dt><dd>{{ changeClassLabel(changeClass()) }}</dd></div>
+                  <div><dt>Tür</dt><dd>{{ changeTypeLabel(changeType()) }}</dd></div>
+                  <div><dt>Öncelik</dt><dd>{{ priorityLabel(priority()) }}</dd></div>
+                  <div><dt>Müşteri</dt><dd>{{ customerName() || '—' }}</dd></div>
+                  <div><dt>Proje</dt><dd>{{ projectName() || '—' }}</dd></div>
+                  <div><dt>Ortam</dt><dd>{{ environmentName() || '—' }}</dd></div>
+                  <div><dt>Planlanan Tarih</dt><dd>{{ plannedDate() || '—' }}</dd></div>
+                  <div class="col-full"><dt>İş Gerekçesi</dt><dd>{{ businessReason() || '—' }}</dd></div>
+                </dl>
+              </div>
+
+              <div class="review__sec">
+                <span class="review__h">Teknik Bilgiler</span>
+                @if (techDefs().length) {
+                  <dl class="review__kv">
+                    @for (f of techDefs(); track f.key) {
+                      <div><dt>{{ f.label }}</dt><dd>{{ f.kind === 'toggle' ? (getTechBool(f.key) ? 'Evet' : 'Hayır') : (getTech(f.key) || '—') }}</dd></div>
+                    }
+                  </dl>
+                } @else { <p class="muted">Bu tür için ek teknik alan yok.</p> }
+              </div>
+
+              <div class="review__sec">
+                <span class="review__h">Etkilenen Varlıklar ({{ assets().length }})</span>
+                @if (assets().length) {
+                  <div class="chips">@for (a of assets(); track a.id) { <span class="chip">{{ a.code }} · {{ a.name }}</span> }</div>
+                } @else { <p class="muted">Varlık seçilmedi.</p> }
+              </div>
+
+              <div class="review__sec">
+                <span class="review__h">Dokümanlar ({{ docs().length }})</span>
+                @if (docs().length) {
+                  <div class="chips">@for (d of docs(); track d) { <span class="chip">{{ docTypeLabel(d) }}</span> }</div>
+                } @else { <p class="muted">Doküman seçilmedi.</p> }
+              </div>
+
+              <div class="review__sec">
+                <span class="review__h">Risk & Hazırlık</span>
+                <div class="review__risk">
+                  <span class="badge" [class]="'badge--' + riskMeta().tone">Risk: {{ riskLabel() }}</span>
+                  <span class="badge" [class]="'badge--' + readinessTone()">Hazırlık: %{{ readinessScore() }}</span>
+                  @if (warnings().length) { <span class="badge badge--warning">{{ warnings().length }} uyarı</span> }
+                </div>
+              </div>
+            </div>
+          </div>
+        }
+      }
+
+      <!-- Step nav buttons -->
+      <div class="wz-nav">
+        <button gmsButton variant="ghost" [disabled]="step() === 1" (click)="prev()"><gms-icon name="chevron-left" [size]="15" /> Geri</button>
+        @if (step() < 6) {
+          <button gmsButton variant="primary" (click)="next()">İleri <gms-icon name="chevron-right" [size]="15" /></button>
+        } @else {
+          <span class="wz-nav__done"><gms-icon name="check" [size]="15" /> Son adım</span>
+        }
+      </div>
+    </section>
+  </div>
+
+  <!-- Right sidebar (reusable) -->
+  <ng-container panel>
+    <gms-context-section title="Risk (Ön izleme)" icon="shield">
+      <div class="risk-card" [class]="'risk-card--' + riskMeta().tone">
+        <span class="risk-card__v">{{ riskLabel() }}</span>
+        <span class="risk-card__l">Tahmini ön izleme — resmî risk oluşturmada backend tarafından hesaplanır.</span>
+      </div>
+    </gms-context-section>
+    <gms-context-section title="Faydalı İpuçları" icon="star">
+      <ul class="tips">@for (t of tips(); track t) { <li>{{ t }}</li> }</ul>
+    </gms-context-section>
+    <gms-context-section title="Gerekli Bilgiler" icon="check">
+      <ul class="req">
+        <li [class.req--ok]="!!title()">Başlık</li>
+        <li [class.req--ok]="!!businessReason()">İş gerekçesi</li>
+        <li [class.req--ok]="!!projectName()">Proje & müşteri</li>
+        <li [class.req--ok]="!!environmentName()">Ortam</li>
+        <li [class.req--ok]="!!plannedDate()">Planlanan tarih</li>
+      </ul>
+    </gms-context-section>
+    <gms-context-section title="Benzer Değişiklikler" icon="change" [count]="recentSimilar().length">
+      <gms-item-list [items]="recentSimilar()" />
+    </gms-context-section>
+    <gms-context-section title="İlgili Dokümantasyon" icon="document" [count]="relatedDocs.length">
+      <gms-item-list [items]="relatedDocs" />
+    </gms-context-section>
+  </ng-container>
+
+  <!-- Bottom actions -->
+  <div footer class="wz-actions">
+    <button gmsButton variant="ghost" (click)="cancel()">İptal</button>
+    <span class="wz-actions__spacer"></span>
+    <button gmsButton variant="secondary" [loading]="submitting()" (click)="saveDraft()">
+      <gms-icon name="document" [size]="15" /> Taslağı Kaydet
+    </button>
+    <button gmsButton variant="primary" [loading]="submitting()" (click)="submitForReview()">
+      <gms-icon name="approval" [size]="15" /> İncelemeye Gönder
+    </button>
+  </div>
+
+</gms-page>

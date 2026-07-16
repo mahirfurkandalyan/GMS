@@ -1,0 +1,40 @@
+{
+  "type": {
+    "Major": "Major",
+    "Minor": "Minor",
+    "Patch": "Patch",
+    "Hotfix": "Hotfix",
+    "Emergency": "Emergency"
+  },
+  "audit": {
+    "ReleaseCreated": "Release created",
+    "ReleaseUpdated": "Release updated",
+    "ReleaseScheduled": "Release scheduled",
+    "ReleaseExecutionStarted": "Execution started",
+    "ReleaseCompleted": "Release completed",
+    "ReleaseValidationStarted": "Validation started",
+    "ReleaseValidationFailed": "Validation failed",
+    "ReleaseAccepted": "Release accepted",
+    "ReleaseCancelled": "Release cancelled"
+  },
+  "risk": {
+    "title": "Risk",
+    "score": "Risk Score",
+    "authoritative": "The official risk value is calculated by the backend."
+  },
+  "actions": {
+    "edit": "Edit",
+    "schedule": "Schedule",
+    "cancel": "Cancel",
+    "save": "Save",
+    "saving": "Saving…",
+    "reload": "Load current data",
+    "confirmScheduleTitle": "Schedule release",
+    "confirmScheduleText": "This release plan will be scheduled (Scheduled). Continue?",
+    "confirmCancelTitle": "Cancel release",
+    "confirmCancelText": "This release will be cancelled and its scheduled changes will return to Approved. Continue?",
+    "scheduled": "Release scheduled.",
+    "cancelled": "Release cancelled.",
+    "updated": "Release updated."
+  }
+}

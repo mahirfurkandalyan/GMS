@@ -1,0 +1,134 @@
+:host {
+  display: block;
+}
+
+.tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s-2);
+}
+
+.tab {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0.5rem 0.9rem;
+  border: 1px solid var(--border-strong);
+  border-radius: 999px;
+  background: var(--surface);
+  color: var(--text-muted);
+  font-family: inherit;
+  font-size: 0.83rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s ease;
+
+  &__count {
+    font-size: 0.72rem;
+    background: var(--neutral-bg);
+    color: var(--neutral);
+    padding: 0.05rem 0.4rem;
+    border-radius: 999px;
+  }
+
+  &:hover {
+    border-color: var(--brand-200);
+    color: var(--brand-600);
+  }
+
+  &--active {
+    background: var(--brand-600);
+    border-color: var(--brand-600);
+    color: #fff;
+
+    .tab__count {
+      background: rgba(255, 255, 255, 0.22);
+      color: #fff;
+    }
+  }
+}
+
+.train-card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-3);
+  padding: var(--s-5);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  box-shadow: var(--shadow-xs);
+
+  &__head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  &__cat {
+    font-size: 0.76rem;
+    color: var(--text-faint);
+  }
+
+  &__title {
+    margin: 0;
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--text-strong);
+  }
+
+  &__foot {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.76rem;
+    color: var(--text-muted);
+  }
+}
+
+.progress {
+  height: 7px;
+  border-radius: 999px;
+  background: var(--neutral-bg);
+  overflow: hidden;
+
+  &__bar {
+    display: block;
+    height: 100%;
+    border-radius: 999px;
+    background: linear-gradient(90deg, var(--brand-500), var(--brand-600));
+  }
+}
+
+.cert-card {
+  display: flex;
+  align-items: center;
+  gap: var(--s-3);
+  padding: var(--s-4);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  box-shadow: var(--shadow-xs);
+
+  &__icon {
+    width: 42px;
+    height: 42px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: var(--r-md);
+    background: var(--ok-bg);
+    font-size: 1.1rem;
+  }
+
+  &__name {
+    display: block;
+    font-weight: 700;
+    color: var(--text-strong);
+    font-size: 0.9rem;
+  }
+
+  &__meta {
+    display: block;
+    font-size: 0.78rem;
+    color: var(--text-muted);
+  }
+}

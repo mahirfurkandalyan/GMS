@@ -1,0 +1,143 @@
+<gms-page [contextPanel]="true" [panelTitle]="'audit.panelSummary' | transloco">
+
+  <gms-page-header
+    header
+    [title]="'audit.pageTitle' | transloco"
+    [subtitle]="'audit.pageSubtitle' | transloco"
+    [breadcrumbs]="[{ label: ('audit.breadcrumbCompliance' | transloco) }, { label: ('audit.pageTitle' | transloco) }]"
+    [status]="{ label: sectionMeta().label, tone: 'info' }"
+    [lastUpdated]="'audit.updatedRecently' | transloco">
+    <gms-menu secondary [items]="siemItems()" (select)="onSiem()">
+      <button trigger gmsButton variant="ghost"><gms-icon name="shield" [size]="16" /> SIEM</button>
+    </gms-menu>
+    <button actions gmsButton variant="ghost" (click)="onRefresh()"><gms-icon name="activity" [size]="16" /> {{ 'common.refresh' | transloco }}</button>
+  </gms-page-header>
+
+  <!-- Reusable audit search + filter experience -->
+  <div toolbar>
+    <gms-filter-bar
+      [search]="fSearch()" (searchChange)="fSearch.set($event)"
+      [placeholder]="'audit.searchPlaceholder' | transloco"
+      [hasAdvanced]="true"
+      [savedViews]="[('audit.savedView.all' | transloco), ('audit.savedView.critical' | transloco), ('audit.savedView.failed' | transloco)]"
+      (reset)="onResetFilters()">
+      <div advanced>
+        <label class="ff"><span>{{ 'audit.filter.date' | transloco }}</span><input type="date" [ngModel]="fDate()" (ngModelChange)="fDate.set($event)" [ngModelOptions]="{ standalone: true }" /></label>
+        <label class="ff"><span>{{ 'audit.filter.user' | transloco }}</span>
+          <select [ngModel]="fUser()" (ngModelChange)="fUser.set($event)" [ngModelOptions]="{ standalone: true }">
+            <option value="">{{ 'audit.filter.all' | transloco }}</option>
+            @for (u of userOptions(); track u) { <option [value]="u">{{ u }}</option> }
+          </select>
+        </label>
+        <label class="ff"><span>{{ 'audit.filter.module' | transloco }}</span>
+          <select [ngModel]="fModule()" (ngModelChange)="fModule.set($event)" [ngModelOptions]="{ standalone: true }">
+            <option value="">{{ 'audit.filter.all' | transloco }}</option>
+            @for (m of modules; track m) { <option [value]="m">{{ moduleLabel(m) }}</option> }
+          </select>
+        </label>
+        <label class="ff"><span>{{ 'audit.filter.objectType' | transloco }}</span>
+          <select [ngModel]="fObjectType()" (ngModelChange)="fObjectType.set($event)" [ngModelOptions]="{ standalone: true }">
+            <option value="">{{ 'audit.filter.all' | transloco }}</option>
+            @for (o of objectTypes; track o) { <option [value]="o">{{ o }}</option> }
+          </select>
+        </label>
+        <label class="ff"><span>{{ 'audit.filter.actionType' | transloco }}</span>
+          <select [ngModel]="fAction()" (ngModelChange)="fAction.set($event)" [ngModelOptions]="{ standalone: true }">
+            <option value="">{{ 'audit.filter.all' | transloco }}</option>
+            @for (a of actions; track a) { <option [value]="a">{{ actionMeta(a).label }}</option> }
+          </select>
+        </label>
+        <label class="ff"><span>{{ 'audit.filter.environment' | transloco }}</span>
+          <select [ngModel]="fEnv()" (ngModelChange)="fEnv.set($event)" [ngModelOptions]="{ standalone: true }">
+            <option value="">{{ 'audit.filter.all' | transloco }}</option>
+            @for (e of envOptions(); track e) { <option [value]="e">{{ e }}</option> }
+          </select>
+        </label>
+      </div>
+      <gms-menu actions [items]="exportItems()" (select)="onExport($event)">
+        <button trigger type="button" class="gms-btn gms-btn--ghost gms-btn--sm"><gms-icon name="document" [size]="15" /> {{ 'dataGrid.export' | transloco }}</button>
+      </gms-menu>
+    </gms-filter-bar>
+  </div>
+
+  <div class="aud">
+    <gms-section-nav [groups]="navGroups()" [active]="activeSection()" (activeChange)="onSectionChange($event)" [ariaLabel]="'audit.sectionsAriaLabel' | transloco" />
+
+    <section class="aud-content">
+      @if (loading()) {
+        <div class="gms-card"><gms-state variant="loading" /></div>
+      } @else {
+        @switch (activeSection()) {
+
+          @case ('overview') {
+            <div class="ov-grid">
+              <gms-widget [title]="'audit.widget.recentActivities' | transloco" icon="activity" [collapsible]="false" [count]="recent().length">
+                <gms-audit-list [entries]="recent()" />
+              </gms-widget>
+              <gms-widget [title]="'audit.widget.criticalEvents' | transloco" icon="shield" [collapsible]="false" [count]="critical().length" [empty]="!critical().length">
+                <gms-audit-list [entries]="critical()" />
+                <div empty><p class="muted">{{ 'audit.widget.noCriticalEvents' | transloco }}</p></div>
+              </gms-widget>
+              <gms-widget [title]="'audit.widget.mostActiveUsers' | transloco" icon="employees" [collapsible]="false" [count]="activeUsers().length">
+                <gms-item-list [items]="activeUsers()" />
+              </gms-widget>
+              <gms-widget [title]="'audit.widget.mostModifiedObjects' | transloco" icon="folder" [collapsible]="false" [count]="modifiedObjects().length">
+                <gms-item-list [items]="modifiedObjects()" />
+              </gms-widget>
+              <gms-widget [title]="'audit.widget.recentSecurityEvents' | transloco" icon="lock" [collapsible]="false" [count]="security().length" [empty]="!security().length">
+                <gms-audit-list [entries]="security()" />
+                <div empty><p class="muted">{{ 'audit.widget.noSecurityEvents' | transloco }}</p></div>
+              </gms-widget>
+            </div>
+          }
+
+          @case ('retention') {
+            <div class="gms-card">
+              <gms-state variant="empty" iconOverride="clock" [title]="'audit.retention.title' | transloco"
+                [text]="'audit.retention.text' | transloco">
+              </gms-state>
+            </div>
+          }
+
+          @default {
+            <gms-widget [title]="sectionMeta().label" icon="audit" [collapsible]="false" [count]="sectionRecords().length">
+              <gms-data-grid [rows]="sectionRecords()" [columns]="columns()" idKey="id" [searchable]="false" [pageSize]="12"
+                emptyIcon="audit" [emptyTitle]="'audit.grid.emptyTitle' | transloco" [emptyText]="'audit.grid.emptyText' | transloco"
+                (rowClick)="openRecord($event)">
+                <ng-template [gmsCell]="'timestamp'" let-row>
+                  <span class="ts">{{ row.timestamp | date: 'dd.MM.yyyy' }}<small>{{ row.timestamp | date: 'HH:mm:ss' }}</small></span>
+                </ng-template>
+                <ng-template [gmsCell]="'module'" let-row>{{ moduleLabel(row.module) }}</ng-template>
+                <ng-template [gmsCell]="'action'" let-row>
+                  <span class="act-chip" [class]="'act-chip--' + actionMeta(row.action).tone">
+                    <gms-icon [name]="actionMeta(row.action).icon" [size]="12" /> {{ actionMeta(row.action).label }}
+                  </span>
+                </ng-template>
+                <ng-template [gmsCell]="'previousPreview'" let-row><span class="prev">{{ row.previousPreview }}</span></ng-template>
+                <ng-template [gmsCell]="'currentPreview'" let-row><span class="curr">{{ row.currentPreview }}</span></ng-template>
+                <ng-template [gmsCell]="'result'" let-row>
+                  <span class="badge" [class]="'badge--' + resultMeta(row.result).tone">{{ resultMeta(row.result).label }}</span>
+                </ng-template>
+              </gms-data-grid>
+            </gms-widget>
+          }
+        }
+      }
+    </section>
+  </div>
+
+  <!-- Right summary panel (reusable) -->
+  <ng-container panel>
+    <gms-context-section [title]="'audit.widget.recentSecurityEvents' | transloco" icon="lock" [count]="security().length">
+      @if (security().length) { <gms-audit-list [entries]="security()" /> }
+      @else { <p class="muted">{{ 'audit.widget.noSecurityEvents' | transloco }}</p> }
+    </gms-context-section>
+    <gms-context-section [title]="'audit.widget.mostActiveUsers' | transloco" icon="employees" [count]="activeUsers().length">
+      <gms-item-list [items]="activeUsers()" />
+    </gms-context-section>
+    <gms-context-section [title]="'audit.panel.totalRecords' | transloco" icon="audit">
+      <p class="muted">{{ records().length }} {{ 'audit.panel.totalRecordsText' | transloco }}</p>
+    </gms-context-section>
+  </ng-container>
+
+</gms-page>

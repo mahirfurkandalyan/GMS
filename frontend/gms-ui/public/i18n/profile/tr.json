@@ -1,0 +1,56 @@
+{
+  "pageTitle": "Profilim",
+  "pageSubtitle": "Mevcut oturum kullanıcı bilgileri.",
+  "backToHub": "← GMS Hub'a Dön",
+  "tabs": {
+    "general": "Genel",
+    "history": "Onay Geçmişi",
+    "activity": "Aktivite",
+    "prefs": "Tercihler"
+  },
+  "sectionAccountInfo": "Hesap Bilgileri",
+  "fieldFullName": "Ad Soyad",
+  "fieldEmail": "E-posta",
+  "fieldRoles": "Roller",
+  "fieldStatus": "Durum",
+  "sectionApprovalHistory": "Onay Geçmişi",
+  "sectionActivityTimeline": "Aktivite Zaman Çizelgesi",
+  "prefsTitle": "Bildirim Tercihleri",
+  "prefsText": "Bildirim tercihleri ilerleyen adımlarda etkinleştirilecektir.",
+  "time": {
+    "today": "Bugün",
+    "yesterday": "Dün"
+  },
+  "history": {
+    "approvedRelease": "REL-2026-001 yayınını onayladı",
+    "reviewedChange": "MES değişikliğini inceledi",
+    "reviewedChangeDesc": "Teknik değerlendirme tamamlandı.",
+    "reviewedStatus": "İncelendi",
+    "rejectedValidation": "Doğrulama talebini reddetti"
+  },
+  "activity": {
+    "signedIn": "Oturum açıldı",
+    "addedToProject": "EBR Migration projesine eklendi",
+    "assignedTraining": "GxP Temelleri eğitimi atandı",
+    "dueDatePrefix": "Son tarih",
+    "daysAgo3": "3 gün önce",
+    "accountCreated": "Hesap oluşturuldu"
+  },
+  "security": {
+    "title": "Güvenlik ve Oturum",
+    "changePassword": "Parola Değiştir",
+    "currentPassword": "Mevcut Parola",
+    "newPassword": "Yeni Parola",
+    "confirmPassword": "Yeni Parola (Tekrar)",
+    "submit": "Parolayı Güncelle",
+    "submitting": "Güncelleniyor…",
+    "errorRequired": "Lütfen tüm alanları doldurun.",
+    "errorMismatch": "Yeni parolalar eşleşmiyor.",
+    "errorLength": "Yeni parola en az 8 karakter olmalıdır.",
+    "errorCurrent": "Mevcut parola hatalı.",
+    "errorGeneric": "Parola değiştirilemedi. Lütfen tekrar deneyin.",
+    "success": "Parolanız değiştirildi. Güvenlik için tekrar giriş yapın.",
+    "logoutAll": "Tüm Oturumları Kapat",
+    "logoutAllHint": "Tüm cihazlardaki oturumlarınızı sonlandırır."
+  }
+}

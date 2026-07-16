@@ -1,0 +1,85 @@
+{
+  "pageTitle": "Bildirim Merkezi",
+  "pageSubtitle": "Sistem tarafından oluşturulan bildirimleri görüntüleyin ve yönetin.",
+  "breadcrumbComm": "İletişim",
+  "unread": "okunmamış",
+  "lastUpdated": "birkaç sn önce",
+  "rulesButton": "Bildirim Kuralları",
+  "markAllRead": "Tümünü Okundu İşaretle",
+  "panelTitle": "Bildirim Detayı",
+  "searchPlaceholder": "Bildirim, açıklama veya ilgili nesne ara…",
+  "savedViewAll": "Tüm Bildirimler",
+  "savedViewAttention": "Dikkat Gerekenler",
+  "viewsAriaLabel": "Bildirim görünümleri",
+  "filter": {
+    "category": "Kategori",
+    "priority": "Öncelik",
+    "status": "Durum",
+    "module": "Modül",
+    "date": "Tarih",
+    "all": "Tümü"
+  },
+  "nav": {
+    "all": "Tümü",
+    "unread": "Okunmamış",
+    "read": "Okunmuş",
+    "critical": "Kritik",
+    "modulesTitle": "Modüller"
+  },
+  "type": {
+    "info": "Bilgi",
+    "success": "Başarılı",
+    "warning": "Uyarı",
+    "critical": "Kritik"
+  },
+  "status": {
+    "unread": "Okunmadı",
+    "read": "Okundu",
+    "archived": "Arşivlendi"
+  },
+  "module": {
+    "release": "Yayın",
+    "change": "Değişiklik",
+    "approval": "Onay",
+    "validation": "Doğrulama",
+    "execution": "Yürütme",
+    "workflow": "İş Akışı",
+    "document": "Doküman",
+    "audit": "Denetim",
+    "system": "Sistem"
+  },
+  "column": {
+    "priority": "Öncelik",
+    "title": "Başlık",
+    "module": "Modül",
+    "related": "İlgili Nesne",
+    "createdAt": "Tarih",
+    "status": "Durum"
+  },
+  "action": {
+    "openRelated": "İlgili nesneyi aç",
+    "markRead": "Okundu işaretle",
+    "archive": "Arşivle"
+  },
+  "emptyTitle": "Bildirim yok",
+  "emptyText": "Bu görünümde gösterilecek bildirim bulunmuyor.",
+  "detail": {
+    "module": "Modül",
+    "priority": "Öncelik",
+    "status": "Durum",
+    "date": "Tarih",
+    "related": "İlgili Nesne",
+    "openRelated": "İlgili Nesneyi Aç",
+    "markRead": "Okundu İşaretle",
+    "archive": "Arşivle"
+  },
+  "selectPrompt": "Detayları görmek için bir bildirim seçin.",
+  "toast": {
+    "markedRead": "Okundu olarak işaretlendi.",
+    "archived": "{{name}} arşivlendi.",
+    "undone": "Geri alındı.",
+    "noRelated": "Bu bildirime bağlı bir nesne yok.",
+    "allMarkedRead": "Tüm bildirimler okundu olarak işaretlendi.",
+    "refreshed": "Bildirimler yenilendi."
+  }
+}

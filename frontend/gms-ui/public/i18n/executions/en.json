@@ -1,0 +1,196 @@
+{
+  "pageTitle": "Execution",
+  "pageSubtitle": "Manage execution processes for approved changes.",
+  "breadcrumbWorkspace": "Workspace",
+  "contextPanelTitle": "Context",
+  "runningSuffix": "running",
+  "idle": "Idle",
+  "totalLabel": "Total",
+  "unit": "executions",
+  "lastUpdatedRecently": "a few minutes ago",
+  "export": "Export",
+  "refresh": "Refresh",
+  "reset": "Reset",
+  "searchPlaceholder": "Search execution, release, change, or executor…",
+  "allReleases": "All Releases",
+  "allEnvironments": "All Environments",
+  "allStatuses": "All Statuses",
+  "allExecutors": "All Executors",
+  "dateFromTitle": "From creation date",
+  "empty": {
+    "title": "No execution records",
+    "text": "Executions represent the controlled rollout of approved changes. They appear here once a change is put into execution.",
+    "step1": "Approve a change",
+    "step2": "Prepare the execution plan",
+    "step3": "Run the steps in a controlled manner"
+  },
+  "grid": {
+    "emptyTitle": "No matching executions",
+    "emptyText": "Try widening your filter criteria."
+  },
+  "columns": {
+    "code": "Execution No",
+    "release": "Release",
+    "change": "Related Change",
+    "environment": "Environment",
+    "executor": "Executor",
+    "currentStep": "Current Step",
+    "progress": "Progress",
+    "status": "Status",
+    "startedAt": "Started",
+    "completedAt": "Completed"
+  },
+  "rowActions": {
+    "open": "Open",
+    "change": "Related Change",
+    "copyLink": "Copy Link"
+  },
+  "toast": {
+    "linkCopied": "Link copied to clipboard.",
+    "exportSoon": "Export will be available soon."
+  },
+  "relation": {
+    "domain": "Governance",
+    "module": "Execution Center",
+    "customer": "Customer",
+    "project": "Project",
+    "release": "Release",
+    "change": "Change",
+    "execution": "Execution"
+  },
+  "panel": {
+    "recentActivity": "Recent Activity",
+    "relatedChanges": "Related Changes",
+    "runningExecutions": "Running Executions",
+    "runningExecutionsText": "{{count}} executions are currently running.",
+    "relatedDocuments": "Related Documents",
+    "relatedValidation": "Related Validation",
+    "upcomingSteps": "Upcoming Steps",
+    "upcomingStepsNone": "No remaining steps."
+  },
+  "activity": {
+    "started": "started",
+    "completed": "completed",
+    "failed": "failed"
+  },
+  "vmActivity": {
+    "startedExecution": "started the execution",
+    "completedSteps": "completed {{count}} steps",
+    "watching": "is watching the execution",
+    "systemActor": "System"
+  },
+  "detail": {
+    "notFoundTitle": "Execution not found",
+    "notFoundText": "The execution record you are looking for does not exist or may have been removed.",
+    "backToCenter": "Back to Execution Center",
+    "fallbackTitle": "Execution",
+    "viewChange": "View Related Change"
+  },
+  "control": {
+    "currentStep": "Current Step",
+    "start": "Start",
+    "pause": "Pause",
+    "resume": "Resume",
+    "cancel": "Cancel",
+    "noActionNeeded": "No further action is required for this execution."
+  },
+  "extra": {
+    "rollback": "Rollback (coming soon)",
+    "verify": "Verify (coming soon)",
+    "rollbackSoon": "Rollback coming soon.",
+    "verifySoon": "Verification coming soon."
+  },
+  "tabs": {
+    "overview": "Overview",
+    "plan": "Execution Plan",
+    "log": "Execution Log",
+    "rollback": "Rollback",
+    "verification": "Verification",
+    "timeline": "Timeline",
+    "audit": "Audit"
+  },
+  "overview": {
+    "generalInfo": "General Information",
+    "summary": "Execution Summary",
+    "progressSummary": "Progress Summary",
+    "timelineTitle": "Timeline"
+  },
+  "kv": {
+    "relatedRelease": "Related Release",
+    "relatedChange": "Related Change",
+    "environment": "Environment",
+    "executor": "Executor",
+    "startedAt": "Started",
+    "completedAt": "Completed",
+    "currentStep": "Current Step",
+    "status": "Status"
+  },
+  "metrics": {
+    "steps": "Steps",
+    "completed": "Completed",
+    "remaining": "Remaining"
+  },
+  "riskWord": "Risk",
+  "plan": {
+    "title": "Execution Plan",
+    "estimated": "Estimated"
+  },
+  "log": {
+    "time": "Time",
+    "step": "Step",
+    "message": "Message",
+    "severity": "Severity",
+    "createdBy": "Created By",
+    "empty": "No records yet. The log will populate once the execution starts.",
+    "severityLevel": {
+      "info": "Info",
+      "success": "Success",
+      "warning": "Warning",
+      "error": "Error"
+    }
+  },
+  "stepStatus": {
+    "completed": "Completed",
+    "running": "Running",
+    "failed": "Failed",
+    "skipped": "Skipped",
+    "pending": "Pending"
+  },
+  "moduleComingSoon": "This module will be added in a later development phase. The architecture is ready to integrate with the Execution process.",
+  "vmTimeline": {
+    "created": "Execution created",
+    "createdDesc": "Execution planned for {{change}}.",
+    "started": "Execution started",
+    "notStarted": "Not started",
+    "stepCompleted": "Step completed",
+    "paused": "Execution paused",
+    "active": "Active",
+    "none": "—",
+    "completedTitle": "Execution completed",
+    "pendingState": "Pending"
+  },
+  "vmLinks": {
+    "relatedChange": "Related Change",
+    "relatedRelease": "Related Release",
+    "relatedValidation": "Related validation result"
+  },
+  "confirm": {
+    "startTitle": "Start execution",
+    "startMessage": "Are you sure you want to start execution {{code}}? Steps will be run in a controlled manner.",
+    "startConfirm": "Start",
+    "pauseTitle": "Pause execution",
+    "pauseMessage": "The execution will pause once the active step completes.",
+    "pauseConfirm": "Pause",
+    "resumeTitle": "Resume execution",
+    "resumeMessage": "The execution will resume where it left off.",
+    "resumeConfirm": "Resume",
+    "cancelTitle": "Cancel execution",
+    "cancelMessage": "The execution will be cancelled and remaining steps skipped. This action cannot be undone.",
+    "cancelConfirm": "Cancel",
+    "startedToast": "Execution started.",
+    "pausedToast": "Execution paused.",
+    "resumedToast": "Execution resumed.",
+    "cancelledToast": "Execution cancelled.",
+    "statusUpdatedTitle": "Status updated"
+  }
+}

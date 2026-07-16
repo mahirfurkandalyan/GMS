@@ -1,0 +1,114 @@
+<gms-page [contextPanel]="true" [panelTitle]="'notificationRules.panelContext' | transloco">
+
+  <gms-page-header
+    header
+    [title]="'notificationRules.pageTitle' | transloco"
+    [subtitle]="'notificationRules.pageSubtitle' | transloco"
+    [breadcrumbs]="[{ label: ('notificationRules.breadcrumbAdmin' | transloco) }, { label: ('notificationRules.notificationCenterLabel' | transloco), route: '/notifications' }, { label: ('notificationRules.pageTitle' | transloco) }]"
+    [status]="{ label: filtered().length + ' ' + ('notificationRules.ruleCountSuffix' | transloco), tone: 'info' }"
+    [lastUpdated]="'notificationRules.lastUpdated' | transloco">
+    <button secondary gmsButton variant="ghost" (click)="back()"><gms-icon name="chevron-left" [size]="16" /> {{ 'notificationRules.backToCenter' | transloco }}</button>
+    <button actions gmsButton variant="primary" (click)="onNewRule()"><gms-icon name="plus" [size]="16" /> {{ 'notificationRules.newRule' | transloco }}</button>
+  </gms-page-header>
+
+  <div toolbar>
+    <gms-filter-bar
+      [search]="fSearch()" (searchChange)="fSearch.set($event)"
+      [placeholder]="'notificationRules.searchPlaceholder' | transloco"
+      [hasAdvanced]="true"
+      [savedViews]="[('notificationRules.savedViewAll' | transloco), ('notificationRules.savedViewActive' | transloco)]"
+      (reset)="onResetFilters()">
+      <div advanced>
+        <label class="ff"><span>{{ 'notificationRules.filter.trigger' | transloco }}</span>
+          <select [ngModel]="fTrigger()" (ngModelChange)="fTrigger.set($event)" [ngModelOptions]="{ standalone: true }">
+            <option value="">{{ 'notificationRules.filter.all' | transloco }}</option>
+            @for (t of triggers; track t.key) { <option [value]="t.key">{{ triggerLabel(t.key) }}</option> }
+          </select>
+        </label>
+        <label class="ff"><span>{{ 'notificationRules.filter.status' | transloco }}</span>
+          <select [ngModel]="fStatus()" (ngModelChange)="fStatus.set($event)" [ngModelOptions]="{ standalone: true }">
+            <option value="">{{ 'notificationRules.filter.all' | transloco }}</option>
+            <option value="Active">{{ 'badge.status.Active' | transloco }}</option>
+            <option value="Inactive">{{ 'badge.status.Inactive' | transloco }}</option>
+            <option value="Draft">{{ 'badge.status.Draft' | transloco }}</option>
+          </select>
+        </label>
+      </div>
+    </gms-filter-bar>
+  </div>
+
+  @if (loading()) {
+    <div class="gms-card"><gms-state variant="loading" /></div>
+  } @else {
+    <gms-data-grid
+      [rows]="filtered()" [columns]="columns()" idKey="id" [searchable]="false" [rowActions]="rowActions()"
+      emptyIcon="filter" [emptyTitle]="'notificationRules.emptyTitle' | transloco" [emptyText]="'notificationRules.emptyText' | transloco"
+      (rowAction)="onRowAction($event)" (rowClick)="openDetail($event)">
+      <ng-template [gmsCell]="'trigger'" let-row>
+        <span class="trig">{{ triggerLabel(row.trigger) }}</span>
+      </ng-template>
+      <ng-template [gmsCell]="'channels'" let-row>
+        <span class="channels">
+          @for (c of row.channels; track c) {
+            <span class="ch" [class.ch--ph]="channelMeta(c).placeholder" [attr.title]="channelMeta(c).placeholder ? ('notificationRules.comingSoon' | transloco) : channelLabel(c)">
+              <gms-icon [name]="channelMeta(c).icon" [size]="12" /> {{ channelLabel(c) }}
+            </span>
+          }
+        </span>
+      </ng-template>
+      <ng-template [gmsCell]="'updatedAt'" let-row>{{ row.updatedAt | date: 'dd.MM.yyyy' }}</ng-template>
+    </gms-data-grid>
+
+    <!-- Bottom: notification lifecycle timeline -->
+    <div class="gms-card">
+      <h3 class="gms-section-title">{{ 'notificationRules.lifecycleTitle' | transloco }}</h3>
+      <gms-timeline [items]="lifecycle()" />
+    </div>
+  }
+
+  <ng-container panel>
+    <gms-context-section [title]="'notificationRules.recentNotifsTitle' | transloco" icon="bell" [count]="recentNotifs().length">
+      <gms-item-list [items]="recentNotifs()" />
+    </gms-context-section>
+    <gms-context-section [title]="'notificationRules.recentRuleChangesTitle' | transloco" icon="filter" [count]="recentRuleChanges().length">
+      <gms-item-list [items]="recentRuleChanges()" />
+    </gms-context-section>
+    <gms-context-section [title]="'notificationRules.upcomingEventsTitle' | transloco" icon="clock">
+      <gms-activity-feed [items]="upcomingEvents()" />
+    </gms-context-section>
+  </ng-container>
+
+  <!-- Rule detail modal -->
+  <gms-modal [open]="detailOpen()" [title]="'notificationRules.ruleDetailTitle' | transloco" size="md" (closed)="detailOpen.set(false)">
+    @if (selected(); as r) {
+      <div class="rd">
+        <div class="rd__head">
+          <span class="rd__name">{{ r.name }}</span>
+          <span class="badge" [class]="'badge--' + (r.status === 'Active' ? 'success' : r.status === 'Draft' ? 'info' : 'neutral')">{{ statusLabel(r.status) }}</span>
+        </div>
+        <dl class="rd__kv">
+          <div class="rd__full"><dt>{{ 'notificationRules.detail.trigger' | transloco }}</dt><dd>{{ triggerLabel(r.trigger) }}</dd></div>
+          <div class="rd__full"><dt>{{ 'notificationRules.detail.conditions' | transloco }}</dt><dd>{{ r.conditionsSummary }} <span class="ph-chip">{{ 'notificationRules.placeholderTag' | transloco }}</span></dd></div>
+          <div class="rd__full"><dt>{{ 'notificationRules.detail.recipients' | transloco }}</dt>
+            <dd><span class="chips">@for (rc of r.recipients; track rc) { <span class="chip">{{ rc }}</span> }</span></dd>
+          </div>
+          <div class="rd__full"><dt>{{ 'notificationRules.detail.channels' | transloco }}</dt>
+            <dd><span class="channels">
+              @for (c of r.channels; track c) {
+                <span class="ch" [class.ch--ph]="channelMeta(c).placeholder"><gms-icon [name]="channelMeta(c).icon" [size]="12" /> {{ channelLabel(c) }}</span>
+              }
+            </span></dd>
+          </div>
+          <div><dt>{{ 'notificationRules.detail.priority' | transloco }}</dt><dd>{{ priorityLabel(r.priority) }}</dd></div>
+          <div><dt>{{ 'notificationRules.detail.status' | transloco }}</dt><dd>{{ statusLabel(r.status) }}</dd></div>
+        </dl>
+        <p class="rd__note">{{ 'notificationRules.conditionsNote' | transloco }}</p>
+      </div>
+    }
+    <div footer>
+      <button gmsButton variant="ghost" (click)="detailOpen.set(false)">{{ 'common.close' | transloco }}</button>
+      <button gmsButton variant="primary" (click)="onNewRule()">{{ 'notificationRules.action.edit' | transloco }}</button>
+    </div>
+  </gms-modal>
+
+</gms-page>

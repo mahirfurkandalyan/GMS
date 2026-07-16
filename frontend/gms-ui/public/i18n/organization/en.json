@@ -1,0 +1,21 @@
+{
+  "common": {
+    "person": "people"
+  },
+  "departments": {
+    "pageTitle": "Departments",
+    "pageSubtitle": "Organizational units and their leads.",
+    "leadLabel": "Manager"
+  },
+  "teams": {
+    "pageTitle": "Teams",
+    "pageSubtitle": "Project and product teams.",
+    "leadLabel": "Team Lead"
+  },
+  "orgChart": {
+    "pageTitle": "Organization Chart",
+    "pageSubtitle": "A visual representation of the company hierarchy.",
+    "note": "An interactive organization chart (drag-to-expand) will be added in a future release.",
+    "comingSoon": "Coming soon"
+  }
+}

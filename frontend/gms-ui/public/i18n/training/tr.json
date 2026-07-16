@@ -1,0 +1,25 @@
+{
+  "pageTitle": "Eğitimler",
+  "pageSubtitle": "Atanmış eğitimleriniz, tamamlananlar ve sertifikalarınız.",
+  "breadcrumbWorkspace": "Çalışma Alanı",
+  "tab": {
+    "all": "Tümü",
+    "assigned": "Atanmış",
+    "completed": "Tamamlanan",
+    "upcoming": "Yaklaşan",
+    "expired": "Süresi Dolan"
+  },
+  "status": {
+    "assigned": "Atanmış",
+    "completed": "Tamamlandı",
+    "expired": "Süresi Doldu",
+    "upcoming": "Yaklaşan"
+  },
+  "emptyTitle": "Bu kategoride eğitim yok",
+  "emptyText": "Seçili durumda görüntülenecek eğitim bulunmuyor.",
+  "completed": "tamamlandı",
+  "dueDate": "Son tarih",
+  "certificates": "Sertifikalar",
+  "noCertificates": "Henüz sertifika yok.",
+  "validUntil": "Geçerlilik"
+}

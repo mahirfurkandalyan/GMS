@@ -1,0 +1,198 @@
+{
+  "pageTitle": "Dokümanlar",
+  "pageTitleSingular": "Doküman",
+  "pageSubtitle": "Tüm yönetişim dokümanlarını merkezi olarak yönetin.",
+  "breadcrumbWorkspace": "Çalışma Alanı",
+  "breadcrumbCenter": "Doküman Merkezi",
+  "countSuffix": "doküman",
+  "updatedRecently": "birkaç dk önce",
+  "upload": "Doküman Yükle",
+  "unknownOwner": "Bilinmeyen",
+  "toolbar": {
+    "searchPlaceholder": "Doküman, ad, sahip veya yayın ara…",
+    "allCategories": "Tüm Kategoriler",
+    "allReleases": "Tüm Yayınlar",
+    "allProjects": "Tüm Projeler",
+    "allFileTypes": "Tüm Dosya Türleri",
+    "allOwners": "Tüm Sahipler",
+    "createdSince": "Oluşturma tarihinden itibaren",
+    "reset": "Sıfırla"
+  },
+  "empty": {
+    "title": "Doküman yok",
+    "text": "Dokümanlar; yayın, değişiklik, doğrulama ve yürütmelere kanıt olarak bağlanır. İlk dokümanınızı yükleyerek başlayın.",
+    "step1": "Doküman kategorisini seçin",
+    "step2": "Dosyayı sürükleyip bırakın",
+    "step3": "İlgili yayına bağlayıp kaydedin"
+  },
+  "grid": {
+    "emptyTitle": "Eşleşen doküman yok",
+    "emptyText": "Filtre kriterlerinizi genişletmeyi deneyin."
+  },
+  "column": {
+    "code": "Doküman No",
+    "name": "Doküman Adı",
+    "category": "Kategori",
+    "release": "İlgili Yayın",
+    "change": "İlgili Değişiklik",
+    "owner": "Sahip",
+    "version": "Sürüm",
+    "status": "Durum",
+    "createdAt": "Oluşturma",
+    "updatedAt": "Güncelleme"
+  },
+  "panel": {
+    "recentActivity": "Son Aktivite",
+    "relatedReleases": "İlgili Yayınlar",
+    "totalDocuments": "Toplam Doküman",
+    "totalDocumentsText": "doküman merkezde saklanıyor."
+  },
+  "form": {
+    "sectionTitle": "Doküman Bilgileri",
+    "sectionDescription": "Yüklenen dosyanın yönetişim bilgilerini girin.",
+    "name": "Doküman Adı",
+    "namePlaceholder": "Örn. Validasyon Planı",
+    "category": "Kategori",
+    "release": "İlgili Yayın",
+    "releaseHint": "Opsiyonel",
+    "noRelease": "Bağlama yok",
+    "description": "Açıklama",
+    "descriptionHint": "Opsiyonel",
+    "descriptionPlaceholder": "Kısa açıklama",
+    "validationError": "Lütfen doküman adı, kategori seçin ve en az bir dosya ekleyin."
+  },
+  "toast": {
+    "uploaded": "{{code}} yüklendi.",
+    "savedTitle": "Doküman kaydedildi",
+    "uploadFailed": "Doküman yüklenemedi.",
+    "editSoon": "{{code}} düzenleme yakında.",
+    "duplicated": "{{code}} çoğaltıldı.",
+    "duplicatedTitle": "Kopyalandı",
+    "linkCopied": "Bağlantı panoya kopyalandı.",
+    "archived": "{{code}} arşivlendi.",
+    "restored": "Geri alındı.",
+    "deleteTitle": "Dokümanı sil",
+    "deleteMessage": "{{code}} kaydını silmek istediğinize emin misiniz?",
+    "deleteConfirm": "Sil",
+    "deleted": "{{code}} silindi.",
+    "deleteRestored": "Silme geri alındı.",
+    "exportSoon": "Dışa aktarma yakında eklenecek."
+  },
+  "relation": {
+    "domain": "Alan",
+    "governance": "Yönetişim",
+    "module": "Modül",
+    "customer": "Müşteri",
+    "project": "Proje",
+    "release": "Yayın",
+    "change": "Değişiklik",
+    "document": "Doküman"
+  },
+  "activity": {
+    "uploadedValidationPlan": "Validasyon Planı v2 yükledi",
+    "oneHourAgo": "1 saat önce",
+    "updatedSqlScript": "SQL betiğini güncelledi",
+    "threeHoursAgo": "3 saat önce",
+    "archivedExecutionReport": "yürütme raporunu arşivledi",
+    "yesterday": "Dün"
+  },
+  "type": {
+    "sqlScript": "SQL Betiği",
+    "rollbackScript": "Geri Alma Betiği",
+    "validationReport": "Doğrulama Raporu",
+    "executionReport": "Yürütme Raporu",
+    "releaseNote": "Sürüm Notu",
+    "testEvidence": "Test Kanıtı",
+    "approvalEvidence": "Onay Kanıtı",
+    "architectureDoc": "Mimari Doküman",
+    "operationalProcedure": "Operasyonel Prosedür",
+    "other": "Diğer"
+  },
+  "previewKind": {
+    "pdf": "PDF",
+    "sql": "SQL",
+    "text": "Metin",
+    "image": "Görsel",
+    "word": "Word",
+    "excel": "Excel"
+  },
+  "detail": {
+    "notFoundTitle": "Doküman bulunamadı",
+    "notFoundText": "Aradığınız doküman kaydı mevcut değil ya da kaldırılmış olabilir.",
+    "backToCenter": "Doküman Merkezi'ne dön",
+    "newVersion": "Yeni Sürüm",
+    "newVersionSoon": "Yeni sürüm yükleme yakında.",
+    "downloadSoon": "İndir (yakında)",
+    "downloadSoonToast": "İndirme yakında.",
+    "archive": "Arşivle",
+    "archivedToast": "{{code}} arşivlendi.",
+    "restoredToast": "Geri alındı.",
+    "tab": {
+      "overview": "Genel Bakış",
+      "versions": "Sürümler",
+      "related": "İlgili Nesneler",
+      "preview": "Önizleme",
+      "timeline": "Zaman Çizelgesi",
+      "audit": "Denetim"
+    },
+    "generalInfo": "Genel Bilgiler",
+    "field": {
+      "category": "Kategori",
+      "version": "Sürüm",
+      "owner": "Sahip",
+      "file": "Dosya",
+      "createdAt": "Oluşturma Tarihi",
+      "updatedAt": "Son Güncelleme",
+      "release": "İlgili Yayın",
+      "change": "İlgili Değişiklik",
+      "description": "Açıklama",
+      "status": "Durum",
+      "createdBy": "Oluşturan"
+    },
+    "statusNote": "Bu doküman ilgili yönetişim nesnesine kanıt olarak bağlanmıştır.",
+    "relatedMetrics": "İlgili Metrikler",
+    "metric": {
+      "versions": "Sürüm",
+      "relatedObjects": "Bağlı Nesne",
+      "size": "Boyut"
+    },
+    "timelineTitle": "Zaman Çizelgesi",
+    "versionsEmptyTitle": "Sürüm yok",
+    "versionsEmptyText": "Kayıt bulunamadı.",
+    "download": "İndir",
+    "imagePreviewCaption": "Görsel önizleme (mock)",
+    "imagePreviewAlt": "Görsel önizleme",
+    "previewWordSoon": "Word önizleme yakında",
+    "previewExcelSoon": "Excel önizleme yakında",
+    "unsupportedText": "Bu dosya türü için gömülü önizleme sonraki fazda eklenecektir. Şimdilik dosyayı indirerek görüntüleyebilirsiniz.",
+    "defaultTabText": "Bu modül sonraki geliştirme aşamasında eklenecektir. Mimari, Doküman ile ilişkili olacak şekilde hazırdır.",
+    "panel": {
+      "recentDocuments": "Son Dokümanlar",
+      "noOtherDocuments": "Başka doküman yok.",
+      "relatedObjects": "İlgili Nesneler",
+      "noRelatedObjects": "Bağlı nesne yok.",
+      "recentActivity": "Son Aktivite"
+    },
+    "relatedRelease": "İlgili Yayın",
+    "relatedChange": "İlgili Değişiklik",
+    "timeline": {
+      "created": "Doküman oluşturuldu",
+      "createdBy": "{{owner}} tarafından oluşturuldu.",
+      "fileUploaded": "Dosya yüklendi",
+      "updated": "Güncellendi",
+      "versionPublished": "Sürüm yayınlandı",
+      "archived": "Arşivlendi",
+      "pending": "Beklemede"
+    },
+    "activity": {
+      "publishedVersion": "{{version}} sürümünü yayınladı",
+      "twoDaysAgo": "2 gün önce",
+      "viewed": "dokümanı görüntüledi",
+      "oneDayAgo": "1 gün önce",
+      "commented": "yorum bıraktı",
+      "fiveHoursAgo": "5 saat önce"
+    },
+    "previewNote1": "Bu belge, ilgili yönetişim nesnesine kanıt olarak bağlanmıştır. Nihai sürüm",
+    "previewNote2": "onay ve doğrulama süreçleri tamamlandıktan sonra \"Aktif\" duruma alınır."
+  }
+}

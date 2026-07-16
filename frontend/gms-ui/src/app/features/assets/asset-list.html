@@ -1,0 +1,164 @@
+<gms-page [contextPanel]="true" [panelTitle]="'common.context' | transloco">
+
+  <gms-page-header
+    header
+    [title]="'assets.pageTitle' | transloco"
+    [subtitle]="'assets.pageSubtitle' | transloco"
+    [breadcrumbs]="[{ label: ('assets.breadcrumbWorkspace' | transloco) }, { label: ('assets.breadcrumbCenter' | transloco) }]"
+    [status]="{ label: filteredRows().length + ' ' + ('assets.countSuffix' | transloco), tone: 'info' }"
+    [lastUpdated]="'assets.updatedRecently' | transloco">
+    <button secondary gmsButton variant="ghost" (click)="reload()">
+      <gms-icon name="activity" [size]="16" /> {{ 'common.refresh' | transloco }}
+    </button>
+    <button secondary gmsButton variant="ghost" (click)="onExport()">
+      <gms-icon name="document" [size]="16" /> {{ 'dataGrid.export' | transloco }}
+    </button>
+    <button actions gmsButton variant="primary" (click)="openCreate()">
+      <gms-icon name="plus" [size]="16" /> {{ 'assets.newAsset' | transloco }}
+    </button>
+  </gms-page-header>
+
+  <div toolbar class="asset-toolbar">
+    <gms-relationship-strip [nodes]="relationChain()" />
+
+    <div class="filters">
+      <div class="filters__search">
+        <gms-icon name="search" [size]="17" />
+        <input type="text" [placeholder]="'assets.toolbar.searchPlaceholder' | transloco"
+          [ngModel]="fSearch()" (ngModelChange)="fSearch.set($event)" [ngModelOptions]="{ standalone: true }" />
+      </div>
+
+      <select class="filters__select" [ngModel]="fType()" (ngModelChange)="fType.set($event)" [ngModelOptions]="{ standalone: true }">
+        <option value="">{{ 'assets.toolbar.allTypes' | transloco }}</option>
+        @for (t of assetTypes; track t.key) { <option [value]="t.key">{{ typeLabel(t.key) }}</option> }
+      </select>
+
+      <select class="filters__select" [ngModel]="fProject()" (ngModelChange)="fProject.set($event)" [ngModelOptions]="{ standalone: true }">
+        <option value="">{{ 'assets.toolbar.allProjects' | transloco }}</option>
+        @for (p of projectOptions(); track p) { <option [value]="p">{{ p }}</option> }
+      </select>
+
+      <select class="filters__select" [ngModel]="fEnv()" (ngModelChange)="fEnv.set($event)" [ngModelOptions]="{ standalone: true }">
+        <option value="">{{ 'assets.toolbar.allEnvironments' | transloco }}</option>
+        @for (e of environments; track e) { <option [value]="e">{{ e }}</option> }
+      </select>
+
+      <select class="filters__select" [ngModel]="fCriticality()" (ngModelChange)="fCriticality.set($event)" [ngModelOptions]="{ standalone: true }">
+        <option value="">{{ 'assets.toolbar.allCriticalities' | transloco }}</option>
+        @for (c of criticalities; track c) { <option [value]="c">{{ critLabel(c) }}</option> }
+      </select>
+
+      <select class="filters__select" [ngModel]="fOwner()" (ngModelChange)="fOwner.set($event)" [ngModelOptions]="{ standalone: true }">
+        <option value="">{{ 'assets.toolbar.allOwners' | transloco }}</option>
+        @for (o of ownerOptions(); track o) { <option [value]="o">{{ o }}</option> }
+      </select>
+
+      <select class="filters__select" [ngModel]="fStatus()" (ngModelChange)="fStatus.set($event)" [ngModelOptions]="{ standalone: true }">
+        <option value="">{{ 'assets.toolbar.allStatuses' | transloco }}</option>
+        @for (s of statuses; track s) { <option [value]="s">{{ statusLabel(s) }}</option> }
+      </select>
+
+      @if (hasFilters()) {
+        <button type="button" class="gms-btn gms-btn--ghost gms-btn--sm" (click)="resetFilters()">{{ 'assets.toolbar.reset' | transloco }}</button>
+      }
+    </div>
+  </div>
+
+  @if (!loading() && rows().length === 0) {
+    <div class="gms-card">
+      <gms-state variant="empty" iconOverride="server" [title]="'assets.empty.title' | transloco"
+        [text]="'assets.empty.text' | transloco"
+        [steps]="[('assets.empty.step1' | transloco), ('assets.empty.step2' | transloco), ('assets.empty.step3' | transloco)]">
+        <button gmsButton variant="primary" (click)="openCreate()">
+          <gms-icon name="plus" [size]="15" /> {{ 'assets.newAsset' | transloco }}
+        </button>
+      </gms-state>
+    </div>
+  } @else {
+    <gms-data-grid
+      [rows]="filteredRows()"
+      [columns]="columns()"
+      idKey="id"
+      [loading]="loading()"
+      [searchable]="false"
+      [selectable]="true"
+      [rowActions]="rowActions"
+      emptyIcon="search"
+      [emptyTitle]="'assets.grid.emptyTitle' | transloco"
+      [emptyText]="'assets.grid.emptyText' | transloco"
+      (rowAction)="onRowAction($event)"
+      (rowClick)="openAsset($event)"
+      (exportRequested)="onExport()">
+      <ng-template [gmsCell]="'type'" let-row>
+        <span class="type-chip"><gms-icon [name]="typeIcon(row.type)" [size]="13" /> {{ typeLabel(row.type) }}</span>
+      </ng-template>
+      <ng-template [gmsCell]="'updatedAt'" let-row>{{ row.updatedAt | date: 'dd.MM.yyyy' }}</ng-template>
+      <ng-template [gmsCell]="'releases'" let-row>
+        @if (row.releases.length) {
+          <span class="rel-count"><gms-icon name="release" [size]="13" /> {{ row.releases.length }}</span>
+        } @else {
+          <span class="rel-count rel-count--none">—</span>
+        }
+      </ng-template>
+    </gms-data-grid>
+  }
+
+  <ng-container panel>
+    <gms-context-section [title]="'assets.panel.recentActivity' | transloco" icon="activity">
+      <gms-activity-feed [items]="panelActivity()" />
+    </gms-context-section>
+    <gms-context-section [title]="'assets.panel.criticalAssets' | transloco" icon="shield" [count]="criticalAssets.length">
+      <gms-item-list [items]="criticalAssets" />
+    </gms-context-section>
+    <gms-context-section [title]="'assets.panel.totalAssets' | transloco" icon="server">
+      <p class="panel-empty">{{ rows().length }} {{ 'assets.panel.totalAssetsText' | transloco }}</p>
+    </gms-context-section>
+  </ng-container>
+
+  <!-- Create modal -->
+  <gms-modal [open]="createOpen()" [title]="'assets.newAsset' | transloco" size="lg" (closed)="createOpen.set(false)">
+    <div class="asset-form">
+      <gms-form-section [title]="'assets.form.sectionTitle' | transloco" [description]="'assets.form.sectionDescription' | transloco">
+        <gms-field [label]="'assets.form.name' | transloco" [required]="true" class="asset-form__full">
+          <input gmsInput type="text" [placeholder]="'assets.form.namePlaceholder' | transloco" [value]="formName()" (input)="formName.set($any($event.target).value)" />
+        </gms-field>
+
+        <gms-field [label]="'assets.form.type' | transloco" [required]="true">
+          <select gmsInput [value]="formType()" (change)="formType.set($any($event.target).value)">
+            @for (t of assetTypes; track t.key) { <option [value]="t.key">{{ typeLabel(t.key) }}</option> }
+          </select>
+        </gms-field>
+
+        <gms-field [label]="'assets.form.project' | transloco" [required]="true">
+          <input gmsInput type="text" [placeholder]="'assets.form.projectPlaceholder' | transloco" [value]="formProject()" (input)="formProject.set($any($event.target).value)" />
+        </gms-field>
+
+        <gms-field [label]="'assets.form.environment' | transloco" [required]="true">
+          <select gmsInput [value]="formEnv()" (change)="formEnv.set($any($event.target).value)">
+            @for (e of environments; track e) { <option [value]="e">{{ e }}</option> }
+          </select>
+        </gms-field>
+
+        <gms-field [label]="'assets.form.criticality' | transloco" [required]="true">
+          <select gmsInput [value]="formCriticality()" (change)="formCriticality.set($any($event.target).value)">
+            @for (c of criticalities; track c) { <option [value]="c">{{ critLabel(c) }}</option> }
+          </select>
+        </gms-field>
+
+        <gms-field [label]="'assets.form.description' | transloco" [hint]="'assets.form.descriptionHint' | transloco" class="asset-form__full">
+          <textarea gmsInput rows="2" [placeholder]="'assets.form.descriptionPlaceholder' | transloco" [value]="formDescription()" (input)="formDescription.set($any($event.target).value)"></textarea>
+        </gms-field>
+      </gms-form-section>
+
+      @if (createError()) { <p class="asset-form__error">{{ createError() }}</p> }
+    </div>
+
+    <div footer>
+      <button gmsButton variant="ghost" (click)="createOpen.set(false)">{{ 'common.cancel' | transloco }}</button>
+      <button gmsButton variant="primary" [loading]="submitting()" [disabled]="!canCreate()" (click)="onCreate()">
+        {{ 'assets.form.create' | transloco }}
+      </button>
+    </div>
+  </gms-modal>
+
+</gms-page>

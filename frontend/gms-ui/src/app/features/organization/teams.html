@@ -1,0 +1,31 @@
+<section class="gms-page">
+  <div class="gms-page-head">
+    <div>
+      <h1 class="gms-page-head__title">{{ 'organization.teams.pageTitle' | transloco }}</h1>
+      <p class="gms-page-head__sub">{{ 'organization.teams.pageSubtitle' | transloco }}</p>
+    </div>
+  </div>
+
+  <div class="gms-grid gms-grid--cards">
+    @for (team of teams(); track team.id) {
+      <div class="org-card gms-hover">
+        <div class="org-card__head">
+          <span class="org-card__icon"><gms-icon name="team" [size]="20" /></span>
+          <span class="badge badge--gray">{{ team.department }}</span>
+        </div>
+        <h3 class="org-card__name">{{ team.name }}</h3>
+        <p class="org-card__desc">{{ team.focus }}</p>
+        <div class="team-members">
+          <span class="avatar team-members__lead" [title]="team.lead">{{ team.lead.charAt(0) }}</span>
+          @for (m of team.members; track m) {
+            <span class="avatar team-members__avatar" [title]="m">{{ m.charAt(0) }}</span>
+          }
+        </div>
+        <div class="org-card__foot">
+          <span class="org-card__label">{{ 'organization.teams.leadLabel' | transloco }}</span>
+          <span class="org-card__value">{{ team.lead }}</span>
+        </div>
+      </div>
+    }
+  </div>
+</section>

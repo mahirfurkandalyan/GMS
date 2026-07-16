@@ -1,0 +1,179 @@
+@if (loading()) {
+  <section class="gms-page"><div class="gms-card"><gms-state variant="loading" /></div></section>
+} @else if (notFound()) {
+  <section class="gms-page">
+    <div class="gms-card">
+      <gms-state variant="error" [title]="'approvals.detail.notFoundTitle' | transloco" [text]="'approvals.detail.notFoundText' | transloco">
+        <button gmsButton variant="secondary" (click)="back()"><gms-icon name="chevron-left" [size]="15" /> {{ 'approvals.detail.backToCenter' | transloco }}</button>
+      </gms-state>
+    </div>
+  </section>
+} @else if (approval(); as a) {
+  <gms-page [contextPanel]="true" [panelTitle]="'approvals.contextPanelTitle' | transloco">
+
+    <gms-page-header
+      header
+      [title]="a.code"
+      [subtitle]="a.title"
+      [breadcrumbs]="breadcrumbs()"
+      [status]="{ label: statusLabel(), tone: statusTone() }"
+      [context]="headerContext()"
+      [lastUpdated]="decisionLabel()">
+      <gms-menu secondary [items]="extraActions()" (select)="onExtraAction($event)" />
+    </gms-page-header>
+
+    <div toolbar class="ad-toolbar">
+      <gms-relationship-strip [nodes]="relationChain()" />
+
+      <!-- Decision bar -->
+      @if (isPending()) {
+        <div class="decision">
+          <div class="decision__info">
+            <span class="decision__icon"><gms-icon name="approval" [size]="18" /></span>
+            <div>
+              <span class="decision__title">{{ 'approvals.decisionBar.waitingTitle' | transloco }}</span>
+              <span class="decision__sub">{{ 'approvals.decisionBar.stageLabel' | transloco }}: <strong>{{ a.stage }}</strong> · {{ 'approvals.decisionBar.approverLabel' | transloco }}: <strong>{{ a.currentApprover }}</strong> · {{ 'approvals.decisionBar.dueLabel' | transloco }}: {{ a.dueDate | date: 'dd.MM.yyyy' }}</span>
+            </div>
+          </div>
+          <div class="decision__actions">
+            <button gmsButton variant="ghost" (click)="openDecision('revision')"><gms-icon name="change" [size]="15" /> {{ 'approvals.decisionBar.revision' | transloco }}</button>
+            <button gmsButton variant="destructive" (click)="openDecision('reject')"><gms-icon name="close" [size]="15" /> {{ 'approvals.decisionBar.reject' | transloco }}</button>
+            <button gmsButton variant="primary" (click)="openDecision('approve')"><gms-icon name="check" [size]="15" /> {{ 'approvals.decisionBar.approve' | transloco }}</button>
+          </div>
+        </div>
+      } @else {
+        <div class="decision decision--done">
+          <span class="decision__icon" [class]="'decision__icon--' + statusTone()"><gms-icon [name]="a.status === 'Rejected' ? 'close' : a.status === 'Approved' ? 'check' : 'clock'" [size]="18" /></span>
+          <div>
+            <span class="decision__title">{{ 'approvals.decisionBar.decisionPrefix' | transloco }}: {{ decisionLabel() }}</span>
+            <span class="decision__sub">{{ 'approvals.decisionBar.doneSub' | transloco }}</span>
+          </div>
+        </div>
+      }
+    </div>
+
+    <gms-tabs [tabs]="tabs()" [(active)]="activeTab" />
+
+    @switch (activeTab()) {
+      @case ('overview') {
+        <div class="gms-grid gms-grid--2">
+          <div class="gms-card">
+            <h3 class="gms-section-title">{{ 'approvals.overview.generalInfo' | transloco }}</h3>
+            <dl class="kv">
+              <div><dt>{{ 'approvals.kv.businessReason' | transloco }}</dt><dd>{{ a.businessReason }}</dd></div>
+              <div><dt>{{ 'approvals.kv.approvalType' | transloco }}</dt><dd>{{ a.approvalType }}</dd></div>
+              <div><dt>{{ 'approvals.kv.requestedBy' | transloco }}</dt><dd>{{ a.requestedBy }}</dd></div>
+              <div><dt>{{ 'approvals.kv.requestedAt' | transloco }}</dt><dd>{{ a.requestedAt | date: 'dd.MM.yyyy HH:mm' }}</dd></div>
+              <div><dt>{{ 'approvals.kv.relatedRelease' | transloco }}</dt><dd>{{ a.releaseCode }}</dd></div>
+              <div><dt>{{ 'approvals.kv.relatedChange' | transloco }}</dt><dd>{{ a.changeCode || '—' }}</dd></div>
+              <div><dt>{{ 'approvals.kv.currentStage' | transloco }}</dt><dd>{{ a.stage }}</dd></div>
+              <div><dt>{{ 'approvals.kv.currentDecision' | transloco }}</dt><dd><span class="badge" [class]="'badge--' + statusTone()">{{ decisionLabel() }}</span></dd></div>
+            </dl>
+          </div>
+
+          <div class="ad-side">
+            <div class="gms-card">
+              <h3 class="gms-section-title">{{ 'approvals.overview.riskSummary' | transloco }}</h3>
+              <div class="ad-risk">
+                <span class="badge" [class]="'badge--' + riskTone()">{{ riskLabel() }} {{ 'approvals.riskWord' | transloco }}</span>
+                <span class="badge" [class]="'badge--' + priorityTone()">{{ priorityLabel() }} {{ 'approvals.priorityWord' | transloco }}</span>
+              </div>
+              <p class="ad-risk__note">{{ 'approvals.overview.riskNote' | transloco }}</p>
+            </div>
+            <div class="gms-card">
+              <h3 class="gms-section-title">{{ 'approvals.overview.relatedMetrics' | transloco }}</h3>
+              <div class="ad-metrics">
+                <div class="ad-metric"><span class="ad-metric__v">{{ steps().length - 1 }}</span><span class="ad-metric__l">{{ 'approvals.metrics.stage' | transloco }}</span></div>
+                <div class="ad-metric"><span class="ad-metric__v">{{ documents().length }}</span><span class="ad-metric__l">{{ 'approvals.metrics.document' | transloco }}</span></div>
+                <div class="ad-metric"><span class="ad-metric__v">{{ upcoming().length }}</span><span class="ad-metric__l">{{ 'approvals.metrics.remainingSteps' | transloco }}</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="gms-card">
+          <h3 class="gms-section-title">{{ 'approvals.overview.timelineTitle' | transloco }}</h3>
+          <gms-timeline [items]="timeline()" />
+        </div>
+      }
+
+      @case ('flow') {
+        <div class="gms-card">
+          <h3 class="gms-section-title">{{ 'approvals.flow.title' | transloco }}</h3>
+          <ol class="flow">
+            @for (step of steps(); track step.role; let last = $last) {
+              <li class="flow__step">
+                <span class="flow__node" [class]="stepClass(step.status)"><gms-icon [name]="stepIcon(step.status)" [size]="15" /></span>
+                <div class="flow__body" [class.flow__body--last]="last">
+                  <div class="flow__head">
+                    <span class="flow__role">{{ step.role }}</span>
+                    <span class="badge"
+                      [class]="step.status === 'approved' || step.status === 'completed' ? 'badge--success' : step.status === 'rejected' ? 'badge--danger' : step.status === 'pending' ? 'badge--warning' : 'badge--neutral'">
+                      {{ stepStatusKey(step.status) | transloco }}
+                    </span>
+                  </div>
+                  <span class="flow__approver">{{ step.approver }}</span>
+                  <div class="flow__meta">
+                    <span>{{ step.date ? (step.date | date: 'dd.MM.yyyy HH:mm') : ('approvals.flow.dateNone' | transloco) }}</span>
+                    <span class="flow__comment">{{ step.comment || ('approvals.flow.commentNone' | transloco) }}</span>
+                  </div>
+                </div>
+              </li>
+            }
+          </ol>
+        </div>
+      }
+
+      @default {
+        <div class="gms-card">
+          <gms-state variant="empty" [iconOverride]="activeTabMeta().icon ?? 'inbox'"
+            [title]="activeTabMeta().label"
+            [text]="'approvals.moduleComingSoon' | transloco">
+          </gms-state>
+        </div>
+      }
+    }
+
+    <!-- Right context panel -->
+    <ng-container panel>
+      <gms-context-section [title]="'approvals.panel.recentActivity' | transloco" icon="activity">
+        <gms-activity-feed [items]="activity()" />
+      </gms-context-section>
+      <gms-context-section [title]="'approvals.panel.relatedDocuments' | transloco" icon="document" [count]="documents().length">
+        <gms-item-list [items]="documents()" />
+      </gms-context-section>
+      <gms-context-section [title]="'approvals.panel.relatedRecords' | transloco" icon="release" [count]="related().length">
+        <gms-item-list [items]="related()" />
+      </gms-context-section>
+      <gms-context-section [title]="'approvals.panel.pendingActions' | transloco" icon="approval" [count]="pending().length">
+        @if (pending().length) { <gms-item-list [items]="pending()" /> }
+        @else { <p class="panel-empty">{{ 'approvals.panel.pendingActionsNone' | transloco }}</p> }
+      </gms-context-section>
+      <gms-context-section [title]="'approvals.panel.upcomingSteps' | transloco" icon="clock" [count]="upcoming().length">
+        @if (upcoming().length) { <gms-item-list [items]="upcoming()" /> }
+        @else { <p class="panel-empty">{{ 'approvals.panel.upcomingStepsNone' | transloco }}</p> }
+      </gms-context-section>
+    </ng-container>
+
+    <!-- Decision modal (professional confirmation) -->
+    <gms-modal [open]="decisionOpen()" [title]="decisionMeta().title" size="sm" (closed)="decisionOpen.set(false)">
+      <div class="decision-modal">
+        <p class="decision-modal__hint">{{ decisionMeta().hint }}</p>
+        <div class="decision-modal__ctx">
+          <span class="badge badge--neutral">{{ a.code }}</span>
+          <span class="decision-modal__title">{{ a.title }}</span>
+        </div>
+        <label class="decision-modal__label">{{ 'approvals.decisionModal.commentLabel' | transloco }} <span>{{ 'approvals.decisionModal.commentOptional' | transloco }}</span></label>
+        <textarea gmsInput rows="3" [placeholder]="'approvals.decisionModal.commentPlaceholder' | transloco"
+          [value]="decisionComment()" (input)="decisionComment.set($any($event.target).value)"></textarea>
+      </div>
+      <div footer>
+        <button gmsButton variant="ghost" (click)="decisionOpen.set(false)">{{ 'approvals.decisionModal.cancel' | transloco }}</button>
+        <button gmsButton [variant]="decisionMeta().variant" [loading]="submitting()" (click)="confirmDecision()">
+          {{ decisionMeta().confirm }}
+        </button>
+      </div>
+    </gms-modal>
+
+  </gms-page>
+}

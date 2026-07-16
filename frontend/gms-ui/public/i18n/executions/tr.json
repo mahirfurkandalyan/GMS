@@ -1,0 +1,196 @@
+{
+  "pageTitle": "Yürütme",
+  "pageSubtitle": "Onaylanan değişikliklerin yürütme süreçlerini yönetin.",
+  "breadcrumbWorkspace": "Çalışma Alanı",
+  "contextPanelTitle": "Bağlam",
+  "runningSuffix": "çalışıyor",
+  "idle": "Boşta",
+  "totalLabel": "Toplam",
+  "unit": "yürütme",
+  "lastUpdatedRecently": "birkaç dk önce",
+  "export": "Dışa Aktar",
+  "refresh": "Yenile",
+  "reset": "Sıfırla",
+  "searchPlaceholder": "Yürütme, yayın, değişiklik veya yürütücü ara…",
+  "allReleases": "Tüm Yayınlar",
+  "allEnvironments": "Tüm Ortamlar",
+  "allStatuses": "Tüm Durumlar",
+  "allExecutors": "Tüm Yürütücüler",
+  "dateFromTitle": "Oluşturma tarihinden itibaren",
+  "empty": {
+    "title": "Yürütme kaydı yok",
+    "text": "Yürütmeler; onaylanan değişikliklerin kontrollü uygulanmasını temsil eder. Bir değişiklik yürütmeye alındığında burada görünür.",
+    "step1": "Bir değişikliği onaylayın",
+    "step2": "Yürütme planını hazırlayın",
+    "step3": "Adımları kontrollü şekilde çalıştırın"
+  },
+  "grid": {
+    "emptyTitle": "Eşleşen yürütme yok",
+    "emptyText": "Filtre kriterlerinizi genişletmeyi deneyin."
+  },
+  "columns": {
+    "code": "Yürütme No",
+    "release": "Yayın",
+    "change": "İlgili Değişiklik",
+    "environment": "Ortam",
+    "executor": "Yürütücü",
+    "currentStep": "Mevcut Adım",
+    "progress": "İlerleme",
+    "status": "Durum",
+    "startedAt": "Başlangıç",
+    "completedAt": "Bitiş"
+  },
+  "rowActions": {
+    "open": "Aç",
+    "change": "İlgili Değişiklik",
+    "copyLink": "Bağlantıyı Kopyala"
+  },
+  "toast": {
+    "linkCopied": "Bağlantı panoya kopyalandı.",
+    "exportSoon": "Dışa aktarma yakında eklenecek."
+  },
+  "relation": {
+    "domain": "Yönetişim",
+    "module": "Yürütme Merkezi",
+    "customer": "Müşteri",
+    "project": "Proje",
+    "release": "Yayın",
+    "change": "Değişiklik",
+    "execution": "Yürütme"
+  },
+  "panel": {
+    "recentActivity": "Son Aktivite",
+    "relatedChanges": "İlgili Değişiklikler",
+    "runningExecutions": "Çalışan Yürütmeler",
+    "runningExecutionsText": "{{count}} yürütme şu an çalışıyor.",
+    "relatedDocuments": "İlgili Dokümanlar",
+    "relatedValidation": "İlgili Doğrulama",
+    "upcomingSteps": "Yaklaşan Adımlar",
+    "upcomingStepsNone": "Kalan adım yok."
+  },
+  "activity": {
+    "started": "başlattı",
+    "completed": "tamamlandı",
+    "failed": "başarısız"
+  },
+  "vmActivity": {
+    "startedExecution": "yürütmeyi başlattı",
+    "completedSteps": "{{count}} adım tamamladı",
+    "watching": "yürütmeyi izliyor",
+    "systemActor": "Sistem"
+  },
+  "detail": {
+    "notFoundTitle": "Yürütme bulunamadı",
+    "notFoundText": "Aradığınız yürütme kaydı mevcut değil ya da kaldırılmış olabilir.",
+    "backToCenter": "Yürütme Merkezi'ne dön",
+    "fallbackTitle": "Yürütme",
+    "viewChange": "İlgili Değişikliği Gör"
+  },
+  "control": {
+    "currentStep": "Mevcut Adım",
+    "start": "Başlat",
+    "pause": "Duraklat",
+    "resume": "Devam Et",
+    "cancel": "İptal",
+    "noActionNeeded": "Bu yürütme için ek işlem gerekmiyor."
+  },
+  "extra": {
+    "rollback": "Geri Al (yakında)",
+    "verify": "Doğrula (yakında)",
+    "rollbackSoon": "Geri alma yakında.",
+    "verifySoon": "Doğrulama yakında."
+  },
+  "tabs": {
+    "overview": "Genel Bakış",
+    "plan": "Yürütme Planı",
+    "log": "Yürütme Kaydı",
+    "rollback": "Geri Alma",
+    "verification": "Doğrulama",
+    "timeline": "Zaman Çizelgesi",
+    "audit": "Denetim"
+  },
+  "overview": {
+    "generalInfo": "Genel Bilgiler",
+    "summary": "Yürütme Özeti",
+    "progressSummary": "İlerleme Özeti",
+    "timelineTitle": "Zaman Çizelgesi"
+  },
+  "kv": {
+    "relatedRelease": "İlgili Yayın",
+    "relatedChange": "İlgili Değişiklik",
+    "environment": "Ortam",
+    "executor": "Yürütücü",
+    "startedAt": "Başlangıç",
+    "completedAt": "Bitiş",
+    "currentStep": "Mevcut Adım",
+    "status": "Durum"
+  },
+  "metrics": {
+    "steps": "Adım",
+    "completed": "Tamamlandı",
+    "remaining": "Kalan"
+  },
+  "riskWord": "Risk",
+  "plan": {
+    "title": "Yürütme Planı",
+    "estimated": "Tahmini"
+  },
+  "log": {
+    "time": "Zaman",
+    "step": "Adım",
+    "message": "Mesaj",
+    "severity": "Önem",
+    "createdBy": "Oluşturan",
+    "empty": "Henüz kayıt yok. Yürütme başlatıldığında günlük burada oluşur.",
+    "severityLevel": {
+      "info": "Bilgi",
+      "success": "Başarılı",
+      "warning": "Uyarı",
+      "error": "Hata"
+    }
+  },
+  "stepStatus": {
+    "completed": "Tamamlandı",
+    "running": "Çalışıyor",
+    "failed": "Başarısız",
+    "skipped": "Atlandı",
+    "pending": "Bekliyor"
+  },
+  "moduleComingSoon": "Bu modül sonraki geliştirme aşamasında eklenecektir. Mimari, Yürütme süreci ile ilişkili olacak şekilde hazırdır.",
+  "vmTimeline": {
+    "created": "Yürütme oluşturuldu",
+    "createdDesc": "{{change}} için yürütme planlandı.",
+    "started": "Yürütme başlatıldı",
+    "notStarted": "Başlatılmadı",
+    "stepCompleted": "Adım tamamlandı",
+    "paused": "Yürütme duraklatıldı",
+    "active": "Aktif",
+    "none": "—",
+    "completedTitle": "Yürütme tamamlandı",
+    "pendingState": "Beklemede"
+  },
+  "vmLinks": {
+    "relatedChange": "İlgili Değişiklik",
+    "relatedRelease": "İlgili Yayın",
+    "relatedValidation": "İlgili doğrulama sonucu"
+  },
+  "confirm": {
+    "startTitle": "Yürütmeyi başlat",
+    "startMessage": "{{code}} yürütmesini başlatmak istediğinize emin misiniz? Adımlar kontrollü şekilde çalıştırılacaktır.",
+    "startConfirm": "Başlat",
+    "pauseTitle": "Yürütmeyi duraklat",
+    "pauseMessage": "Aktif adım tamamlandıktan sonra yürütme duraklatılacaktır.",
+    "pauseConfirm": "Duraklat",
+    "resumeTitle": "Yürütmeyi devam ettir",
+    "resumeMessage": "Yürütme kaldığı yerden devam edecektir.",
+    "resumeConfirm": "Devam Et",
+    "cancelTitle": "Yürütmeyi iptal et",
+    "cancelMessage": "Yürütme iptal edilecek ve kalan adımlar atlanacaktır. Bu işlem geri alınamaz.",
+    "cancelConfirm": "İptal Et",
+    "startedToast": "Yürütme başlatıldı.",
+    "pausedToast": "Yürütme duraklatıldı.",
+    "resumedToast": "Yürütme devam ettirildi.",
+    "cancelledToast": "Yürütme iptal edildi.",
+    "statusUpdatedTitle": "Durum güncellendi"
+  }
+}

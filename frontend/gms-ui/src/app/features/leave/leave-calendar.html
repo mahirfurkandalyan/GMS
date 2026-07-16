@@ -1,0 +1,80 @@
+<section class="gms-page">
+
+  <gms-page-header
+    [title]="'leave.pageTitle' | transloco"
+    [subtitle]="'leave.pageSubtitle' | transloco"
+    [breadcrumbs]="[{ label: ('leave.breadcrumbOrg' | transloco) }, { label: ('leave.breadcrumbTitle' | transloco) }]"
+    [status]="isManager() ? { label: ('leave.statusManager' | transloco), tone: 'info' } : { label: ('leave.statusStandard' | transloco), tone: 'neutral' }">
+  </gms-page-header>
+
+  <!-- Legend -->
+  <div class="legend">
+    @for (key of legend(); track key) {
+      <span class="legend__item">
+        <span class="dot" [class]="meta[key].dot"></span>
+        {{ calendarTypeLabelKeys[key] | transloco }}
+      </span>
+    }
+  </div>
+
+  <!-- Calendar entries -->
+  <div class="gms-card">
+    <h2 class="gms-section-title">{{ 'leave.sectionThisWeek' | transloco }}</h2>
+    <div class="cal-list">
+      @for (entry of entries(); track entry.id) {
+        <div class="cal-row">
+          <span class="avatar cal-row__avatar">{{ entry.person.charAt(0) }}</span>
+          <div class="cal-row__main">
+            <span class="cal-row__person">{{ entry.person }}</span>
+            <span class="cal-row__dept">{{ entry.department }}</span>
+          </div>
+          <span class="cal-row__note">{{ entry.note }}</span>
+          <span class="cal-row__dates">
+            {{ entry.startDate | date: 'dd.MM' }}
+            @if (entry.endDate !== entry.startDate) { – {{ entry.endDate | date: 'dd.MM' }} }
+          </span>
+          <span class="badge" [class]="meta[entry.type].badge">{{ calendarTypeLabelKeys[entry.type] | transloco }}</span>
+        </div>
+      }
+    </div>
+  </div>
+
+  <!-- Leave balances: managers/admins only -->
+  @if (isManager()) {
+    <div class="gms-card">
+      <h2 class="gms-section-title">{{ 'leave.sectionBalances' | transloco }} <span class="badge badge--amber">{{ 'leave.managerBadge' | transloco }}</span></h2>
+      <div class="table-wrap">
+        <table class="bal-table">
+          <thead>
+            <tr>
+              <th>{{ 'leave.colEmployee' | transloco }}</th>
+              <th>{{ 'leave.colEntitled' | transloco }}</th>
+              <th>{{ 'leave.colUsed' | transloco }}</th>
+              <th>{{ 'leave.colRemaining' | transloco }}</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (b of balances(); track b.person) {
+              <tr>
+                <td class="bal-table__name">{{ b.person }}</td>
+                <td>{{ b.entitled }} {{ 'leave.days' | transloco }}</td>
+                <td>{{ b.used }} {{ 'leave.days' | transloco }}</td>
+                <td><span class="badge badge--green">{{ b.remaining }} {{ 'leave.days' | transloco }}</span></td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    </div>
+  } @else {
+    <div class="gms-card">
+      <div class="empty-state empty-state--inline">
+        <span class="empty-state__icon"><gms-icon name="lock" [size]="18" /></span>
+        <span class="empty-state__text">
+          {{ 'leave.restrictedText' | transloco }}
+        </span>
+      </div>
+    </div>
+  }
+
+</section>

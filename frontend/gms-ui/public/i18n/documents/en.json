@@ -1,0 +1,198 @@
+{
+  "pageTitle": "Documents",
+  "pageTitleSingular": "Document",
+  "pageSubtitle": "Manage all governance documents centrally.",
+  "breadcrumbWorkspace": "Workspace",
+  "breadcrumbCenter": "Document Center",
+  "countSuffix": "documents",
+  "updatedRecently": "a few minutes ago",
+  "upload": "Upload Document",
+  "unknownOwner": "Unknown",
+  "toolbar": {
+    "searchPlaceholder": "Search document, name, owner or release…",
+    "allCategories": "All Categories",
+    "allReleases": "All Releases",
+    "allProjects": "All Projects",
+    "allFileTypes": "All File Types",
+    "allOwners": "All Owners",
+    "createdSince": "Since creation date",
+    "reset": "Reset"
+  },
+  "empty": {
+    "title": "No documents",
+    "text": "Documents are attached as evidence to releases, changes, validations and executions. Get started by uploading your first document.",
+    "step1": "Choose the document category",
+    "step2": "Drag and drop the file",
+    "step3": "Link it to a release and save"
+  },
+  "grid": {
+    "emptyTitle": "No matching documents",
+    "emptyText": "Try broadening your filter criteria."
+  },
+  "column": {
+    "code": "Document No",
+    "name": "Document Name",
+    "category": "Category",
+    "release": "Related Release",
+    "change": "Related Change",
+    "owner": "Owner",
+    "version": "Version",
+    "status": "Status",
+    "createdAt": "Created",
+    "updatedAt": "Updated"
+  },
+  "panel": {
+    "recentActivity": "Recent Activity",
+    "relatedReleases": "Related Releases",
+    "totalDocuments": "Total Documents",
+    "totalDocumentsText": "documents stored in the center."
+  },
+  "form": {
+    "sectionTitle": "Document Information",
+    "sectionDescription": "Enter the governance information for the uploaded file.",
+    "name": "Document Name",
+    "namePlaceholder": "e.g. Validation Plan",
+    "category": "Category",
+    "release": "Related Release",
+    "releaseHint": "Optional",
+    "noRelease": "No link",
+    "description": "Description",
+    "descriptionHint": "Optional",
+    "descriptionPlaceholder": "Short description",
+    "validationError": "Please select a document name, category and add at least one file."
+  },
+  "toast": {
+    "uploaded": "{{code}} uploaded.",
+    "savedTitle": "Document saved",
+    "uploadFailed": "Document could not be uploaded.",
+    "editSoon": "Editing {{code}} coming soon.",
+    "duplicated": "{{code}} duplicated.",
+    "duplicatedTitle": "Duplicated",
+    "linkCopied": "Link copied to clipboard.",
+    "archived": "{{code}} archived.",
+    "restored": "Restored.",
+    "deleteTitle": "Delete document",
+    "deleteMessage": "Are you sure you want to delete {{code}}?",
+    "deleteConfirm": "Delete",
+    "deleted": "{{code}} deleted.",
+    "deleteRestored": "Deletion undone.",
+    "exportSoon": "Export will be added soon."
+  },
+  "relation": {
+    "domain": "Domain",
+    "governance": "Governance",
+    "module": "Module",
+    "customer": "Customer",
+    "project": "Project",
+    "release": "Release",
+    "change": "Change",
+    "document": "Document"
+  },
+  "activity": {
+    "uploadedValidationPlan": "uploaded Validation Plan v2",
+    "oneHourAgo": "1 hour ago",
+    "updatedSqlScript": "updated the SQL script",
+    "threeHoursAgo": "3 hours ago",
+    "archivedExecutionReport": "archived the execution report",
+    "yesterday": "Yesterday"
+  },
+  "type": {
+    "sqlScript": "SQL Script",
+    "rollbackScript": "Rollback Script",
+    "validationReport": "Validation Report",
+    "executionReport": "Execution Report",
+    "releaseNote": "Release Note",
+    "testEvidence": "Test Evidence",
+    "approvalEvidence": "Approval Evidence",
+    "architectureDoc": "Architecture Document",
+    "operationalProcedure": "Operational Procedure",
+    "other": "Other"
+  },
+  "previewKind": {
+    "pdf": "PDF",
+    "sql": "SQL",
+    "text": "Text",
+    "image": "Image",
+    "word": "Word",
+    "excel": "Excel"
+  },
+  "detail": {
+    "notFoundTitle": "Document not found",
+    "notFoundText": "The document you're looking for does not exist or may have been removed.",
+    "backToCenter": "Back to Document Center",
+    "newVersion": "New Version",
+    "newVersionSoon": "New version upload coming soon.",
+    "downloadSoon": "Download (coming soon)",
+    "downloadSoonToast": "Download coming soon.",
+    "archive": "Archive",
+    "archivedToast": "{{code}} archived.",
+    "restoredToast": "Restored.",
+    "tab": {
+      "overview": "Overview",
+      "versions": "Versions",
+      "related": "Related Objects",
+      "preview": "Preview",
+      "timeline": "Timeline",
+      "audit": "Audit"
+    },
+    "generalInfo": "General Information",
+    "field": {
+      "category": "Category",
+      "version": "Version",
+      "owner": "Owner",
+      "file": "File",
+      "createdAt": "Created At",
+      "updatedAt": "Last Updated",
+      "release": "Related Release",
+      "change": "Related Change",
+      "description": "Description",
+      "status": "Status",
+      "createdBy": "Created By"
+    },
+    "statusNote": "This document is attached as evidence to the related governance object.",
+    "relatedMetrics": "Related Metrics",
+    "metric": {
+      "versions": "Versions",
+      "relatedObjects": "Related Objects",
+      "size": "Size"
+    },
+    "timelineTitle": "Timeline",
+    "versionsEmptyTitle": "No versions",
+    "versionsEmptyText": "No records found.",
+    "download": "Download",
+    "imagePreviewCaption": "Image preview (mock)",
+    "imagePreviewAlt": "Image preview",
+    "previewWordSoon": "Word preview coming soon",
+    "previewExcelSoon": "Excel preview coming soon",
+    "unsupportedText": "An embedded preview for this file type will be added in a later phase. For now, you can download the file to view it.",
+    "defaultTabText": "This module will be added in a later development phase. The architecture is ready to relate it to the Document.",
+    "panel": {
+      "recentDocuments": "Recent Documents",
+      "noOtherDocuments": "No other documents.",
+      "relatedObjects": "Related Objects",
+      "noRelatedObjects": "No related objects.",
+      "recentActivity": "Recent Activity"
+    },
+    "relatedRelease": "Related Release",
+    "relatedChange": "Related Change",
+    "timeline": {
+      "created": "Document created",
+      "createdBy": "Created by {{owner}}.",
+      "fileUploaded": "File uploaded",
+      "updated": "Updated",
+      "versionPublished": "Version published",
+      "archived": "Archived",
+      "pending": "Pending"
+    },
+    "activity": {
+      "publishedVersion": "published version {{version}}",
+      "twoDaysAgo": "2 days ago",
+      "viewed": "viewed the document",
+      "oneDayAgo": "1 day ago",
+      "commented": "left a comment",
+      "fiveHoursAgo": "5 hours ago"
+    },
+    "previewNote1": "This document is attached as evidence to the related governance object. The final version",
+    "previewNote2": "is moved to \"Active\" status after approval and validation processes are completed."
+  }
+}

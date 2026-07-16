@@ -1,0 +1,46 @@
+:host { display: block; }
+
+.muted { margin: 0; font-size: var(--fs-sm); color: var(--text-muted); }
+
+/* Two-column: reusable section nav + report content */
+.rpt {
+  display: grid;
+  grid-template-columns: 210px minmax(0, 1fr);
+  gap: var(--s-5);
+  align-items: start;
+}
+.rpt-content { display: flex; flex-direction: column; gap: var(--s-5); min-width: 0; }
+
+/* Advanced filter fields (inside gms-filter-bar [advanced] slot) */
+.ff {
+  display: flex; flex-direction: column; gap: 4px;
+  font-size: var(--fs-caption); color: var(--text-subtle);
+
+  span { text-transform: uppercase; letter-spacing: .03em; font-weight: 600; }
+  input, select {
+    height: 34px; padding: 0 8px; border: 1px solid var(--border-strong); border-radius: var(--r-sm);
+    background: var(--surface); font: inherit; font-size: var(--fs-sm); color: var(--text);
+    &:focus { outline: none; border-color: var(--brand); box-shadow: var(--focus-ring); }
+  }
+}
+
+/* Executive KPI area — elegant, not oversized */
+.kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: var(--s-3);
+}
+.kpi-grid--4 { grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); }
+
+/* Chart area */
+.chart-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: var(--s-4);
+}
+.chart-grid--2 { grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); }
+.chart-grid--3 { grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); }
+
+@media (max-width: 620px) {
+  .rpt { grid-template-columns: 1fr; }
+}

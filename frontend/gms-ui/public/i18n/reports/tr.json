@@ -1,0 +1,121 @@
+{
+  "panelTitle": "Özet",
+  "pageTitle": "Reports & Analytics",
+  "pageSubtitle": "Kurumsal yönetişim süreçlerini analiz edin ve performansı izleyin.",
+  "breadcrumbAnalytics": "Analitik",
+  "justNow": "birkaç dk önce",
+  "connectBi": "BI Bağlan",
+  "searchPlaceholder": "Rapor, nesne veya sahip ara…",
+  "navAriaLabel": "Rapor kategorileri",
+  "comingSoon": "yakında",
+  "reportSuffix": "Raporu",
+  "categoryPlaceholderSuffix": "Bu rapor kategorisi sonraki fazda etkinleştirilecektir. Grafik ve filtre mimarisi yeniden kullanılabilir şekilde hazırdır.",
+  "savedView": { "all": "Tüm Raporlar", "executives": "Yöneticiler için", "highRisk": "Yüksek Riskli" },
+  "filter": {
+    "date": "Tarih",
+    "project": "Proje",
+    "environment": "Ortam",
+    "release": "Yayın",
+    "owner": "Sahip",
+    "risk": "Risk",
+    "status": "Durum",
+    "all": "Tümü"
+  },
+  "navGroup": { "processes": "Süreçler", "assets": "Varlıklar", "system": "Sistem" },
+  "category": {
+    "overview": "Genel Bakış",
+    "releases": "Yayınlar",
+    "changes": "Değişiklikler",
+    "approvals": "Onaylar",
+    "validation": "Doğrulama",
+    "execution": "Yürütme",
+    "assets": "Varlıklar",
+    "documents": "Dokümanlar",
+    "audit": "Denetim",
+    "custom": "Özel Raporlar"
+  },
+  "categoryHint": {
+    "overview": "Yönetici panosu",
+    "releases": "Yayın analitiği",
+    "changes": "Değişiklik analitiği",
+    "approvals": "Onay analitiği",
+    "validation": "Doğrulama analitiği",
+    "execution": "Yürütme analitiği",
+    "assets": "Varlık analitiği",
+    "documents": "Doküman analitiği",
+    "audit": "Denetim analitiği",
+    "custom": "Özel rapor oluşturucu"
+  },
+  "export": { "pdf": "PDF olarak dışa aktar", "excel": "Excel olarak dışa aktar", "csv": "CSV olarak dışa aktar", "print": "Yazdır" },
+  "bi": {
+    "powerbi": "Power BI (yakında)",
+    "grafana": "Grafana (yakında)",
+    "tableau": "Tableau (yakında)",
+    "elastic": "Elastic (yakında)",
+    "azure": "Azure Monitor (yakında)"
+  },
+  "col": {
+    "object": "Nesne",
+    "type": "Tür",
+    "priority": "Öncelik",
+    "status": "Durum",
+    "owner": "Sahip",
+    "updatedAt": "Son Güncelleme"
+  },
+  "kpi": {
+    "releases": "Toplam Yayın",
+    "openChanges": "Açık Değişiklik",
+    "pendingApprovals": "Bekleyen Onay",
+    "failedExec": "Başarısız Yürütme",
+    "criticalRisks": "Kritik Risk",
+    "avgApproval": "Ort. Onay Süresi"
+  },
+  "centerLabel": { "change": "Değişiklik", "approval": "Onay", "execution": "Yürütme", "release": "Yayın" },
+  "widget": {
+    "releaseTrend": "Yayın Trendi",
+    "changeTrend": "Değişiklik Trendi",
+    "riskDistribution": "Risk Dağılımı",
+    "approvalStatus": "Onay Durumu",
+    "executionSuccess": "Yürütme Başarı Oranı",
+    "environmentActivity": "Ortam Aktivitesi",
+    "topIssues": "Öne Çıkan Sorunlar",
+    "topIssuesEmptyTitle": "Kritik sorun yok",
+    "topIssuesEmptyText": "Filtrelerle eşleşen yüksek riskli veya başarısız öğe bulunmuyor.",
+    "statusDistribution": "Durum Dağılımı",
+    "releaseStatusDistribution": "Yayın durum dağılımı",
+    "upcomingReleases": "Yaklaşan Yayınlar",
+    "noUpcomingReleases": "Yaklaşan yayın yok.",
+    "completedReleases": "Tamamlanan Yayınlar",
+    "noCompletedReleases": "Tamamlanan yayın yok.",
+    "delayedReleases": "Geciken Yayınlar",
+    "noDelayedReleases": "Geciken yayın yok.",
+    "byRisk": "Riske Göre",
+    "byEnvironment": "Ortama Göre",
+    "byStatus": "Duruma Göre",
+    "changeByRisk": "Riske göre değişiklik",
+    "changeByEnvironment": "Ortama göre değişiklik",
+    "changeByStatus": "Duruma göre değişiklik",
+    "openChanges": "Açık Değişiklikler",
+    "openChangesEmptyTitle": "Açık değişiklik yok",
+    "openChangesEmptyText": "Filtrelerle eşleşen açık değişiklik bulunmuyor."
+  },
+  "stat": {
+    "totalReleases": "Toplam Yayın",
+    "upcoming": "Yaklaşan",
+    "completed": "Tamamlanan",
+    "delayed": "Geciken"
+  },
+  "panel": {
+    "recentActivity": "Son Aktivite",
+    "pendingActions": "Bekleyen İşlemler",
+    "criticalAlerts": "Kritik Uyarılar",
+    "criticalAlertsText": "{{count}} yüksek riskli / başarısız öğe izleniyor.",
+    "noCriticalAlerts": "Kritik uyarı yok."
+  },
+  "pendingSummary": "{{approvals}} onay bekliyor · {{changes}} açık değişiklik.",
+  "toast": {
+    "exportSoon": "{{kind}} dışa aktarma yakında eklenecek.",
+    "biSoon": "BI entegrasyonları sonraki fazda eklenecek.",
+    "refreshed": "Analitik verileri yenilendi."
+  }
+}

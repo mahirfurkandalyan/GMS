@@ -1,0 +1,82 @@
+<gms-page [contextPanel]="true" panelTitle="Bağlam">
+
+  <gms-page-header
+    header
+    [title]="'workflows.tasks.pageTitle' | transloco"
+    [subtitle]="'workflows.tasks.pageSubtitle' | transloco"
+    [breadcrumbs]="[{ label: 'Çalışma Alanı' }, { label: ('workflows.tasks.breadcrumb' | transloco) }]"
+    [status]="{ label: tasks().length + ' ' + ('workflows.tasks.count' | transloco), tone: 'info' }">
+  </gms-page-header>
+
+  <div toolbar class="wt-toolbar">
+    <div class="wt-filters">
+      <div class="wt-search">
+        <gms-icon name="search" [size]="17" />
+        <input type="text" [placeholder]="'workflows.tasks.search' | transloco"
+          [ngModel]="search()" (ngModelChange)="search.set($event)" [ngModelOptions]="{ standalone: true }" />
+      </div>
+      <label class="wt-check">
+        <input type="checkbox" [ngModel]="onlyOverdue()" (ngModelChange)="onlyOverdue.set($event)" [ngModelOptions]="{ standalone: true }" />
+        {{ 'workflows.tasks.onlyOverdue' | transloco }}
+      </label>
+      <button type="button" class="gms-btn gms-btn--ghost gms-btn--icon gms-btn--sm" (click)="load()" title="Yenile" aria-label="Yenile">
+        <gms-icon name="clock" [size]="16" />
+      </button>
+    </div>
+  </div>
+
+  @if (error()) {
+    <div class="gms-card">
+      <gms-state variant="error" [title]="error()!.title" [text]="error()!.message">
+        <button gmsButton variant="primary" (click)="load()"><gms-icon name="clock" [size]="15" /> Tekrar dene</button>
+      </gms-state>
+    </div>
+  } @else if (loading()) {
+    <div class="gms-card"><gms-state variant="loading" /></div>
+  } @else if (isEmpty()) {
+    <div class="gms-card">
+      <gms-state variant="empty" iconOverride="approval"
+        [title]="'workflows.tasks.empty.title' | transloco"
+        [text]="'workflows.tasks.empty.text' | transloco" />
+    </div>
+  } @else {
+    <ul class="task-list">
+      @for (t of filtered(); track t.stepInstanceId) {
+        <li class="task" [class.task--overdue]="t.isOverdue" (click)="open(t)">
+          <div class="task__main">
+            <div class="task__title">
+              <span class="task__step">{{ t.stepName }}</span>
+              <span class="task__type">{{ stepTypeKey(t.stepType) | transloco }}</span>
+              @if (t.isOverdue) { <span class="badge badge--danger">{{ 'workflows.tasks.overdue' | transloco }}</span> }
+            </div>
+            <div class="task__meta">
+              <span><gms-icon name="approval" [size]="13" /> {{ t.workflowName }} · {{ t.instanceNo }}</span>
+              @if (t.triggerObjectNumber) {
+                <a class="task__change" (click)="openChange(t, $event)">
+                  <gms-icon name="change" [size]="13" /> {{ t.triggerObjectNumber }}
+                </a>
+              }
+              @if (t.assignedRole) { <span><gms-icon name="shield" [size]="13" /> {{ t.assignedRole }}</span> }
+            </div>
+          </div>
+          <div class="task__side">
+            @if (t.dueAt) { <span class="task__due">{{ 'workflows.tasks.col.due' | transloco }}: {{ t.dueAt | date: 'dd.MM.yyyy' }}</span> }
+            <span class="task__created">{{ t.createdAt | date: 'dd.MM.yyyy' }}</span>
+            <button gmsButton variant="ghost" (click)="open(t)">
+              {{ 'workflows.tasks.open' | transloco }} <gms-icon name="chevron-right" [size]="14" />
+            </button>
+          </div>
+        </li>
+      } @empty {
+        <li class="task-empty">Filtreye uyan görev yok.</li>
+      }
+    </ul>
+  }
+
+  <ng-container panel>
+    <gms-context-section title="Bilgi" icon="approval">
+      <p class="panel-empty">Bu liste yalnızca size veya rollerinize atanmış aktif görevleri gösterir. Görünürlük sunucu tarafında uygulanır.</p>
+    </gms-context-section>
+  </ng-container>
+
+</gms-page>

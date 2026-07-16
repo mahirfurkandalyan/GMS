@@ -1,0 +1,89 @@
+<section class="page">
+
+  <div class="page__header">
+    <div>
+      <h2 class="page__title">{{ 'profile.pageTitle' | transloco }}</h2>
+      <p class="page__subtitle">{{ 'profile.pageSubtitle' | transloco }}</p>
+    </div>
+    <a class="btn-secondary" routerLink="/hub">{{ 'profile.backToHub' | transloco }}</a>
+  </div>
+
+  <!-- Kullanıcı kimlik kartı -->
+  <div class="panel identity">
+    <span class="identity__avatar">{{ initial() }}</span>
+    <div class="identity__info">
+      <span class="identity__name">{{ fullName() }}</span>
+      <span class="identity__email">{{ email() }}</span>
+      <div class="identity__roles">
+        @for (role of roles(); track role) {
+          <span class="chip">{{ role }}</span>
+        }
+        <span class="status status--active">{{ 'badge.status.Active' | transloco }}</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Sekmeler -->
+  <gms-tabs [tabs]="tabs()" [(active)]="activeTab" />
+
+  @switch (activeTab()) {
+    @case ('general') {
+      <div class="panel">
+        <h3 class="panel__title">{{ 'profile.sectionAccountInfo' | transloco }}</h3>
+        <dl class="info-list">
+          <div class="info-list__row"><dt>{{ 'profile.fieldFullName' | transloco }}</dt><dd>{{ fullName() }}</dd></div>
+          <div class="info-list__row"><dt>{{ 'profile.fieldEmail' | transloco }}</dt><dd>{{ email() }}</dd></div>
+          <div class="info-list__row"><dt>{{ 'profile.fieldRoles' | transloco }}</dt><dd>{{ roles().join(', ') }}</dd></div>
+          <div class="info-list__row"><dt>{{ 'profile.fieldStatus' | transloco }}</dt><dd><span class="status status--active">{{ 'badge.status.Active' | transloco }}</span></dd></div>
+        </dl>
+      </div>
+    }
+    @case ('history') {
+      <div class="panel">
+        <h3 class="panel__title">{{ 'profile.sectionApprovalHistory' | transloco }}</h3>
+        <gms-audit-list [entries]="approvalHistory()" />
+      </div>
+    }
+    @case ('activity') {
+      <div class="panel">
+        <h3 class="panel__title">{{ 'profile.sectionActivityTimeline' | transloco }}</h3>
+        <gms-timeline [items]="activity()" />
+      </div>
+    }
+    @case ('prefs') {
+      <div class="panel">
+        <h3 class="panel__title">{{ 'profile.security.title' | transloco }}</h3>
+
+        <form class="pw-form" (ngSubmit)="changePassword()">
+          <label class="pw-form__label" for="curPw">{{ 'profile.security.currentPassword' | transloco }}</label>
+          <input id="curPw" type="password" class="pw-form__input" autocomplete="current-password"
+            [ngModel]="currentPassword()" (ngModelChange)="currentPassword.set($event)" name="curPw" />
+
+          <label class="pw-form__label" for="newPw">{{ 'profile.security.newPassword' | transloco }}</label>
+          <input id="newPw" type="password" class="pw-form__input" autocomplete="new-password"
+            [ngModel]="newPassword()" (ngModelChange)="newPassword.set($event)" name="newPw" />
+
+          <label class="pw-form__label" for="confPw">{{ 'profile.security.confirmPassword' | transloco }}</label>
+          <input id="confPw" type="password" class="pw-form__input" autocomplete="new-password"
+            [ngModel]="confirmPassword()" (ngModelChange)="confirmPassword.set($event)" name="confPw" />
+
+          @if (pwError()) { <p class="pw-form__error" role="alert">{{ pwError() }}</p> }
+
+          <button type="submit" class="btn-primary" [disabled]="pwLoading()">
+            {{ (pwLoading() ? 'profile.security.submitting' : 'profile.security.submit') | transloco }}
+          </button>
+        </form>
+
+        <hr class="pw-form__divider" />
+
+        <div class="pw-form__logout-all">
+          <p class="pw-form__hint">{{ 'profile.security.logoutAllHint' | transloco }}</p>
+          <button type="button" class="btn-secondary" (click)="logoutAll()">
+            {{ 'profile.security.logoutAll' | transloco }}
+          </button>
+        </div>
+      </div>
+    }
+  }
+
+</section>

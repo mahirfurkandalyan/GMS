@@ -1,0 +1,238 @@
+<gms-page [contextPanel]="true" panelTitle="Yardım & Bağlam">
+
+  <gms-page-header
+    header
+    title="Yeni Yayın"
+    subtitle="Onaylı değişikliklerden yayın planı oluşturma sihirbazı."
+    [breadcrumbs]="[{ label: 'Çalışma Alanı' }, { label: 'Yayınlar', route: '/releases' }, { label: 'Yeni' }]"
+    [lastUpdated]="'Adım ' + step() + ' / ' + steps.length">
+    <button actions gmsButton variant="ghost" (click)="cancel()"><gms-icon name="close" [size]="16" /> İptal</button>
+  </gms-page-header>
+
+  <div class="wz">
+    <nav class="stepper" aria-label="Sihirbaz adımları">
+      <div class="stepper__progress"><span class="stepper__bar" [style.width.%]="(step() / steps.length) * 100"></span></div>
+      @for (s of steps; track s.n) {
+        <button type="button" class="stepper__item" [class.stepper__item--active]="step() === s.n"
+          [class.stepper__item--done]="stepComplete(s.n) && step() !== s.n" (click)="goStep(s.n)">
+          <span class="stepper__num">
+            @if (stepComplete(s.n) && step() !== s.n) { <gms-icon name="check" [size]="14" /> } @else { {{ s.n }} }
+          </span>
+          <span class="stepper__meta">
+            <span class="stepper__label">{{ s.title }}</span>
+            <span class="stepper__hint">Adım {{ s.n }}</span>
+          </span>
+        </button>
+      }
+    </nav>
+
+    <section class="wz-content">
+      @switch (currentStep().key) {
+
+        @case ('info') {
+          <div class="gms-card">
+            <gms-form-section title="Yayın Bilgileri" description="Yayın planının temel tanımı ve kapsamı.">
+              <gms-field label="Yayın Adı" [required]="true" class="col-full">
+                <input gmsInput type="text" placeholder="Örn. Temmuz Üretim Yayını" [value]="name()" (input)="name.set($any($event.target).value)" />
+              </gms-field>
+              <gms-field label="Sürüm" [required]="true">
+                <input gmsInput type="text" placeholder="Örn. 1.4.0" [value]="version()" (input)="version.set($any($event.target).value)" />
+              </gms-field>
+              <gms-field label="Yayın Türü" [required]="true">
+                <select gmsInput [value]="releaseType()" (change)="releaseType.set($any($event.target).value)">
+                  @for (t of releaseTypes; track t) { <option [value]="t">{{ releaseTypeKey(t) | transloco }}</option> }
+                </select>
+              </gms-field>
+
+              <gms-field label="Müşteri" [required]="true">
+                <select gmsInput [value]="customerId()" (change)="onCustomer($any($event.target).value)">
+                  <option value="">Seçin…</option>
+                  @for (c of customers(); track c.id) { <option [value]="c.id">{{ c.name }}</option> }
+                </select>
+              </gms-field>
+              <gms-field label="Proje" [required]="true" hint="Müşteriye göre gelir">
+                <select gmsInput [value]="projectId()" (change)="onProject($any($event.target).value)" [disabled]="!customerId()">
+                  <option value="">Seçin…</option>
+                  @for (p of projects(); track p.id) { <option [value]="p.id">{{ p.name }}</option> }
+                </select>
+              </gms-field>
+              <gms-field label="Ortam" [required]="true" hint="Projeye göre gelir">
+                <select gmsInput [value]="environmentId()" (change)="onEnvironment($any($event.target).value)" [disabled]="!projectId()">
+                  <option value="">Seçin…</option>
+                  @for (e of environments(); track e.id) { <option [value]="e.id">{{ e.name }}</option> }
+                </select>
+              </gms-field>
+
+              <gms-field label="Planlanan Başlangıç">
+                <input gmsInput type="datetime-local" [value]="plannedStart()" (input)="plannedStart.set($any($event.target).value)" />
+              </gms-field>
+              <gms-field label="Planlanan Bitiş">
+                <input gmsInput type="datetime-local" [value]="plannedEnd()" (input)="plannedEnd.set($any($event.target).value)" />
+              </gms-field>
+              <gms-field label="Yayın Yöneticisi" hint="Geçerli kullanıcı">
+                <input gmsInput type="text" [value]="releaseManagerName()" readonly />
+              </gms-field>
+              <gms-field label="İş Sahibi" hint="Opsiyonel">
+                <input gmsInput type="text" [value]="businessOwner()" (input)="businessOwner.set($any($event.target).value)" />
+              </gms-field>
+              <gms-field label="Teknik Sahip" hint="Opsiyonel">
+                <input gmsInput type="text" [value]="technicalOwner()" (input)="technicalOwner.set($any($event.target).value)" />
+              </gms-field>
+              <gms-field label="Açıklama" hint="Opsiyonel" class="col-full">
+                <textarea gmsInput rows="3" [value]="description()" (input)="description.set($any($event.target).value)"></textarea>
+              </gms-field>
+            </gms-form-section>
+          </div>
+        }
+
+        @case ('changes') {
+          <div class="gms-card">
+            <div class="wz-head">
+              <div>
+                <h3 class="gms-section-title">Onaylı Değişiklikleri Seç</h3>
+                <p class="wz-sub">Yalnızca seçilen müşteri/proje/ortam için <strong>onaylı (Approved)</strong> değişiklikler seçilebilir. Sıra dağıtım sırasını belirler.</p>
+              </div>
+              <span class="count-chip">{{ selectedIds().length }} seçili</span>
+            </div>
+
+            @if (!environmentId()) {
+              <p class="wz-empty">Önce Bilgiler adımında müşteri, proje ve ortam seçin.</p>
+            } @else {
+              <div class="dual">
+                <div class="dual__col">
+                  <div class="dual__head">
+                    <span>Uygun ({{ available().length }})</span>
+                    <button type="button" class="gms-btn gms-btn--ghost gms-btn--sm" (click)="addAll()" [disabled]="!available().length">Tümünü ekle</button>
+                  </div>
+                  <div class="dual__search">
+                    <gms-icon name="search" [size]="15" />
+                    <input type="text" placeholder="Değişiklik ara…" [value]="aSearch()" (input)="aSearch.set($any($event.target).value)" />
+                  </div>
+                  <ul class="dual__list">
+                    @if (poolLoading()) { <li class="dual__empty">Yükleniyor…</li> }
+                    @for (c of available(); track c.id) {
+                      <li class="dual__item" (click)="add(c.id)">
+                        <div><span class="dual__name">{{ c.changeNo }}</span><span class="dual__meta">{{ c.title }}</span></div>
+                        <gms-icon name="plus" [size]="14" />
+                      </li>
+                    } @empty {
+                      @if (!poolLoading()) { <li class="dual__empty">Onaylı değişiklik yok.</li> }
+                    }
+                  </ul>
+                </div>
+
+                <div class="dual__col">
+                  <div class="dual__head">
+                    <span>Seçili — sıralı ({{ selectedChanges().length }})</span>
+                    <button type="button" class="gms-btn gms-btn--ghost gms-btn--sm" (click)="removeAll()" [disabled]="!selectedChanges().length">Temizle</button>
+                  </div>
+                  <ul class="dual__list">
+                    @for (c of selectedChanges(); track c.id; let i = $index) {
+                      <li class="dual__item dual__item--selected">
+                        <span class="dual__order">{{ i + 1 }}</span>
+                        <div><span class="dual__name">{{ c.changeNo }}</span><span class="dual__meta">{{ c.title }}</span></div>
+                        <div class="dual__ops">
+                          <button type="button" (click)="moveUp(i)" [disabled]="i === 0" aria-label="Yukarı"><gms-icon name="chevron-down" [size]="13" /></button>
+                          <button type="button" (click)="moveDown(i)" [disabled]="i === selectedChanges().length - 1" aria-label="Aşağı"><gms-icon name="chevron-down" [size]="13" /></button>
+                          <button type="button" (click)="remove(c.id)" aria-label="Kaldır"><gms-icon name="close" [size]="13" /></button>
+                        </div>
+                      </li>
+                    } @empty {
+                      <li class="dual__empty">Henüz değişiklik seçilmedi.</li>
+                    }
+                  </ul>
+                </div>
+              </div>
+            }
+          </div>
+        }
+
+        @case ('deployment') {
+          <div class="gms-card">
+            <gms-form-section title="Dağıtım Planı" description="Dağıtım stratejisi ve geri alma yaklaşımı.">
+              <gms-field label="Dağıtım Stratejisi" class="col-full">
+                <input gmsInput type="text" placeholder="Örn. Blue-Green, Rolling…" [value]="deploymentStrategy()" (input)="deploymentStrategy.set($any($event.target).value)" />
+              </gms-field>
+              <gms-field label="İletişim Planı" class="col-full">
+                <textarea gmsInput rows="2" [value]="communicationPlan()" (input)="communicationPlan.set($any($event.target).value)"></textarea>
+              </gms-field>
+              <gms-field label="Rollback Stratejisi" class="col-full">
+                <textarea gmsInput rows="2" [value]="rollbackStrategy()" (input)="rollbackStrategy.set($any($event.target).value)"></textarea>
+              </gms-field>
+              <div class="toggle-field">
+                <span class="toggle-field__label">Kesinti Bekleniyor</span>
+                <button type="button" class="toggle" [class.toggle--on]="downtimeExpected()" (click)="toggleDowntime()">
+                  <span class="toggle__dot"></span><span class="toggle__txt">{{ downtimeExpected() ? 'Evet' : 'Hayır' }}</span>
+                </button>
+              </div>
+              <gms-field label="Tahmini Kesinti (dk)">
+                <input gmsInput type="number" min="0" [value]="estimatedDowntime()" (input)="estimatedDowntime.set($any($event.target).value)" />
+              </gms-field>
+              <gms-field label="Notlar" class="col-full">
+                <textarea gmsInput rows="2" [value]="deploymentNotes()" (input)="deploymentNotes.set($any($event.target).value)"></textarea>
+              </gms-field>
+            </gms-form-section>
+          </div>
+        }
+
+        @case ('review') {
+          <div class="gms-card">
+            <div class="wz-head">
+              <h3 class="gms-section-title">Gözden Geçir & Oluştur</h3>
+              <span class="count-chip">{{ selectedIds().length }} değişiklik</span>
+            </div>
+            <div class="review">
+              <div class="review__sec">
+                <span class="review__h">Yayın Bilgileri</span>
+                <dl class="review__kv">
+                  <div><dt>Ad</dt><dd>{{ name() || '—' }}</dd></div>
+                  <div><dt>Sürüm</dt><dd>{{ version() || '—' }}</dd></div>
+                  <div><dt>Tür</dt><dd>{{ releaseTypeKey(releaseType()) | transloco }}</dd></div>
+                  <div><dt>Müşteri</dt><dd>{{ customerName() || '—' }}</dd></div>
+                  <div><dt>Proje</dt><dd>{{ projectName() || '—' }}</dd></div>
+                  <div><dt>Ortam</dt><dd>{{ environmentName() || '—' }}</dd></div>
+                  <div><dt>Yayın Yöneticisi</dt><dd>{{ releaseManagerName() }}</dd></div>
+                </dl>
+              </div>
+              <div class="review__sec">
+                <span class="review__h">Değişiklikler ({{ selectedChanges().length }})</span>
+                @if (selectedChanges().length) {
+                  <ol class="review__changes">@for (c of selectedChanges(); track c.id) { <li>{{ c.changeNo }} — {{ c.title }}</li> }</ol>
+                } @else { <p class="muted">Değişiklik seçilmedi.</p> }
+              </div>
+              <div class="review__sec">
+                <span class="review__h">Not</span>
+                <p class="muted">Resmî risk ve toplam tahmini süre oluşturmada backend tarafından hesaplanır ve yayın detayında gösterilir.</p>
+              </div>
+            </div>
+
+            @if (createError(); as err) { <div class="wz-error" role="alert">{{ err.message }}</div> }
+          </div>
+        }
+      }
+
+      <div class="wz-nav">
+        <button gmsButton variant="ghost" [disabled]="step() === 1" (click)="prev()"><gms-icon name="chevron-left" [size]="15" /> Geri</button>
+        @if (step() < steps.length) {
+          <button gmsButton variant="primary" (click)="next()">İleri <gms-icon name="chevron-right" [size]="15" /></button>
+        } @else {
+          <button gmsButton variant="primary" [loading]="submitting()" (click)="createPlan()"><gms-icon name="check" [size]="15" /> Yayın Oluştur</button>
+        }
+      </div>
+    </section>
+  </div>
+
+  <ng-container panel>
+    <gms-context-section title="Bilgi" icon="release">
+      <p class="tips-note">Bir yayın yalnızca <strong>onaylı</strong> değişikliklerden oluşturulur. Tüm değişiklikler aynı müşteri, proje ve ortama ait olmalıdır (backend zorlar).</p>
+    </gms-context-section>
+    <gms-context-section title="Gerekli Bilgiler" icon="check">
+      <ul class="req">
+        <li [class.req--ok]="!!name()">Ad & sürüm</li>
+        <li [class.req--ok]="!!customerId() && !!projectId() && !!environmentId()">Müşteri / proje / ortam</li>
+        <li [class.req--ok]="hasChanges()">En az bir onaylı değişiklik</li>
+      </ul>
+    </gms-context-section>
+  </ng-container>
+
+</gms-page>

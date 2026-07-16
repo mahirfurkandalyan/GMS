@@ -1,0 +1,56 @@
+{
+  "pageTitle": "My Profile",
+  "pageSubtitle": "Current session user information.",
+  "backToHub": "← Back to GMS Hub",
+  "tabs": {
+    "general": "General",
+    "history": "Approval History",
+    "activity": "Activity",
+    "prefs": "Preferences"
+  },
+  "sectionAccountInfo": "Account Information",
+  "fieldFullName": "Full Name",
+  "fieldEmail": "Email",
+  "fieldRoles": "Roles",
+  "fieldStatus": "Status",
+  "sectionApprovalHistory": "Approval History",
+  "sectionActivityTimeline": "Activity Timeline",
+  "prefsTitle": "Notification Preferences",
+  "prefsText": "Notification preferences will be enabled in a future update.",
+  "time": {
+    "today": "Today",
+    "yesterday": "Yesterday"
+  },
+  "history": {
+    "approvedRelease": "Approved the REL-2026-001 release",
+    "reviewedChange": "Reviewed the MES change",
+    "reviewedChangeDesc": "Technical assessment completed.",
+    "reviewedStatus": "Reviewed",
+    "rejectedValidation": "Rejected the validation request"
+  },
+  "activity": {
+    "signedIn": "Signed in",
+    "addedToProject": "Added to the EBR Migration project",
+    "assignedTraining": "Assigned the GxP Temelleri training",
+    "dueDatePrefix": "Due date",
+    "daysAgo3": "3 days ago",
+    "accountCreated": "Account created"
+  },
+  "security": {
+    "title": "Security & Sessions",
+    "changePassword": "Change Password",
+    "currentPassword": "Current Password",
+    "newPassword": "New Password",
+    "confirmPassword": "New Password (Confirm)",
+    "submit": "Update Password",
+    "submitting": "Updating…",
+    "errorRequired": "Please fill in all fields.",
+    "errorMismatch": "New passwords do not match.",
+    "errorLength": "New password must be at least 8 characters.",
+    "errorCurrent": "Current password is incorrect.",
+    "errorGeneric": "Could not change password. Please try again.",
+    "success": "Your password was changed. Please sign in again.",
+    "logoutAll": "Sign Out All Sessions",
+    "logoutAllHint": "Ends your sessions on all devices."
+  }
+}

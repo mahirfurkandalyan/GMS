@@ -1,0 +1,80 @@
+<section class="gms-page hub">
+
+  <gms-workspace-header
+    [title]="(greetingKey() | transloco) + ', ' + firstName()"
+    [subtitle]="'hub.subtitle' | transloco"
+    [breadcrumbs]="[{ label: ('nav.hub' | transloco) }]"
+    [environment]="{ label: ('hub.environment' | transloco), tone: 'neutral' }"
+    [project]="project()"
+    [release]="release()"
+    [favorite]="favorite()"
+    (favoriteToggle)="favorite.set(!favorite())">
+  </gms-workspace-header>
+
+  <div class="hub__grid">
+
+    <!-- My Tasks -->
+    <gms-widget [title]="'hub.widget.myTasks' | transloco" icon="check" [count]="myTasks().length" [empty]="myTasks().length === 0">
+      <gms-item-list [items]="myTasks()" />
+      <div empty>
+        <gms-empty-state icon="check" [inline]="true" [text]="'hub.empty.myTasks' | transloco" />
+      </div>
+    </gms-widget>
+
+    <!-- Upcoming Releases -->
+    <gms-widget [title]="'hub.widget.upcomingReleases' | transloco" icon="release" [loading]="loadingReleases()"
+      [empty]="upcoming().length === 0" [refreshable]="true" (refresh)="reloadReleases()">
+      <gms-item-list [items]="upcoming()" />
+      <div empty>
+        <gms-empty-state icon="calendar" [inline]="true" [text]="'hub.empty.upcomingReleases' | transloco" />
+      </div>
+    </gms-widget>
+
+    <!-- Notifications -->
+    <gms-widget [title]="'hub.widget.notifications' | transloco" icon="bell">
+      <gms-notification-list [items]="notifRows()" [compact]="true" (markRead)="onNotifRead($event)" />
+    </gms-widget>
+
+    <!-- Recent Activity -->
+    <gms-widget [title]="'hub.widget.recentActivity' | transloco" icon="activity" class="hub__span2">
+      <gms-activity-feed [items]="activity()" />
+    </gms-widget>
+
+    <!-- System Health -->
+    <gms-widget [title]="'hub.widget.systemStatus' | transloco" icon="server">
+      <ul class="sys">
+        @for (s of systems; track s.nameKey) {
+          <li class="sys__row">
+            <span class="dot" [class]="systemMeta(s.state).dot"></span>
+            <span class="sys__name">{{ s.nameKey | transloco }}</span>
+            <span class="sys__state">{{ systemMeta(s.state).labelKey | transloco }}</span>
+          </li>
+        }
+      </ul>
+    </gms-widget>
+
+    <!-- Favorites -->
+    <gms-widget [title]="'hub.widget.favorites' | transloco" icon="star" [count]="favoriteItems().length" [empty]="favoriteItems().length === 0">
+      <gms-item-list [items]="favoriteItems()" [removable]="true" (remove)="removeFavorite($event)" />
+      <div empty>
+        <gms-empty-state icon="star" [inline]="true" [text]="'hub.empty.favorites' | transloco" />
+      </div>
+    </gms-widget>
+
+    <!-- Recent Items -->
+    <gms-widget [title]="'hub.widget.recentItems' | transloco" icon="clock" [empty]="recentItems().length === 0">
+      <gms-item-list [items]="recentItems()" />
+      <div empty>
+        <gms-empty-state icon="clock" [inline]="true" [text]="'hub.empty.recentItems' | transloco" />
+      </div>
+    </gms-widget>
+
+    <!-- Pending Approvals -->
+    <gms-widget [title]="'hub.widget.pendingApprovals' | transloco" icon="approval" [empty]="true">
+      <div empty>
+        <gms-empty-state icon="approval" [inline]="true" [text]="'hub.empty.pendingApprovals' | transloco" />
+      </div>
+    </gms-widget>
+
+  </div>
+</section>

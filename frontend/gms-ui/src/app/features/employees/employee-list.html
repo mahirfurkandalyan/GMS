@@ -1,0 +1,76 @@
+<section class="gms-page">
+
+  <gms-page-header
+    [title]="'employees.pageTitle' | transloco"
+    [subtitle]="'employees.pageSubtitle' | transloco"
+    [breadcrumbs]="[{ label: ('employees.breadcrumbOrg' | transloco) }, { label: ('employees.pageTitle' | transloco) }]"
+    [status]="{ label: filtered().length + ' ' + ('employees.person' | transloco), tone: 'info' }">
+  </gms-page-header>
+
+  <!-- Filters -->
+  <gms-filter-bar
+    [placeholder]="'employees.searchPlaceholder' | transloco"
+    [search]="search()"
+    (searchChange)="search.set($event)"
+    [quickFilters]="availabilityFilters()"
+    [active]="availability()"
+    (activeChange)="availability.set($event)"
+    [hasAdvanced]="true"
+    (reset)="clearFilters()">
+    <div advanced>
+      <gms-field [label]="'employees.filterDepartment' | transloco">
+        <select gmsInput [ngModel]="department()" (ngModelChange)="department.set($event)" [ngModelOptions]="{ standalone: true }">
+          <option value="">{{ 'employees.filterAll' | transloco }}</option>
+          @for (d of departments(); track d) { <option [value]="d">{{ d }}</option> }
+        </select>
+      </gms-field>
+      <gms-field [label]="'employees.filterSkill' | transloco">
+        <select gmsInput [ngModel]="skill()" (ngModelChange)="skill.set($event)" [ngModelOptions]="{ standalone: true }">
+          <option value="">{{ 'employees.filterAll' | transloco }}</option>
+          @for (s of skills(); track s) { <option [value]="s">{{ s }}</option> }
+        </select>
+      </gms-field>
+      <gms-field [label]="'employees.filterProject' | transloco">
+        <select gmsInput [ngModel]="project()" (ngModelChange)="project.set($event)" [ngModelOptions]="{ standalone: true }">
+          <option value="">{{ 'employees.filterAll' | transloco }}</option>
+          @for (p of projects(); track p) { <option [value]="p">{{ p }}</option> }
+        </select>
+      </gms-field>
+    </div>
+  </gms-filter-bar>
+
+  <!-- Cards -->
+  @if (filtered().length === 0) {
+    <div class="gms-card">
+      <div class="empty-state">
+        <span class="empty-state__icon"><gms-icon name="employees" [size]="22" /></span>
+        <span class="empty-state__title">{{ 'employees.emptyTitle' | transloco }}</span>
+        <span class="empty-state__text">{{ 'employees.emptyText' | transloco }}</span>
+      </div>
+    </div>
+  } @else {
+    <div class="gms-grid gms-grid--cards">
+      @for (emp of filtered(); track emp.id) {
+        <a class="emp-card gms-hover" [routerLink]="['/employees', emp.id]">
+          <div class="emp-card__top">
+            <span class="avatar emp-card__avatar">{{ initials(emp.fullName) }}</span>
+            <span class="emp-card__avail">
+              <span class="dot" [class]="meta[emp.availability].dot"></span>
+              {{ availabilityLabelKeys[emp.availability] | transloco }}
+            </span>
+          </div>
+          <span class="emp-card__name">{{ emp.fullName }}</span>
+          <span class="emp-card__title">{{ emp.title }}</span>
+          <div class="emp-card__meta">
+            <span class="badge badge--gray">{{ emp.department }}</span>
+          </div>
+          <div class="emp-card__foot">
+            <span class="emp-card__proj-label">{{ 'employees.cardProjectLabel' | transloco }}</span>
+            <span class="emp-card__proj">{{ emp.currentProject }}</span>
+          </div>
+        </a>
+      }
+    </div>
+  }
+
+</section>

@@ -1,0 +1,25 @@
+<section class="gms-page">
+  <div class="gms-page-head">
+    <div>
+      <h1 class="gms-page-head__title">{{ 'organization.departments.pageTitle' | transloco }}</h1>
+      <p class="gms-page-head__sub">{{ 'organization.departments.pageSubtitle' | transloco }}</p>
+    </div>
+  </div>
+
+  <div class="gms-grid gms-grid--cards">
+    @for (dep of departments(); track dep.id) {
+      <div class="org-card gms-hover">
+        <div class="org-card__head">
+          <span class="org-card__icon"><gms-icon name="department" [size]="20" /></span>
+          <span class="badge badge--blue">{{ dep.memberCount }} {{ 'organization.common.person' | transloco }}</span>
+        </div>
+        <h3 class="org-card__name">{{ dep.name }}</h3>
+        <p class="org-card__desc">{{ dep.description }}</p>
+        <div class="org-card__foot">
+          <span class="org-card__label">{{ 'organization.departments.leadLabel' | transloco }}</span>
+          <span class="org-card__value">{{ dep.lead }}</span>
+        </div>
+      </div>
+    }
+  </div>
+</section>

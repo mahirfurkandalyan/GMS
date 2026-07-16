@@ -1,0 +1,193 @@
+<gms-page [contextPanel]="true" [panelTitle]="'reports.panelTitle' | transloco">
+
+  <gms-page-header
+    header
+    [title]="'reports.pageTitle' | transloco"
+    [subtitle]="'reports.pageSubtitle' | transloco"
+    [breadcrumbs]="[{ label: ('reports.breadcrumbAnalytics' | transloco) }, { label: ('reports.pageTitle' | transloco) }]"
+    [status]="{ label: catMeta().label, tone: 'info' }"
+    [lastUpdated]="'reports.justNow' | transloco">
+    <gms-menu secondary [items]="biItems()" (select)="onBi()">
+      <button trigger gmsButton variant="ghost"><gms-icon name="share" [size]="16" /> {{ 'reports.connectBi' | transloco }}</button>
+    </gms-menu>
+    <button actions gmsButton variant="ghost" (click)="onRefresh()"><gms-icon name="activity" [size]="16" /> {{ 'common.refresh' | transloco }}</button>
+  </gms-page-header>
+
+  <!-- Reusable report filter experience -->
+  <div toolbar>
+    <gms-filter-bar
+      [search]="fSearch()" (searchChange)="fSearch.set($event)"
+      [placeholder]="'reports.searchPlaceholder' | transloco"
+      [hasAdvanced]="true"
+      [savedViews]="[('reports.savedView.all' | transloco), ('reports.savedView.executives' | transloco), ('reports.savedView.highRisk' | transloco)]"
+      (reset)="onResetFilters()">
+      <div advanced>
+        <label class="ff"><span>{{ 'reports.filter.date' | transloco }}</span><input type="date" [ngModel]="fDate()" (ngModelChange)="fDate.set($event)" [ngModelOptions]="{ standalone: true }" /></label>
+        <label class="ff"><span>{{ 'reports.filter.project' | transloco }}</span>
+          <select [ngModel]="fProject()" (ngModelChange)="fProject.set($event)" [ngModelOptions]="{ standalone: true }">
+            <option value="">{{ 'reports.filter.all' | transloco }}</option>
+            @for (p of snap()?.filterOptions?.projects ?? []; track p) { <option [value]="p">{{ p }}</option> }
+          </select>
+        </label>
+        <label class="ff"><span>{{ 'reports.filter.environment' | transloco }}</span>
+          <select [ngModel]="fEnv()" (ngModelChange)="fEnv.set($event)" [ngModelOptions]="{ standalone: true }">
+            <option value="">{{ 'reports.filter.all' | transloco }}</option>
+            @for (e of snap()?.filterOptions?.environments ?? []; track e) { <option [value]="e">{{ e }}</option> }
+          </select>
+        </label>
+        <label class="ff"><span>{{ 'reports.filter.release' | transloco }}</span>
+          <select [ngModel]="fRelease()" (ngModelChange)="fRelease.set($event)" [ngModelOptions]="{ standalone: true }">
+            <option value="">{{ 'reports.filter.all' | transloco }}</option>
+            @for (r of snap()?.filterOptions?.releases ?? []; track r) { <option [value]="r">{{ r }}</option> }
+          </select>
+        </label>
+        <label class="ff"><span>{{ 'reports.filter.owner' | transloco }}</span>
+          <select [ngModel]="fOwner()" (ngModelChange)="fOwner.set($event)" [ngModelOptions]="{ standalone: true }">
+            <option value="">{{ 'reports.filter.all' | transloco }}</option>
+            @for (o of snap()?.filterOptions?.owners ?? []; track o) { <option [value]="o">{{ o }}</option> }
+          </select>
+        </label>
+        <label class="ff"><span>{{ 'reports.filter.risk' | transloco }}</span>
+          <select [ngModel]="fRisk()" (ngModelChange)="fRisk.set($event)" [ngModelOptions]="{ standalone: true }">
+            <option value="">{{ 'reports.filter.all' | transloco }}</option>
+            @for (r of riskOptions; track r) { <option [value]="r">{{ ('badge.risk.' + r) | transloco }}</option> }
+          </select>
+        </label>
+        <label class="ff"><span>{{ 'reports.filter.status' | transloco }}</span>
+          <select [ngModel]="fStatus()" (ngModelChange)="fStatus.set($event)" [ngModelOptions]="{ standalone: true }">
+            <option value="">{{ 'reports.filter.all' | transloco }}</option>
+            @for (s of statusOptions(); track s) { <option [value]="s">{{ ('badge.status.' + s) | transloco }}</option> }
+          </select>
+        </label>
+      </div>
+      <gms-menu actions [items]="exportItems()" (select)="onExport($event)">
+        <button trigger type="button" class="gms-btn gms-btn--ghost gms-btn--sm"><gms-icon name="document" [size]="15" /> {{ 'dataGrid.export' | transloco }}</button>
+      </gms-menu>
+    </gms-filter-bar>
+  </div>
+
+  <div class="rpt">
+    <gms-section-nav [groups]="navGroups()" [active]="activeCat()" (activeChange)="onCategoryChange($event)" [ariaLabel]="'reports.navAriaLabel' | transloco" />
+
+    <section class="rpt-content">
+      @if (loading()) {
+        <div class="gms-card"><gms-state variant="loading" /></div>
+      } @else if (snap(); as s) {
+        @switch (activeCat()) {
+
+          @case ('overview') {
+            <!-- Executive KPI area -->
+            <div class="kpi-grid">
+              @for (k of kpis(); track k.key) {
+                <gms-stat [label]="k.label" [value]="k.value" [icon]="$any(k.icon)" [tone]="k.tone ?? 'neutral'" [spark]="k.spark ?? []" />
+              }
+            </div>
+
+            <!-- Chart area -->
+            <div class="chart-grid">
+              <gms-widget [title]="'reports.widget.releaseTrend' | transloco" icon="release" [collapsible]="false">
+                <gms-chart type="line" [data]="s.releaseTrend" [ariaLabel]="'reports.widget.releaseTrend' | transloco" />
+              </gms-widget>
+              <gms-widget [title]="'reports.widget.changeTrend' | transloco" icon="change" [collapsible]="false">
+                <gms-chart type="line" [data]="s.changeTrend" [ariaLabel]="'reports.widget.changeTrend' | transloco" />
+              </gms-widget>
+              <gms-widget [title]="'reports.widget.riskDistribution' | transloco" icon="shield" [collapsible]="false">
+                <gms-chart type="donut" [data]="riskDistribution()" [centerLabel]="'reports.centerLabel.change' | transloco" [ariaLabel]="'reports.widget.riskDistribution' | transloco" />
+              </gms-widget>
+              <gms-widget [title]="'reports.widget.approvalStatus' | transloco" icon="approval" [collapsible]="false">
+                <gms-chart type="donut" [data]="approvalStatus()" [centerLabel]="'reports.centerLabel.approval' | transloco" [ariaLabel]="'reports.widget.approvalStatus' | transloco" />
+              </gms-widget>
+              <gms-widget [title]="'reports.widget.executionSuccess' | transloco" icon="execution" [collapsible]="false">
+                <gms-chart type="donut" [data]="executionSuccess()" [centerLabel]="'reports.centerLabel.execution' | transloco" [ariaLabel]="'reports.widget.executionSuccess' | transloco" />
+              </gms-widget>
+              <gms-widget [title]="'reports.widget.environmentActivity' | transloco" icon="server" [collapsible]="false">
+                <gms-chart type="bar" [data]="s.environmentActivity" [ariaLabel]="'reports.widget.environmentActivity' | transloco" />
+              </gms-widget>
+            </div>
+
+            <!-- Top issues -->
+            <gms-widget [title]="'reports.widget.topIssues' | transloco" icon="audit" [count]="topIssues().length" [collapsible]="false">
+              <gms-data-grid [rows]="topIssues()" [columns]="issueColumns()" idKey="id" [searchable]="false" [showToolbar]="false" [pageSize]="0"
+                emptyIcon="check" [emptyTitle]="'reports.widget.topIssuesEmptyTitle' | transloco" [emptyText]="'reports.widget.topIssuesEmptyText' | transloco"
+                (rowClick)="openIssue($event)">
+                <ng-template [gmsCell]="'updatedAt'" let-row>{{ row.updatedAt | date: 'dd.MM.yyyy' }}</ng-template>
+              </gms-data-grid>
+            </gms-widget>
+          }
+
+          @case ('releases') {
+            <div class="kpi-grid kpi-grid--4">
+              <gms-stat [label]="'reports.stat.totalReleases' | transloco" [value]="s.releaseCounts.total" icon="release" />
+              <gms-stat [label]="'reports.stat.upcoming' | transloco" [value]="s.releaseCounts.upcoming" icon="calendar" tone="neutral" />
+              <gms-stat [label]="'reports.stat.completed' | transloco" [value]="s.releaseCounts.completed" icon="check" tone="up" />
+              <gms-stat [label]="'reports.stat.delayed' | transloco" [value]="s.releaseCounts.delayed" icon="clock" [tone]="s.releaseCounts.delayed ? 'down' : 'up'" />
+            </div>
+
+            <div class="chart-grid chart-grid--2">
+              <gms-widget [title]="'reports.widget.statusDistribution' | transloco" icon="release" [collapsible]="false">
+                <gms-chart type="donut" [data]="releaseStatus()" [centerLabel]="'reports.centerLabel.release' | transloco" [ariaLabel]="'reports.widget.releaseStatusDistribution' | transloco" />
+              </gms-widget>
+              <gms-widget [title]="'reports.widget.upcomingReleases' | transloco" icon="calendar" [count]="s.upcomingReleases.length" [collapsible]="false" [empty]="!s.upcomingReleases.length">
+                <gms-item-list [items]="s.upcomingReleases" />
+                <div empty><p class="muted">{{ 'reports.widget.noUpcomingReleases' | transloco }}</p></div>
+              </gms-widget>
+              <gms-widget [title]="'reports.widget.completedReleases' | transloco" icon="check" [count]="s.completedReleases.length" [collapsible]="false" [empty]="!s.completedReleases.length">
+                <gms-item-list [items]="s.completedReleases" />
+                <div empty><p class="muted">{{ 'reports.widget.noCompletedReleases' | transloco }}</p></div>
+              </gms-widget>
+              <gms-widget [title]="'reports.widget.delayedReleases' | transloco" icon="clock" [count]="s.delayedReleases.length" [collapsible]="false" [empty]="!s.delayedReleases.length">
+                <gms-item-list [items]="s.delayedReleases" />
+                <div empty><p class="muted">{{ 'reports.widget.noDelayedReleases' | transloco }}</p></div>
+              </gms-widget>
+            </div>
+          }
+
+          @case ('changes') {
+            <div class="chart-grid chart-grid--3">
+              <gms-widget [title]="'reports.widget.byRisk' | transloco" icon="shield" [collapsible]="false">
+                <gms-chart type="donut" [data]="changeByRisk()" [centerLabel]="'reports.centerLabel.change' | transloco" [ariaLabel]="'reports.widget.changeByRisk' | transloco" />
+              </gms-widget>
+              <gms-widget [title]="'reports.widget.byEnvironment' | transloco" icon="server" [collapsible]="false">
+                <gms-chart type="bar" [data]="s.changeByEnv" [ariaLabel]="'reports.widget.changeByEnvironment' | transloco" />
+              </gms-widget>
+              <gms-widget [title]="'reports.widget.byStatus' | transloco" icon="change" [collapsible]="false">
+                <gms-chart type="bar" [data]="changeByStatus()" [ariaLabel]="'reports.widget.changeByStatus' | transloco" />
+              </gms-widget>
+            </div>
+
+            <gms-widget [title]="'reports.widget.openChanges' | transloco" icon="change" [count]="openChanges().length" [collapsible]="false">
+              <gms-data-grid [rows]="openChanges()" [columns]="issueColumns()" idKey="id" [searchable]="false" [showToolbar]="false" [pageSize]="0"
+                emptyIcon="check" [emptyTitle]="'reports.widget.openChangesEmptyTitle' | transloco" [emptyText]="'reports.widget.openChangesEmptyText' | transloco"
+                (rowClick)="openIssue($event)">
+                <ng-template [gmsCell]="'updatedAt'" let-row>{{ row.updatedAt | date: 'dd.MM.yyyy' }}</ng-template>
+              </gms-data-grid>
+            </gms-widget>
+          }
+
+          @default {
+            <div class="gms-card">
+              <gms-state variant="empty" [iconOverride]="$any(catMeta().icon)" [title]="(catMeta().label + ' ' + ('reports.reportSuffix' | transloco) + ' — ' + ('reports.comingSoon' | transloco))"
+                [text]="categoryPlaceholderText()">
+              </gms-state>
+            </div>
+          }
+        }
+      }
+    </section>
+  </div>
+
+  <!-- Right summary panel (reusable) -->
+  <ng-container panel>
+    <gms-context-section [title]="'reports.panel.recentActivity' | transloco" icon="activity">
+      @if (snap()) { <gms-activity-feed [items]="snap()!.activity" /> }
+    </gms-context-section>
+    <gms-context-section [title]="'reports.panel.pendingActions' | transloco" icon="clock">
+      <p class="muted">{{ pendingSummary() }}</p>
+    </gms-context-section>
+    <gms-context-section [title]="'reports.panel.criticalAlerts' | transloco" icon="shield" [count]="topIssues().length">
+      @if (topIssues().length) { <p class="muted">{{ 'reports.panel.criticalAlertsText' | transloco: { count: topIssues().length } }}</p> }
+      @else { <p class="muted">{{ 'reports.panel.noCriticalAlerts' | transloco }}</p> }
+    </gms-context-section>
+  </ng-container>
+
+</gms-page>

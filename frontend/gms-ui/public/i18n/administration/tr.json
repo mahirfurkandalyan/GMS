@@ -1,0 +1,169 @@
+{
+  "pageTitle": "Administration",
+  "pageSubtitle": "Sistem yapılandırmalarını ve temel tanımları yönetin.",
+  "breadcrumbManagement": "Yönetim",
+  "justNow": "birkaç dk önce",
+  "navAriaLabel": "Yapılandırma bölümleri",
+  "comingSoon": "Yakında",
+  "newCustomer": "Yeni Müşteri",
+  "newProject": "Yeni Proje",
+  "plannedCapabilities": "Planlanan Yetenekler",
+  "permissionsSuffix": "izin",
+  "unknownRecord": "Kayıt",
+  "delete": "Sil",
+  "placeholderSuffix": "Bu bölüm sonraki geliştirme aşamasında etkinleştirilecektir; mimari, yeniden kullanılabilir şekilde hazırdır.",
+  "navGroup": {
+    "organization": "Kuruluş",
+    "access": "Erişim Yönetimi",
+    "system": "Sistem"
+  },
+  "section": {
+    "general": "Genel",
+    "customers": "Müşteriler",
+    "projects": "Projeler",
+    "environments": "Ortamlar",
+    "users": "Kullanıcılar",
+    "roles": "Roller",
+    "teams": "Takımlar",
+    "templates": "Şablonlar",
+    "notifications": "Bildirimler",
+    "integrations": "Entegrasyonlar",
+    "systemSettings": "Sistem Ayarları"
+  },
+  "sectionHint": {
+    "general": "Platform ve altyapı durumu",
+    "customers": "Müşteri tanımları",
+    "projects": "Proje tanımları",
+    "environments": "Ortam tanımları",
+    "users": "Kullanıcı hesapları",
+    "roles": "Rol ve yetki tanımları",
+    "teams": "Takım yapılandırması",
+    "templates": "İş akışı ve doküman şablonları",
+    "notifications": "Bildirim kuralları ve kanallar",
+    "integrations": "Dış sistem bağlantıları",
+    "systemSettings": "Genel platform ayarları"
+  },
+  "entity": {
+    "customer": "Müşteriyi",
+    "project": "Projeyi",
+    "environment": "Ortamı",
+    "user": "Kullanıcıyı"
+  },
+  "stat": {
+    "platformVersion": "Platform Sürümü",
+    "environment": "Ortam",
+    "appHealth": "Uygulama Sağlığı",
+    "uptime": "Çalışma Süresi"
+  },
+  "general": {
+    "serviceStatus": "Servis Durumu",
+    "database": "Veritabanı",
+    "apiService": "API Servisi",
+    "maintenanceTitle": "Bakım & Lisans",
+    "lastBackup": "Son Yedekleme",
+    "license": "Lisans"
+  },
+  "search": {
+    "customers": "Müşteri ara…",
+    "projects": "Proje ara…",
+    "users": "Kullanıcı ara…"
+  },
+  "filter": {
+    "allStatuses": "Tüm Durumlar",
+    "allCustomers": "Tüm Müşteriler",
+    "allRoles": "Tüm Roller"
+  },
+  "empty": {
+    "customersTitle": "Müşteri yok",
+    "customersText": "Filtreleri genişletin veya yeni müşteri ekleyin.",
+    "projectsTitle": "Proje yok",
+    "projectsText": "Filtreleri genişletmeyi deneyin.",
+    "environmentsTitle": "Ortam yok",
+    "environmentsText": "Kayıt bulunamadı.",
+    "usersTitle": "Kullanıcı yok",
+    "usersText": "Filtreleri genişletmeyi deneyin.",
+    "rolesTitle": "Rol yok",
+    "rolesText": "Kayıt bulunamadı."
+  },
+  "environments": { "desc": "Her proje için tanımlı ortamlar. Yayın ve dağıtımlar bu ortamları hedefler." },
+  "roles": { "desc": "Sistem rolleri ve izin kümeleri. İzin motoru sonraki fazda uygulanacaktır." },
+  "col": {
+    "customerCode": "Müşteri Kodu",
+    "customerName": "Müşteri Adı",
+    "status": "Durum",
+    "projects": "Projeler",
+    "createdAt": "Oluşturma Tarihi",
+    "projectCode": "Proje Kodu",
+    "projectName": "Proje Adı",
+    "customer": "Müşteri",
+    "owner": "Sahip",
+    "environmentCount": "Ortam Sayısı",
+    "environmentName": "Ortam Adı",
+    "project": "Proje",
+    "type": "Tür",
+    "lastDeployment": "Son Dağıtım",
+    "fullName": "Ad Soyad",
+    "email": "E-posta",
+    "role": "Rol",
+    "department": "Departman",
+    "lastLogin": "Son Giriş",
+    "roleName": "Rol Adı",
+    "description": "Açıklama",
+    "users": "Kullanıcı",
+    "permissions": "İzinler"
+  },
+  "panel": {
+    "recentConfigs": "Son Yapılandırmalar",
+    "systemActivity": "Sistem Aktivitesi",
+    "recentChanges": "Son Değişiklikler"
+  },
+  "recentConfig": {
+    "prodApproval": "PROD ortam onayı",
+    "prodApprovalHint": "EBR-PROD · dağıtım kilidi",
+    "newRole": "Yeni rol: QA Specialist",
+    "newRoleHint": "22 izin",
+    "customerAdded": "Müşteri eklendi: Nobel İlaç"
+  },
+  "activity": {
+    "backupUpdated": "yedekleme zamanlamasını güncelledi",
+    "envAdded": "MES-PREPROD ortamını ekledi",
+    "userDeactivated": "kullanıcı hesabını pasifleştirdi"
+  },
+  "time": {
+    "twoHoursAgo": "2 saat önce",
+    "fiveHoursAgo": "5 saat önce",
+    "yesterday": "Dün"
+  },
+  "createModal": {
+    "title": "Yeni Müşteri",
+    "sectionTitle": "Müşteri Bilgileri",
+    "sectionDesc": "Müşteri kodu otomatik atanır.",
+    "nameLabel": "Müşteri Adı",
+    "namePlaceholder": "Örn. Nobel İlaç",
+    "create": "Oluştur",
+    "errorRequired": "Lütfen müşteri adını girin.",
+    "errorCreateFailed": "Müşteri oluşturulamadı."
+  },
+  "deleteConfirmTitle": "{{entity}} sil",
+  "deleteConfirmMessage": "{{id}} kaydını silmek istediğinize emin misiniz?",
+  "toast": {
+    "editSoon": "{{id}} düzenleme yakında.",
+    "duplicated": "{{id}} çoğaltıldı.",
+    "duplicatedTitle": "Kopyalandı",
+    "linkCopied": "Bağlantı panoya kopyalandı.",
+    "archived": "{{id}} arşivlendi.",
+    "undone": "Geri alındı.",
+    "deleted": "{{id}} silindi.",
+    "deleteUndone": "Silme geri alındı.",
+    "actionSoon": "{{id}} — işlem yakında.",
+    "exportSoon": "Dışa aktarma yakında eklenecek.",
+    "newProjectSoon": "Yeni proje sihirbazı yakında.",
+    "customerCreated": "{{code}} — {{name}} oluşturuldu.",
+    "customerCreatedTitle": "Müşteri eklendi"
+  },
+  "health": {
+    "healthy": "Sağlıklı",
+    "degraded": "Kısmi",
+    "down": "Kesinti"
+  }
+}

@@ -1,0 +1,102 @@
+<gms-page [contextPanel]="true" panelTitle="Bağlam">
+
+  <gms-page-header
+    header
+    title="Yürütme"
+    subtitle="Onaylanan değişikliklerin yürütme süreçlerini yönetin."
+    [breadcrumbs]="[{ label: 'Çalışma Alanı' }, { label: 'Yürütme Merkezi' }]"
+    [status]="runningCount() > 0 ? { label: runningCount() + ' çalışıyor', tone: 'info' } : { label: 'Boşta', tone: 'neutral' }"
+    [context]="[{ key: 'Toplam', label: filteredRows().length + ' yürütme' }]"
+    lastUpdated="birkaç dk önce">
+    <button secondary gmsButton variant="ghost" (click)="onExport()">
+      <gms-icon name="document" [size]="16" /> Dışa Aktar
+    </button>
+    <button actions gmsButton variant="secondary" (click)="reload()">
+      <gms-icon name="clock" [size]="16" /> Yenile
+    </button>
+  </gms-page-header>
+
+  <div toolbar class="exe-toolbar">
+    <gms-relationship-strip [nodes]="relationChain" />
+
+    <div class="filters">
+      <div class="filters__search">
+        <gms-icon name="search" [size]="17" />
+        <input type="text" placeholder="Yürütme, yayın, değişiklik veya yürütücü ara…"
+          [ngModel]="fSearch()" (ngModelChange)="fSearch.set($event)" [ngModelOptions]="{ standalone: true }" />
+      </div>
+
+      <select class="filters__select" [ngModel]="fRelease()" (ngModelChange)="fRelease.set($event)" [ngModelOptions]="{ standalone: true }">
+        <option value="">Tüm Yayınlar</option>
+        @for (r of releaseOptions(); track r) { <option [value]="r">{{ r }}</option> }
+      </select>
+
+      <select class="filters__select" [ngModel]="fEnv()" (ngModelChange)="fEnv.set($event)" [ngModelOptions]="{ standalone: true }">
+        <option value="">Tüm Ortamlar</option>
+        @for (e of envOptions(); track e) { <option [value]="e">{{ e }}</option> }
+      </select>
+
+      <select class="filters__select" [ngModel]="fStatus()" (ngModelChange)="fStatus.set($event)" [ngModelOptions]="{ standalone: true }">
+        <option value="">Tüm Durumlar</option>
+        @for (s of statusOptions; track s) { <option [value]="s">{{ statusLabel(s) }}</option> }
+      </select>
+
+      <select class="filters__select" [ngModel]="fExecutor()" (ngModelChange)="fExecutor.set($event)" [ngModelOptions]="{ standalone: true }">
+        <option value="">Tüm Yürütücüler</option>
+        @for (o of executorOptions(); track o) { <option [value]="o">{{ o }}</option> }
+      </select>
+
+      <input type="date" class="filters__date" [ngModel]="fDate()" (ngModelChange)="fDate.set($event)"
+        [ngModelOptions]="{ standalone: true }" title="Oluşturma tarihinden itibaren" />
+
+      @if (hasFilters()) {
+        <button type="button" class="gms-btn gms-btn--ghost gms-btn--sm" (click)="resetFilters()">Sıfırla</button>
+      }
+    </div>
+  </div>
+
+  @if (!loading() && rows().length === 0) {
+    <div class="gms-card">
+      <gms-state variant="empty" iconOverride="execution" title="Yürütme kaydı yok"
+        text="Yürütmeler; onaylanan değişikliklerin kontrollü uygulanmasını temsil eder. Bir değişiklik yürütmeye alındığında burada görünür."
+        [steps]="['Bir değişikliği onaylayın', 'Yürütme planını hazırlayın', 'Adımları kontrollü şekilde çalıştırın']" />
+    </div>
+  } @else {
+    <gms-data-grid
+      [rows]="filteredRows()"
+      [columns]="columns"
+      idKey="id"
+      [loading]="loading()"
+      [searchable]="false"
+      [selectable]="true"
+      [rowActions]="rowActions"
+      emptyIcon="search"
+      emptyTitle="Eşleşen yürütme yok"
+      emptyText="Filtre kriterlerinizi genişletmeyi deneyin."
+      (rowAction)="onRowAction($event)"
+      (rowClick)="openExecution($event)"
+      (exportRequested)="onExport()">
+      <ng-template [gmsCell]="'progress'" let-row>
+        <div class="progress-cell">
+          <span class="progress-cell__track"><span class="progress-cell__bar" [style.width.%]="row.progress"></span></span>
+          <span class="progress-cell__val">%{{ row.progress }}</span>
+        </div>
+      </ng-template>
+      <ng-template [gmsCell]="'startedAt'" let-row>{{ row.startedAt ? (row.startedAt | date: 'dd.MM.yyyy HH:mm') : '—' }}</ng-template>
+      <ng-template [gmsCell]="'completedAt'" let-row>{{ row.completedAt ? (row.completedAt | date: 'dd.MM.yyyy HH:mm') : '—' }}</ng-template>
+    </gms-data-grid>
+  }
+
+  <ng-container panel>
+    <gms-context-section title="Son Aktivite" icon="activity">
+      <gms-activity-feed [items]="panelActivity" />
+    </gms-context-section>
+    <gms-context-section title="İlgili Değişiklikler" icon="change" [count]="relatedChanges.length">
+      <gms-item-list [items]="relatedChanges" />
+    </gms-context-section>
+    <gms-context-section title="Çalışan Yürütmeler" icon="execution" [count]="runningCount()">
+      <p class="panel-empty">{{ runningCount() }} yürütme şu an çalışıyor.</p>
+    </gms-context-section>
+  </ng-container>
+
+</gms-page>

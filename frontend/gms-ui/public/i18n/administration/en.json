@@ -1,0 +1,169 @@
+{
+  "pageTitle": "Administration",
+  "pageSubtitle": "Manage system configurations and core master data.",
+  "breadcrumbManagement": "Management",
+  "justNow": "a few minutes ago",
+  "navAriaLabel": "Configuration sections",
+  "comingSoon": "Soon",
+  "newCustomer": "New Customer",
+  "newProject": "New Project",
+  "plannedCapabilities": "Planned Capabilities",
+  "permissionsSuffix": "permissions",
+  "unknownRecord": "Record",
+  "delete": "Delete",
+  "placeholderSuffix": "This section will be activated in a future development phase; the architecture is ready and reusable.",
+  "navGroup": {
+    "organization": "Organization",
+    "access": "Access Management",
+    "system": "System"
+  },
+  "section": {
+    "general": "General",
+    "customers": "Customers",
+    "projects": "Projects",
+    "environments": "Environments",
+    "users": "Users",
+    "roles": "Roles",
+    "teams": "Teams",
+    "templates": "Templates",
+    "notifications": "Notifications",
+    "integrations": "Integrations",
+    "systemSettings": "System Settings"
+  },
+  "sectionHint": {
+    "general": "Platform and infrastructure status",
+    "customers": "Customer definitions",
+    "projects": "Project definitions",
+    "environments": "Environment definitions",
+    "users": "User accounts",
+    "roles": "Role and permission definitions",
+    "teams": "Team configuration",
+    "templates": "Workflow and document templates",
+    "notifications": "Notification rules and channels",
+    "integrations": "External system connections",
+    "systemSettings": "General platform settings"
+  },
+  "entity": {
+    "customer": "Customer",
+    "project": "Project",
+    "environment": "Environment",
+    "user": "User"
+  },
+  "stat": {
+    "platformVersion": "Platform Version",
+    "environment": "Environment",
+    "appHealth": "Application Health",
+    "uptime": "Uptime"
+  },
+  "general": {
+    "serviceStatus": "Service Status",
+    "database": "Database",
+    "apiService": "API Service",
+    "maintenanceTitle": "Maintenance & License",
+    "lastBackup": "Last Backup",
+    "license": "License"
+  },
+  "search": {
+    "customers": "Search customer…",
+    "projects": "Search project…",
+    "users": "Search user…"
+  },
+  "filter": {
+    "allStatuses": "All Statuses",
+    "allCustomers": "All Customers",
+    "allRoles": "All Roles"
+  },
+  "empty": {
+    "customersTitle": "No customers",
+    "customersText": "Widen your filters or add a new customer.",
+    "projectsTitle": "No projects",
+    "projectsText": "Try widening your filters.",
+    "environmentsTitle": "No environments",
+    "environmentsText": "No records found.",
+    "usersTitle": "No users",
+    "usersText": "Try widening your filters.",
+    "rolesTitle": "No roles",
+    "rolesText": "No records found."
+  },
+  "environments": { "desc": "Environments defined for each project. Releases and deployments target these environments." },
+  "roles": { "desc": "System roles and permission sets. The permission engine will be implemented in a future phase." },
+  "col": {
+    "customerCode": "Customer Code",
+    "customerName": "Customer Name",
+    "status": "Status",
+    "projects": "Projects",
+    "createdAt": "Created On",
+    "projectCode": "Project Code",
+    "projectName": "Project Name",
+    "customer": "Customer",
+    "owner": "Owner",
+    "environmentCount": "Environment Count",
+    "environmentName": "Environment Name",
+    "project": "Project",
+    "type": "Type",
+    "lastDeployment": "Last Deployment",
+    "fullName": "Full Name",
+    "email": "Email",
+    "role": "Role",
+    "department": "Department",
+    "lastLogin": "Last Login",
+    "roleName": "Role Name",
+    "description": "Description",
+    "users": "Users",
+    "permissions": "Permissions"
+  },
+  "panel": {
+    "recentConfigs": "Recent Configurations",
+    "systemActivity": "System Activity",
+    "recentChanges": "Recent Changes"
+  },
+  "recentConfig": {
+    "prodApproval": "PROD environment approval",
+    "prodApprovalHint": "EBR-PROD · deployment lock",
+    "newRole": "New role: QA Specialist",
+    "newRoleHint": "22 permissions",
+    "customerAdded": "Customer added: Nobel İlaç"
+  },
+  "activity": {
+    "backupUpdated": "updated the backup schedule",
+    "envAdded": "added the MES-PREPROD environment",
+    "userDeactivated": "deactivated a user account"
+  },
+  "time": {
+    "twoHoursAgo": "2 hours ago",
+    "fiveHoursAgo": "5 hours ago",
+    "yesterday": "Yesterday"
+  },
+  "createModal": {
+    "title": "New Customer",
+    "sectionTitle": "Customer Information",
+    "sectionDesc": "The customer code is assigned automatically.",
+    "nameLabel": "Customer Name",
+    "namePlaceholder": "e.g. Nobel İlaç",
+    "create": "Create",
+    "errorRequired": "Please enter a customer name.",
+    "errorCreateFailed": "Could not create the customer."
+  },
+  "deleteConfirmTitle": "Delete {{entity}}",
+  "deleteConfirmMessage": "Are you sure you want to delete {{id}}?",
+  "toast": {
+    "editSoon": "Editing {{id}} coming soon.",
+    "duplicated": "{{id}} was duplicated.",
+    "duplicatedTitle": "Duplicated",
+    "linkCopied": "Link copied to clipboard.",
+    "archived": "{{id}} was archived.",
+    "undone": "Reverted.",
+    "deleted": "{{id}} was deleted.",
+    "deleteUndone": "Deletion reverted.",
+    "actionSoon": "{{id}} — action coming soon.",
+    "exportSoon": "Export coming soon.",
+    "newProjectSoon": "New project wizard coming soon.",
+    "customerCreated": "{{code}} — {{name}} was created.",
+    "customerCreatedTitle": "Customer added"
+  },
+  "health": {
+    "healthy": "Healthy",
+    "degraded": "Degraded",
+    "down": "Down"
+  }
+}

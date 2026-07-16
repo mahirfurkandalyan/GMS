@@ -1,0 +1,24 @@
+{
+  "pageTitle": "İzin & Takım Takvimi",
+  "pageSubtitle": "Takımın müsaitlik, toplantı ve izin durumu.",
+  "breadcrumbOrg": "Organizasyon",
+  "breadcrumbTitle": "İzin Takvimi",
+  "statusManager": "Yönetici Görünümü",
+  "statusStandard": "Standart Görünüm",
+  "sectionThisWeek": "Bu Hafta",
+  "sectionBalances": "İzin Bakiyeleri",
+  "managerBadge": "Yönetici",
+  "colEmployee": "Çalışan",
+  "colEntitled": "Hak Ediş",
+  "colUsed": "Kullanılan",
+  "colRemaining": "Kalan",
+  "days": "gün",
+  "restrictedText": "İzin bakiyesi bilgileri yalnızca yöneticiler ve adminler tarafından görüntülenebilir.",
+  "calendarType": {
+    "available": "Müsait",
+    "meeting": "Toplantı",
+    "leave": "İzinli",
+    "remote": "Uzaktan",
+    "travel": "Seyahat"
+  }
+}

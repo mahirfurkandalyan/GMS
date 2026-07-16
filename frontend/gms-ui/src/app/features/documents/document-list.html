@@ -1,0 +1,146 @@
+<gms-page [contextPanel]="true" [panelTitle]="'common.context' | transloco">
+
+  <gms-page-header
+    header
+    [title]="'documents.pageTitle' | transloco"
+    [subtitle]="'documents.pageSubtitle' | transloco"
+    [breadcrumbs]="[{ label: ('documents.breadcrumbWorkspace' | transloco) }, { label: ('documents.breadcrumbCenter' | transloco) }]"
+    [status]="{ label: filteredRows().length + ' ' + ('documents.countSuffix' | transloco), tone: 'info' }"
+    [lastUpdated]="'documents.updatedRecently' | transloco">
+    <button secondary gmsButton variant="ghost" (click)="onExport()">
+      <gms-icon name="document" [size]="16" /> {{ 'dataGrid.export' | transloco }}
+    </button>
+    <button actions gmsButton variant="primary" (click)="openUpload()">
+      <gms-icon name="plus" [size]="16" /> {{ 'documents.upload' | transloco }}
+    </button>
+  </gms-page-header>
+
+  <div toolbar class="doc-toolbar">
+    <gms-relationship-strip [nodes]="relationChain()" />
+
+    <div class="filters">
+      <div class="filters__search">
+        <gms-icon name="search" [size]="17" />
+        <input type="text" [placeholder]="'documents.toolbar.searchPlaceholder' | transloco"
+          [ngModel]="fSearch()" (ngModelChange)="fSearch.set($event)" [ngModelOptions]="{ standalone: true }" />
+      </div>
+
+      <select class="filters__select" [ngModel]="fCategory()" (ngModelChange)="fCategory.set($event)" [ngModelOptions]="{ standalone: true }">
+        <option value="">{{ 'documents.toolbar.allCategories' | transloco }}</option>
+        @for (t of documentTypes; track t.key) { <option [value]="t.key">{{ typeLabel(t.key) }}</option> }
+      </select>
+
+      <select class="filters__select" [ngModel]="fRelease()" (ngModelChange)="fRelease.set($event)" [ngModelOptions]="{ standalone: true }">
+        <option value="">{{ 'documents.toolbar.allReleases' | transloco }}</option>
+        @for (r of releaseOptions(); track r) { <option [value]="r">{{ r }}</option> }
+      </select>
+
+      <select class="filters__select" [ngModel]="fProject()" (ngModelChange)="fProject.set($event)" [ngModelOptions]="{ standalone: true }">
+        <option value="">{{ 'documents.toolbar.allProjects' | transloco }}</option>
+        @for (p of projectOptions(); track p) { <option [value]="p">{{ p }}</option> }
+      </select>
+
+      <select class="filters__select" [ngModel]="fType()" (ngModelChange)="fType.set($event)" [ngModelOptions]="{ standalone: true }">
+        <option value="">{{ 'documents.toolbar.allFileTypes' | transloco }}</option>
+        @for (k of previewKinds(); track k.key) { <option [value]="k.key">{{ k.label }}</option> }
+      </select>
+
+      <select class="filters__select" [ngModel]="fOwner()" (ngModelChange)="fOwner.set($event)" [ngModelOptions]="{ standalone: true }">
+        <option value="">{{ 'documents.toolbar.allOwners' | transloco }}</option>
+        @for (o of ownerOptions(); track o) { <option [value]="o">{{ o }}</option> }
+      </select>
+
+      <input type="date" class="filters__date" [ngModel]="fDate()" (ngModelChange)="fDate.set($event)"
+        [ngModelOptions]="{ standalone: true }" [title]="'documents.toolbar.createdSince' | transloco" />
+
+      @if (hasFilters()) {
+        <button type="button" class="gms-btn gms-btn--ghost gms-btn--sm" (click)="resetFilters()">{{ 'documents.toolbar.reset' | transloco }}</button>
+      }
+    </div>
+  </div>
+
+  @if (!loading() && rows().length === 0) {
+    <div class="gms-card">
+      <gms-state variant="empty" iconOverride="document" [title]="'documents.empty.title' | transloco"
+        [text]="'documents.empty.text' | transloco"
+        [steps]="[('documents.empty.step1' | transloco), ('documents.empty.step2' | transloco), ('documents.empty.step3' | transloco)]">
+        <button gmsButton variant="primary" (click)="openUpload()">
+          <gms-icon name="plus" [size]="15" /> {{ 'documents.upload' | transloco }}
+        </button>
+      </gms-state>
+    </div>
+  } @else {
+    <gms-data-grid
+      [rows]="filteredRows()"
+      [columns]="columns()"
+      idKey="id"
+      [loading]="loading()"
+      [searchable]="false"
+      [selectable]="true"
+      [rowActions]="rowActions"
+      emptyIcon="search"
+      [emptyTitle]="'documents.grid.emptyTitle' | transloco"
+      [emptyText]="'documents.grid.emptyText' | transloco"
+      (rowAction)="onRowAction($event)"
+      (rowClick)="openDocument($event)"
+      (exportRequested)="onExport()">
+      <ng-template [gmsCell]="'category'" let-row>
+        <span class="cat-chip"><gms-icon [name]="typeIcon(row.category)" [size]="13" /> {{ typeLabel(row.category) }}</span>
+      </ng-template>
+      <ng-template [gmsCell]="'createdAt'" let-row>{{ row.createdAt | date: 'dd.MM.yyyy' }}</ng-template>
+      <ng-template [gmsCell]="'updatedAt'" let-row>{{ row.updatedAt | date: 'dd.MM.yyyy' }}</ng-template>
+    </gms-data-grid>
+  }
+
+  <ng-container panel>
+    <gms-context-section [title]="'documents.panel.recentActivity' | transloco" icon="activity">
+      <gms-activity-feed [items]="panelActivity()" />
+    </gms-context-section>
+    <gms-context-section [title]="'documents.panel.relatedReleases' | transloco" icon="release" [count]="relatedReleases.length">
+      <gms-item-list [items]="relatedReleases" />
+    </gms-context-section>
+    <gms-context-section [title]="'documents.panel.totalDocuments' | transloco" icon="document">
+      <p class="panel-empty">{{ rows().length }} {{ 'documents.panel.totalDocumentsText' | transloco }}</p>
+    </gms-context-section>
+  </ng-container>
+
+  <!-- Upload modal -->
+  <gms-modal [open]="uploadOpen()" [title]="'documents.upload' | transloco" size="lg" (closed)="uploadOpen.set(false)">
+    <div class="doc-form">
+      <gms-upload-zone (filesChange)="onFiles($event)" />
+
+      <gms-form-section [title]="'documents.form.sectionTitle' | transloco" [description]="'documents.form.sectionDescription' | transloco">
+        <gms-field [label]="'documents.form.name' | transloco" [required]="true" class="doc-form__full">
+          <input gmsInput type="text" [placeholder]="'documents.form.namePlaceholder' | transloco" [value]="formName()" (input)="formName.set($any($event.target).value)" />
+        </gms-field>
+
+        <gms-field [label]="'documents.form.category' | transloco" [required]="true">
+          <select gmsInput [value]="formCategory()" (change)="formCategory.set($any($event.target).value)">
+            @for (t of documentTypes; track t.key) { <option [value]="t.key">{{ typeLabel(t.key) }}</option> }
+          </select>
+        </gms-field>
+
+        <gms-field [label]="'documents.form.release' | transloco" [hint]="'documents.form.releaseHint' | transloco">
+          <select gmsInput [value]="formReleaseId()" (change)="formReleaseId.set($any($event.target).value)">
+            <option value="">{{ 'documents.form.noRelease' | transloco }}</option>
+            @for (r of releases(); track r.id) { <option [value]="r.id">{{ r.name }} — {{ r.projectName }}</option> }
+          </select>
+        </gms-field>
+
+        <gms-field [label]="'documents.form.description' | transloco" [hint]="'documents.form.descriptionHint' | transloco" class="doc-form__full">
+          <textarea gmsInput rows="2" [placeholder]="'documents.form.descriptionPlaceholder' | transloco" [value]="formDescription()" (input)="formDescription.set($any($event.target).value)"></textarea>
+        </gms-field>
+      </gms-form-section>
+
+      @if (uploadError()) { <p class="doc-form__error">{{ uploadError() }}</p> }
+    </div>
+
+    <div footer>
+      <button gmsButton variant="ghost" (click)="uploadOpen.set(false)">{{ 'common.cancel' | transloco }}</button>
+      <button gmsButton variant="primary" [loading]="submitting()" [disabled]="!canUpload()" (click)="onUpload()">
+        {{ 'documents.upload' | transloco }}
+      </button>
+    </div>
+  </gms-modal>
+
+</gms-page>

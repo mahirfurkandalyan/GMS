@@ -1,0 +1,106 @@
+<gms-page [contextPanel]="true" [panelTitle]="'validation.contextPanelTitle' | transloco">
+
+  <gms-page-header
+    header
+    [title]="'validation.pageTitle' | transloco"
+    [subtitle]="'validation.pageSubtitle' | transloco"
+    [breadcrumbs]="[{ label: ('validation.breadcrumbWorkspace' | transloco) }, { label: ('validation.moduleName' | transloco) }]"
+    [status]="failedCount() > 0 ? { label: failedCount() + ' ' + ('validation.failedSuffix' | transloco), tone: 'danger' } : { label: ('validation.healthy' | transloco), tone: 'success' }"
+    [context]="[{ key: ('validation.totalLabel' | transloco), label: filteredRows().length + ' ' + ('validation.unit' | transloco) }]"
+    [lastUpdated]="'validation.lastUpdatedRecently' | transloco">
+    <button secondary gmsButton variant="ghost" (click)="onExport()">
+      <gms-icon name="document" [size]="16" /> {{ 'validation.export' | transloco }}
+    </button>
+    <button actions gmsButton variant="secondary" (click)="reload()">
+      <gms-icon name="clock" [size]="16" /> {{ 'validation.refresh' | transloco }}
+    </button>
+  </gms-page-header>
+
+  <div toolbar class="val-toolbar">
+    <gms-relationship-strip [nodes]="relationChain()" />
+
+    <div class="filters">
+      <div class="filters__search">
+        <gms-icon name="search" [size]="17" />
+        <input type="text" [placeholder]="'validation.searchPlaceholder' | transloco"
+          [ngModel]="fSearch()" (ngModelChange)="fSearch.set($event)" [ngModelOptions]="{ standalone: true }" />
+      </div>
+
+      <select class="filters__select" [ngModel]="fRelease()" (ngModelChange)="fRelease.set($event)" [ngModelOptions]="{ standalone: true }">
+        <option value="">{{ 'validation.allReleases' | transloco }}</option>
+        @for (r of releaseOptions(); track r) { <option [value]="r">{{ r }}</option> }
+      </select>
+
+      <select class="filters__select" [ngModel]="fProject()" (ngModelChange)="fProject.set($event)" [ngModelOptions]="{ standalone: true }">
+        <option value="">{{ 'validation.allProjects' | transloco }}</option>
+        @for (p of projectOptions(); track p) { <option [value]="p">{{ p }}</option> }
+      </select>
+
+      <select class="filters__select" [ngModel]="fEnv()" (ngModelChange)="fEnv.set($event)" [ngModelOptions]="{ standalone: true }">
+        <option value="">{{ 'validation.allEnvironments' | transloco }}</option>
+        @for (e of envOptions(); track e) { <option [value]="e">{{ e }}</option> }
+      </select>
+
+      <select class="filters__select" [ngModel]="fResult()" (ngModelChange)="fResult.set($event)" [ngModelOptions]="{ standalone: true }">
+        <option value="">{{ 'validation.allResults' | transloco }}</option>
+        @for (r of resultOptions; track r) { <option [value]="r">{{ resultLabelKey(r) | transloco }}</option> }
+      </select>
+
+      <select class="filters__select" [ngModel]="fSeverity()" (ngModelChange)="fSeverity.set($event)" [ngModelOptions]="{ standalone: true }">
+        <option value="">{{ 'validation.allSeverities' | transloco }}</option>
+        @for (s of severityOptions; track s) { <option [value]="s">{{ severityLabelKey(s) | transloco }}</option> }
+      </select>
+
+      <select class="filters__select" [ngModel]="fOwner()" (ngModelChange)="fOwner.set($event)" [ngModelOptions]="{ standalone: true }">
+        <option value="">{{ 'validation.allExecutors' | transloco }}</option>
+        @for (o of ownerOptions(); track o) { <option [value]="o">{{ o }}</option> }
+      </select>
+
+      <input type="date" class="filters__date" [ngModel]="fDate()" (ngModelChange)="fDate.set($event)"
+        [ngModelOptions]="{ standalone: true }" [title]="'validation.dateFromTitle' | transloco" />
+
+      @if (hasFilters()) {
+        <button type="button" class="gms-btn gms-btn--ghost gms-btn--sm" (click)="resetFilters()">{{ 'validation.reset' | transloco }}</button>
+      }
+    </div>
+  </div>
+
+  @if (!loading() && rows().length === 0) {
+    <div class="gms-card">
+      <gms-state variant="empty" iconOverride="shield" [title]="'validation.empty.title' | transloco"
+        [text]="'validation.empty.text' | transloco"
+        [steps]="[('validation.empty.step1' | transloco), ('validation.empty.step2' | transloco), ('validation.empty.step3' | transloco)]" />
+    </div>
+  } @else {
+    <gms-data-grid
+      [rows]="filteredRows()"
+      [columns]="columns()"
+      idKey="id"
+      [loading]="loading()"
+      [searchable]="false"
+      [selectable]="true"
+      [rowActions]="rowActions()"
+      emptyIcon="search"
+      [emptyTitle]="'validation.grid.emptyTitle' | transloco"
+      [emptyText]="'validation.grid.emptyText' | transloco"
+      (rowAction)="onRowAction($event)"
+      (rowClick)="openValidation($event)"
+      (exportRequested)="onExport()">
+      <ng-template [gmsCell]="'executedAt'" let-row>{{ row.executedAt | date: 'dd.MM.yyyy HH:mm' }}</ng-template>
+    </gms-data-grid>
+  }
+
+  <!-- Context panel -->
+  <ng-container panel>
+    <gms-context-section [title]="'validation.panel.recentActivity' | transloco" icon="activity">
+      <gms-activity-feed [items]="panelActivity()" />
+    </gms-context-section>
+    <gms-context-section [title]="'validation.panel.relatedChanges' | transloco" icon="change" [count]="relatedChanges.length">
+      <gms-item-list [items]="relatedChanges" />
+    </gms-context-section>
+    <gms-context-section [title]="'validation.panel.failedValidations' | transloco" icon="close" [count]="failedCount()">
+      <p class="panel-empty">{{ 'validation.panel.failedValidationsText' | transloco: { count: failedCount() } }}</p>
+    </gms-context-section>
+  </ng-container>
+
+</gms-page>

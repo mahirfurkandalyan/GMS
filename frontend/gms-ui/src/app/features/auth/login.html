@@ -1,0 +1,62 @@
+<div class="login">
+  <div class="login__card">
+
+    <button type="button" class="login__lang" (click)="toggleLang()">
+      {{ language.current() === 'tr' ? 'EN' : 'TR' }}
+    </button>
+
+    <div class="login__brand">
+      <span class="login__logo">GMS</span>
+      <h1 class="login__title">{{ 'login.title' | transloco }}</h1>
+      <p class="login__subtitle">{{ 'login.subtitle' | transloco }}</p>
+    </div>
+
+    <form class="login__form" (ngSubmit)="onLogin()">
+      <label class="login__label" for="email">{{ 'login.emailLabel' | transloco }}</label>
+      <input
+        id="email"
+        type="email"
+        class="login__select"
+        autocomplete="username"
+        [placeholder]="'login.emailPlaceholder' | transloco"
+        [ngModel]="email()"
+        (ngModelChange)="email.set($event)"
+        name="email"
+        [attr.aria-label]="'login.emailLabel' | transloco" />
+
+      <label class="login__label" for="password">{{ 'login.passwordLabel' | transloco }}</label>
+      <div class="login__password">
+        <input
+          id="password"
+          [type]="showPassword() ? 'text' : 'password'"
+          class="login__select"
+          autocomplete="current-password"
+          [placeholder]="'login.passwordPlaceholder' | transloco"
+          [ngModel]="password()"
+          (ngModelChange)="password.set($event)"
+          name="password"
+          [attr.aria-label]="'login.passwordLabel' | transloco" />
+        <button
+          type="button"
+          class="login__reveal"
+          (click)="togglePassword()"
+          [attr.aria-label]="(showPassword() ? 'login.hidePassword' : 'login.showPassword') | transloco">
+          {{ showPassword() ? '🙈' : '👁️' }}
+        </button>
+      </div>
+
+      @if (error()) {
+        <p class="login__error" role="alert">{{ error() }}</p>
+      }
+
+      <button
+        type="submit"
+        class="login__button"
+        [disabled]="!canSubmit()">
+        {{ (loading() ? 'login.signingIn' : 'login.signIn') | transloco }}
+      </button>
+    </form>
+
+    <p class="login__hint">{{ 'login.hint' | transloco }}</p>
+  </div>
+</div>

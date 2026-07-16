@@ -1,0 +1,45 @@
+<section class="gms-page">
+  <div class="gms-page-head">
+    <div>
+      <h1 class="gms-page-head__title">{{ 'organization.orgChart.pageTitle' | transloco }}</h1>
+      <p class="gms-page-head__sub">{{ 'organization.orgChart.pageSubtitle' | transloco }}</p>
+    </div>
+  </div>
+
+  <!-- Basit statik hiyerarşi önizlemesi -->
+  <div class="gms-card chart">
+    <div class="chart__node chart__node--root">
+      <span class="avatar">CY</span>
+      <div>
+        <span class="chart__name">Genel Müdürlük</span>
+        <span class="chart__role">Centra Yazılım</span>
+      </div>
+    </div>
+
+    <div class="chart__branch">
+      <div class="chart__node">
+        <span class="avatar">M</span>
+        <div><span class="chart__name">Mühendislik</span><span class="chart__role">Furkan Demir</span></div>
+      </div>
+      <div class="chart__node">
+        <span class="avatar">K</span>
+        <div><span class="chart__name">Kalite</span><span class="chart__role">Mehmet Kaya</span></div>
+      </div>
+      <div class="chart__node">
+        <span class="avatar">P</span>
+        <div><span class="chart__name">PMO</span><span class="chart__role">Zeynep Şahin</span></div>
+      </div>
+      <div class="chart__node">
+        <span class="avatar">A</span>
+        <div><span class="chart__name">Altyapı</span><span class="chart__role">Ali Vural</span></div>
+      </div>
+    </div>
+
+    <div class="empty-state chart__note">
+      <span class="empty-state__text">
+        {{ 'organization.orgChart.note' | transloco }}
+      </span>
+      <span class="badge badge--gray">{{ 'organization.orgChart.comingSoon' | transloco }}</span>
+    </div>
+  </div>
+</section>

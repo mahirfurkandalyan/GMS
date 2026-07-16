@@ -1,0 +1,85 @@
+:host { display: block; }
+
+.panel-empty { margin: 0; font-size: var(--fs-sm); color: var(--text-muted); }
+
+.ad-toolbar { display: flex; flex-direction: column; gap: var(--s-3); }
+
+/* Decision bar */
+.decision {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--s-4);
+  flex-wrap: wrap;
+  padding: var(--s-4);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--warning);
+  border-radius: var(--r-lg);
+  box-shadow: var(--shadow-xs);
+
+  &--done { border-left-color: var(--border-strong); }
+
+  &__info { display: flex; align-items: center; gap: var(--s-3); }
+  &__icon {
+    width: 40px; height: 40px; border-radius: var(--r-md); flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+    background: var(--warning-bg); color: var(--warning);
+  }
+  &__icon--success { background: var(--success-bg); color: var(--success); }
+  &__icon--danger { background: var(--danger-bg); color: var(--danger); }
+  &__icon--neutral { background: var(--neutral-bg); color: var(--neutral); }
+  &__title { display: block; font-size: var(--fs-body); font-weight: 600; color: var(--text-strong); }
+  &__sub { display: block; font-size: var(--fs-sm); color: var(--text-muted); }
+  &__actions { display: flex; align-items: center; gap: var(--s-2); flex-wrap: wrap; }
+}
+
+/* Key-values */
+.kv {
+  margin: 0; display: grid; grid-template-columns: 1fr 1fr; gap: 0 var(--s-5);
+  @media (max-width: 620px) { grid-template-columns: 1fr; }
+  div { display: flex; flex-direction: column; gap: 2px; padding: var(--s-3) 0; border-bottom: 1px solid var(--border); }
+  dt { margin: 0; font-size: var(--fs-caption); color: var(--text-subtle); text-transform: uppercase; letter-spacing: 0.04em; font-weight: 600; }
+  dd { margin: 0; font-size: var(--fs-body); color: var(--text-strong); font-weight: 500; }
+}
+
+.ad-side { display: flex; flex-direction: column; gap: var(--s-4); }
+.ad-risk { display: flex; flex-wrap: wrap; gap: var(--s-2); }
+.ad-risk__note { margin: var(--s-3) 0 0; font-size: var(--fs-sm); color: var(--text-muted); }
+.ad-metrics { display: flex; gap: var(--s-5); }
+.ad-metric { display: flex; flex-direction: column; }
+.ad-metric__v { font-size: 1.5rem; font-weight: 600; color: var(--text-strong); font-variant-numeric: tabular-nums; }
+.ad-metric__l { font-size: var(--fs-caption); color: var(--text-muted); }
+
+/* Approval flow stepper */
+.flow { list-style: none; margin: 0; padding: 0; }
+.flow__step { position: relative; display: flex; gap: var(--s-3); }
+.flow__node {
+  position: relative; z-index: 1; flex-shrink: 0;
+  width: 30px; height: 30px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  background: var(--surface); border: 2px solid var(--border-strong); color: var(--text-subtle);
+}
+.flow__node--approved, .flow__node--completed { background: var(--success-bg); border-color: var(--success); color: var(--success); }
+.flow__node--pending { background: var(--warning-bg); border-color: var(--warning); color: var(--warning); }
+.flow__node--rejected { background: var(--danger-bg); border-color: var(--danger); color: var(--danger); }
+.flow__body {
+  flex: 1; padding: 0 0 var(--s-5); position: relative;
+}
+.flow__step:not(:last-child) .flow__node::after {
+  content: ''; position: absolute; top: 30px; left: 50%; transform: translateX(-50%);
+  width: 2px; height: calc(100% + var(--s-5) - 12px); background: var(--border);
+}
+.flow__head { display: flex; align-items: center; gap: var(--s-2); }
+.flow__role { font-size: var(--fs-body); font-weight: 600; color: var(--text-strong); }
+.flow__approver { display: block; font-size: var(--fs-sm); color: var(--text); margin-top: 2px; }
+.flow__meta { display: flex; flex-wrap: wrap; gap: var(--s-1) var(--s-4); margin-top: 4px; font-size: var(--fs-caption); color: var(--text-subtle); }
+.flow__comment { color: var(--text-muted); }
+
+/* Decision modal */
+.decision-modal { display: flex; flex-direction: column; gap: var(--s-3); }
+.decision-modal__hint { margin: 0; font-size: var(--fs-sm); color: var(--text-muted); }
+.decision-modal__ctx { display: flex; align-items: center; gap: var(--s-2); }
+.decision-modal__title { font-size: var(--fs-body); font-weight: 600; color: var(--text-strong); }
+.decision-modal__label { font-size: var(--fs-sm); font-weight: 500; color: var(--text); }
+.decision-modal__label span { color: var(--text-subtle); font-weight: 400; }

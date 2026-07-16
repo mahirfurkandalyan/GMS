@@ -1,0 +1,279 @@
+{
+  "nav": {
+    "section": {
+      "workspace": "Çalışma Alanı",
+      "organization": "Organizasyon",
+      "management": "Yönetim"
+    },
+    "hub": "GMS Hub",
+    "dashboard": "Gösterge Paneli",
+    "releases": "Yayın Yönetimi",
+    "changes": "Değişiklik Yönetimi",
+    "approvals": "Onay Kayıtları (Geçmiş)",
+    "tasks": "İş Akışı Görevleri",
+    "validation": "Doğrulama Merkezi",
+    "executions": "Yürütme Merkezi",
+    "documents": "Doküman Merkezi",
+    "assets": "Varlık Merkezi",
+    "training": "Eğitimler",
+    "notifications": "Bildirimler",
+    "employees": "Çalışanlar",
+    "departments": "Departmanlar",
+    "teams": "Takımlar",
+    "orgchart": "Organizasyon Şeması",
+    "leave": "İzin Takvimi",
+    "reports": "Raporlar & Analitik",
+    "audit": "Audit Center",
+    "workflows": "Workflow Designer",
+    "notificationRules": "Bildirim Kuralları",
+    "administration": "Administration"
+  },
+  "shell": {
+    "expandMenu": "Menüyü genişlet",
+    "collapseMenu": "Menüyü daralt",
+    "soon": "Yakında",
+    "menu": "Menü",
+    "workspaceTitle": "Çalışma alanı",
+    "workspaceName": "Centra Yazılım",
+    "workspaceEnv": "Geliştirme Ortamı",
+    "footerCompany": "Centra Yazılım",
+    "searchPlaceholder": "Ara — çalışan, proje, yayın…",
+    "pinned": "Sabitlenenler",
+    "recentSearches": "Son Aramalar",
+    "clear": "Temizle",
+    "suggestions": "Öneriler",
+    "noResults": "Sonuç bulunamadı",
+    "notificationsTitle": "Bildirimler",
+    "markAllRead": "Tümünü okundu",
+    "viewAllNotifications": "Tüm bildirimleri gör",
+    "profile": "Profil",
+    "logout": "Çıkış Yap",
+    "brand": "GMS",
+    "langToggle": "EN"
+  },
+  "common": {
+    "addToFavorites": "Favorilere ekle",
+    "shareSoon": "Paylaş (yakında)",
+    "environment": "Ortam",
+    "project": "Proje",
+    "release": "Yayın",
+    "remove": "Kaldır",
+    "refresh": "Yenile",
+    "actions": "İşlemler",
+    "cancel": "Vazgeç",
+    "highPriority": "Yüksek öncelik",
+    "sections": "Bölümler",
+    "moveSoon": "Taşı (yakında)",
+    "expand": "Genişlet",
+    "collapse": "Daralt",
+    "context": "Bağlam",
+    "openContextPanel": "Bağlam panelini aç",
+    "recordNotFound": "Kayıt bulunamadı",
+    "noDataToDisplay": "Görüntülenecek veri yok.",
+    "close": "Kapat",
+    "confirmTitle": "Onay",
+    "confirmAction": "Onayla",
+    "contextPanel": "Bağlam paneli",
+    "closePanel": "Paneli kapat",
+    "lastUpdated": "Son güncelleme"
+  },
+  "badge": {
+    "status": {
+      "Draft": "Taslak",
+      "Pending": "Beklemede",
+      "Waiting": "Sırada",
+      "Expired": "Süresi Doldu",
+      "Passed": "Başarılı",
+      "Warning": "Uyarı",
+      "Failed": "Başarısız",
+      "Skipped": "Atlandı",
+      "Open": "Açık",
+      "Resolved": "Giderildi",
+      "Running": "Çalışıyor",
+      "Paused": "Duraklatıldı",
+      "RolledBack": "Geri Alındı",
+      "Active": "Aktif",
+      "Inactive": "Pasif",
+      "Deprecated": "Kullanımdan Kaldırıldı",
+      "Archived": "Arşivlendi",
+      "Planning": "Planlama",
+      "Planned": "Planlandı",
+      "InProgress": "Yürütülüyor",
+      "Accepted": "Kabul Edildi",
+      "Validation": "Doğrulama",
+      "InReview": "İncelemede",
+      "UnderReview": "İncelemede",
+      "Approval": "Onayda",
+      "Submitted": "Gönderildi",
+      "Approved": "Onaylandı",
+      "Scheduled": "Zamanlandı",
+      "Implemented": "Uygulandı",
+      "Created": "Oluşturuldu",
+      "Ready": "Hazır",
+      "Executing": "Yürütülüyor",
+      "Executed": "Yürütüldü",
+      "Completed": "Tamamlandı",
+      "Rejected": "Reddedildi",
+      "Cancelled": "İptal"
+    },
+    "priority": {
+      "Critical": "Kritik",
+      "High": "Yüksek",
+      "Medium": "Orta",
+      "Low": "Düşük"
+    },
+    "risk": {
+      "Critical": "Kritik Risk",
+      "High": "Yüksek Risk",
+      "Medium": "Orta Risk",
+      "Low": "Düşük Risk"
+    }
+  },
+  "commandPalette": {
+    "title": "Komut paleti",
+    "placeholder": "Sayfalara git, ara veya komut çalıştır…",
+    "noResults": "Sonuç bulunamadı",
+    "myProfile": "Profilim",
+    "createRelease": "Yeni Yayın Oluştur",
+    "group": {
+      "nav": "Git",
+      "create": "Oluştur",
+      "actions": "Aksiyonlar",
+      "results": "Sonuçlar"
+    },
+    "hint": {
+      "workspace": "Çalışma alanı",
+      "operations": "Operasyon",
+      "release": "Release",
+      "organization": "Organizasyon",
+      "development": "Gelişim",
+      "team": "Takım",
+      "notification": "Notification",
+      "account": "Hesap",
+      "quickCreate": "Hızlı oluştur"
+    }
+  },
+  "dataGrid": {
+    "searchPlaceholder": "Tabloda ara…",
+    "records": "kayıt",
+    "recordsSelected": "kayıt seçildi",
+    "columns": "Sütunlar",
+    "export": "Dışa Aktar",
+    "clearSelection": "Seçimi temizle",
+    "selectAll": "Tümünü seç",
+    "selectRow": "Satırı seç",
+    "page": "Sayfa",
+    "previous": "Önceki",
+    "next": "Sonraki"
+  },
+  "filterBar": {
+    "searchPlaceholder": "Ara…",
+    "advanced": "Gelişmiş",
+    "views": "Görünümler",
+    "reset": "Sıfırla",
+    "allRecords": "Tüm Kayıtlar",
+    "myView": "Benim Görünümüm",
+    "saveViewSoon": "Görünümü Kaydet (yakında)"
+  },
+  "notificationList": {
+    "empty": "Bildirim yok."
+  },
+  "upload": {
+    "dragDrop": "Dosyaları buraya sürükleyip bırakın",
+    "or": "veya",
+    "chooseFile": "Dosya Seç",
+    "hint": "Çoklu yükleme desteklenir · Maks. 25 MB · Sürüm yükleme ve mevcut dosyayı değiştirme yakında",
+    "scanned": "Tarandı"
+  },
+  "quickCreate": {
+    "trigger": "Yeni",
+    "release": "Yeni Yayın",
+    "change": "Yeni Değişiklik",
+    "project": "Yeni Proje",
+    "document": "Doküman Yükle",
+    "template": "Şablondan Oluştur"
+  },
+  "state": {
+    "empty": {
+      "title": "Kayıt bulunamadı",
+      "text": "Görüntülenecek veri yok."
+    },
+    "error": {
+      "title": "Bir hata oluştu",
+      "text": "İşlem tamamlanamadı. Lütfen tekrar deneyin."
+    },
+    "offline": {
+      "title": "Bağlantı kurulamadı",
+      "text": "Sunucuya ulaşılamıyor. Bağlantınızı kontrol edip tekrar deneyin."
+    },
+    "denied": {
+      "title": "Erişim yok",
+      "text": "Bu içeriği görüntüleme yetkiniz bulunmuyor."
+    },
+    "success": {
+      "title": "Tamamlandı",
+      "text": "İşlem başarıyla tamamlandı."
+    }
+  },
+  "login": {
+    "title": "Governance Management System",
+    "subtitle": "Kurumsal Yönetişim Yönetim Sistemi",
+    "emailLabel": "E-posta",
+    "emailPlaceholder": "ornek@centra.com.tr",
+    "passwordLabel": "Parola",
+    "passwordPlaceholder": "Parolanız",
+    "showPassword": "Parolayı göster",
+    "hidePassword": "Parolayı gizle",
+    "signingIn": "Giriş yapılıyor…",
+    "signIn": "Giriş Yap",
+    "hint": "GMS — kurumsal yönetişim platformu",
+    "errorRequired": "Lütfen e-posta ve parolanızı girin.",
+    "errorInvalid": "E-posta veya parola hatalı.",
+    "errorLocked": "Çok sayıda başarısız denemeden sonra hesabınız geçici olarak kilitlendi. Lütfen daha sonra tekrar deneyin.",
+    "errorGeneric": "Giriş yapılamadı. Lütfen tekrar deneyin."
+  },
+  "hub": {
+    "subtitle": "Kurumsal yönetişim çalışma alanınız — bugün nelerin ilginizi beklediğine göz atın.",
+    "environment": "Geliştirme (DEV)",
+    "greeting": {
+      "morning": "Günaydın",
+      "afternoon": "İyi günler",
+      "evening": "İyi akşamlar",
+      "default": "Merhaba"
+    },
+    "widget": {
+      "myTasks": "Görevlerim",
+      "upcomingReleases": "Yaklaşan Yayınlar",
+      "notifications": "Bildirimler",
+      "recentActivity": "Son Aktiviteler",
+      "systemStatus": "Sistem Durumu",
+      "favorites": "Favorilerim",
+      "recentItems": "Son Görüntülenenler",
+      "pendingApprovals": "Bekleyen Onaylar"
+    },
+    "empty": {
+      "myTasks": "Üzerinizde bekleyen görev yok.",
+      "upcomingReleases": "Planlanmış yaklaşan yayın bulunmuyor.",
+      "favorites": "Henüz favori eklemediniz.",
+      "recentItems": "Son görüntülenen öğe yok.",
+      "pendingApprovals": "Onay Yönetimi modülü yakında aktif olacak."
+    },
+    "system": {
+      "api": "API Servisi",
+      "database": "Veritabanı",
+      "auth": "Kimlik Doğrulama",
+      "jobs": "Arka Plan İşleri",
+      "ok": "Çalışıyor",
+      "degraded": "Kısmi"
+    },
+    "trainingHint": "Eğitim · %{{progress}}",
+    "activity": {
+      "today": "Bugün",
+      "yesterday": "Dün",
+      "createdRelease": "yeni bir yayın oluşturdu",
+      "gaveApproval": "bir onay verdi",
+      "addedDocument": "bir doküman ekledi",
+      "joinedProject": "MES projesine katıldı"
+    }
+  }
+}

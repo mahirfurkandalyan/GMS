@@ -1,0 +1,227 @@
+@if (isAuthenticated()) {
+  <div class="app-shell" [class.app-shell--collapsed]="collapsed()">
+
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="sidebar__brand">
+        <span class="sidebar__mark">G</span>
+        <span class="sidebar__brand-text">
+          <span class="sidebar__brand-name">GMS</span>
+          <span class="sidebar__brand-sub">Governance</span>
+        </span>
+        <button
+          type="button"
+          class="sidebar__collapse"
+          (click)="toggleSidebar()"
+          [title]="(collapsed() ? 'shell.expandMenu' : 'shell.collapseMenu') | transloco"
+          [attr.aria-label]="(collapsed() ? 'shell.expandMenu' : 'shell.collapseMenu') | transloco">
+          <gms-icon [name]="collapsed() ? 'chevron-right' : 'sidebar'" [size]="18" />
+        </button>
+      </div>
+
+      <nav class="sidebar__nav">
+        @for (section of navSections(); track section.titleKey) {
+          @if (section.titleKey) {
+            <span class="sidebar__group">{{ section.titleKey | transloco }}</span>
+          } @else {
+            <span class="sidebar__group-spacer"></span>
+          }
+          @for (item of section.items; track item.labelKey) {
+            @if (item.status === 'active' && item.route) {
+              <a
+                class="nav-link"
+                [routerLink]="item.route"
+                routerLinkActive="nav-link--active"
+                [attr.title]="collapsed() ? (item.labelKey | transloco) : null">
+                <span class="nav-link__icon"><gms-icon [name]="item.icon" [size]="19" /></span>
+                <span class="nav-link__label">{{ item.labelKey | transloco }}</span>
+              </a>
+            } @else {
+              <span
+                class="nav-link nav-link--disabled"
+                [attr.title]="collapsed() ? (item.labelKey | transloco) + ' — ' + ('shell.soon' | transloco) : ('shell.soon' | transloco)">
+                <span class="nav-link__icon"><gms-icon [name]="item.icon" [size]="19" /></span>
+                <span class="nav-link__label">{{ item.labelKey | transloco }}</span>
+                <span class="nav-link__soon">{{ 'shell.soon' | transloco }}</span>
+              </span>
+            }
+          }
+        }
+      </nav>
+
+      <div class="sidebar__footer">
+        <span class="sidebar__footer-name">{{ 'shell.footerCompany' | transloco }}</span>
+        <span class="sidebar__footer-ver">v0.2</span>
+      </div>
+    </aside>
+
+    <!-- Main -->
+    <div class="main">
+      <header class="topbar">
+        <div class="topbar__left">
+          <button type="button" class="icon-btn topbar__burger" (click)="mobileNavOpen.set(true)" [attr.aria-label]="'shell.menu' | transloco">
+            <gms-icon name="menu" [size]="20" />
+          </button>
+
+          <div class="workspace" [title]="'shell.workspaceTitle' | transloco">
+            <span class="workspace__badge">CY</span>
+            <span class="workspace__meta">
+              <span class="workspace__name">{{ 'shell.workspaceName' | transloco }}</span>
+              <span class="workspace__env">{{ 'shell.workspaceEnv' | transloco }}</span>
+            </span>
+          </div>
+
+          <div class="search" [class.search--open]="showResults() || showEmptyPanel()">
+            <gms-icon name="search" [size]="18" />
+            <input
+              type="text"
+              class="search__input"
+              [placeholder]="'shell.searchPlaceholder' | transloco"
+              [ngModel]="searchTerm()"
+              (ngModelChange)="searchTerm.set($event); searchActive.set(-1)"
+              (focus)="onSearchFocus()"
+              (blur)="onSearchBlur()"
+              (keydown)="onSearchKeydown($event)" />
+            <span class="search__kbd">/</span>
+
+            @if (showEmptyPanel()) {
+              <div class="search__results">
+                @if (pinnedSearches().length) {
+                  <div class="search__section"><span>{{ 'shell.pinned' | transloco }}</span></div>
+                  @for (term of pinnedSearches(); track term) {
+                    <button type="button" class="search__item" (mousedown)="applyRecent(term)">
+                      <gms-icon name="pin" [size]="15" />
+                      <span class="search__label">{{ term }}</span>
+                    </button>
+                  }
+                }
+                @if (recentSearches().length) {
+                  <div class="search__section">
+                    <span>{{ 'shell.recentSearches' | transloco }}</span>
+                    <button type="button" class="search__clear" (mousedown)="clearHistory()">{{ 'shell.clear' | transloco }}</button>
+                  </div>
+                  @for (term of recentSearches(); track term) {
+                    <button type="button" class="search__item" (mousedown)="applyRecent(term)">
+                      <gms-icon name="clock" [size]="15" />
+                      <span class="search__label">{{ term }}</span>
+                    </button>
+                  }
+                }
+                <div class="search__section"><span>{{ 'shell.suggestions' | transloco }}</span></div>
+                @for (term of suggestions(); track term) {
+                  <button type="button" class="search__item" (mousedown)="applyRecent(term)">
+                    <gms-icon name="search" [size]="15" />
+                    <span class="search__label">{{ term }}</span>
+                  </button>
+                }
+              </div>
+            } @else if (showResults()) {
+              <div class="search__results">
+                @if (results().length === 0) {
+                  <div class="search__empty">{{ 'shell.noResults' | transloco }}</div>
+                } @else {
+                  @for (r of results(); track r.label; let i = $index) {
+                    @if (showSearchHeader(i)) { <div class="search__group">{{ r.category }}</div> }
+                    <button
+                      type="button"
+                      class="search__item"
+                      [class.search__item--active]="i === searchActive()"
+                      [class.search__item--off]="!r.route"
+                      (mouseenter)="searchActive.set(i)"
+                      (mousedown)="onSelectResult(r)">
+                      <span class="search__label" [innerHTML]="highlight(r.label)"></span>
+                      <span class="search__hint">{{ r.hint }}</span>
+                    </button>
+                  }
+                }
+              </div>
+            }
+          </div>
+        </div>
+
+        <div class="topbar__actions">
+          <gms-quick-create />
+
+          <button
+            type="button"
+            class="icon-btn topbar__lang"
+            (click)="toggleLang()"
+            [title]="'shell.langToggle' | transloco"
+            [attr.aria-label]="'shell.langToggle' | transloco">
+            {{ language.current() === 'tr' ? 'EN' : 'TR' }}
+          </button>
+
+          <!-- Bildirim paneli -->
+          <div class="notif">
+            <button type="button" class="icon-btn" (click)="notifOpen.set(!notifOpen())" [title]="'shell.notificationsTitle' | transloco" [attr.aria-label]="'shell.notificationsTitle' | transloco">
+              <gms-icon name="bell" [size]="20" />
+              @if (unreadCount() > 0) {
+                <span class="icon-btn__badge">{{ unreadCount() }}</span>
+              }
+            </button>
+            @if (notifOpen()) {
+              <div class="menu-backdrop" (click)="notifOpen.set(false)"></div>
+              <div class="notif__panel">
+                <div class="notif__head">
+                  <span class="notif__title">{{ 'shell.notificationsTitle' | transloco }}</span>
+                  <button type="button" class="notif__mark" (click)="markAllRead()">{{ 'shell.markAllRead' | transloco }}</button>
+                </div>
+                <div class="notif__list">
+                  <gms-notification-list [items]="notifRows()" [compact]="true" (markRead)="onNotifRead($event)" />
+                </div>
+                <button type="button" class="notif__all" (click)="goToNotifications()">{{ 'shell.viewAllNotifications' | transloco }}</button>
+              </div>
+            }
+          </div>
+
+          <span class="topbar__sep"></span>
+
+          <a class="user" routerLink="/profile" [title]="'shell.profile' | transloco">
+            <span class="avatar user__avatar">{{ userInitial() }}</span>
+            <span class="user__meta">
+              <span class="user__name">{{ currentUser()?.fullName }}</span>
+              <span class="user__role">{{ primaryRole() }}</span>
+            </span>
+          </a>
+
+          <button type="button" class="icon-btn" (click)="logout()" [title]="'shell.logout' | transloco" [attr.aria-label]="'shell.logout' | transloco">
+            <gms-icon name="logout" [size]="19" />
+          </button>
+        </div>
+      </header>
+
+      <main class="content">
+        <router-outlet />
+      </main>
+    </div>
+
+    <!-- Mobile navigation drawer -->
+    <gms-drawer [open]="mobileNavOpen()" [title]="'shell.brand' | transloco" side="left" width="280px" (closed)="mobileNavOpen.set(false)">
+      <nav class="mobile-nav">
+        @for (section of navSections(); track section.titleKey) {
+          @if (section.titleKey) { <span class="mobile-nav__group">{{ section.titleKey | transloco }}</span> }
+          @for (item of section.items; track item.labelKey) {
+            @if (item.status === 'active' && item.route) {
+              <button type="button" class="mobile-nav__link" (click)="navigateMobile(item.route!)">
+                <gms-icon [name]="item.icon" [size]="19" /> <span>{{ item.labelKey | transloco }}</span>
+              </button>
+            } @else {
+              <span class="mobile-nav__link mobile-nav__link--off">
+                <gms-icon [name]="item.icon" [size]="19" /> <span>{{ item.labelKey | transloco }}</span>
+                <span class="nav-link__soon">{{ 'shell.soon' | transloco }}</span>
+              </span>
+            }
+          }
+        }
+      </nav>
+    </gms-drawer>
+  </div>
+} @else {
+  <router-outlet />
+}
+
+<!-- GMS Design System global hosts -->
+<gms-command-palette />
+<gms-toast-host />
+<gms-confirm-host />
+

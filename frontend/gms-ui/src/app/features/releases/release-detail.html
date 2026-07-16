@@ -1,0 +1,208 @@
+<gms-page [contextPanel]="true" panelTitle="Bağlam">
+
+  @if (release(); as r) {
+    <gms-page-header
+      header
+      [title]="r.releaseNo"
+      [subtitle]="r.name + ' · v' + r.version"
+      [breadcrumbs]="breadcrumbs()"
+      [status]="null">
+      <div actions class="rel-actions">
+        <gms-badge kind="status" [value]="r.status" />
+        @if (!isTerminal()) {
+          <button gmsButton variant="ghost" (click)="openEdit()" *gmsHasPermission="'release.update'">
+            <gms-icon name="document" [size]="15" /> {{ 'releases.actions.edit' | transloco }}
+          </button>
+        }
+        @if (isPlanned()) {
+          <button gmsButton variant="primary" [disabled]="submitting()" (click)="doSchedule()" *gmsHasPermission="'release.schedule'">
+            <gms-icon name="clock" [size]="15" /> {{ 'releases.actions.schedule' | transloco }}
+          </button>
+        }
+        @if (canCancel()) {
+          <button gmsButton variant="ghost" [disabled]="submitting()" (click)="doCancel()" *gmsHasPermission="'release.cancel'">
+            <gms-icon name="close" [size]="15" /> {{ 'releases.actions.cancel' | transloco }}
+          </button>
+        }
+      </div>
+    </gms-page-header>
+  }
+
+  <div toolbar>
+    @if (release()) { <gms-tabs [tabs]="tabs" [(active)]="activeTab" /> }
+  </div>
+
+  @if (loading()) {
+    <div class="gms-card"><gms-state variant="loading" /></div>
+  } @else if (error()) {
+    <div class="gms-card">
+      <gms-state
+        [variant]="error()!.kind === 'notFound' ? 'empty' : 'error'"
+        [title]="error()!.title"
+        [text]="error()!.message">
+        <button gmsButton variant="ghost" (click)="back()"><gms-icon name="chevron-left" [size]="15" /> Listeye dön</button>
+      </gms-state>
+    </div>
+  } @else if (release(); as r) {
+
+    @switch (activeTab()) {
+
+      @case ('overview') {
+        <div class="rel-grid">
+          <div class="gms-card">
+            <h3 class="card-title">Genel Bilgiler</h3>
+            <dl class="info-list">
+              <div class="info-list__row"><dt>Müşteri</dt><dd>{{ r.customerName }}</dd></div>
+              <div class="info-list__row"><dt>Proje</dt><dd>{{ r.projectName }}</dd></div>
+              <div class="info-list__row"><dt>Ortam</dt><dd><gms-badge kind="environment" [value]="r.environmentName" /></dd></div>
+              <div class="info-list__row"><dt>Tür</dt><dd>{{ typeLabelKey(r.releaseType) | transloco }}</dd></div>
+              <div class="info-list__row"><dt>Yayın Yöneticisi</dt><dd>{{ r.releaseManagerName }}</dd></div>
+              <div class="info-list__row"><dt>Planlanan Başlangıç</dt><dd>{{ r.plannedDeploymentStart ? (r.plannedDeploymentStart | date: 'dd.MM.yyyy HH:mm') : '—' }}</dd></div>
+              <div class="info-list__row"><dt>Planlanan Bitiş</dt><dd>{{ r.plannedDeploymentEnd ? (r.plannedDeploymentEnd | date: 'dd.MM.yyyy HH:mm') : '—' }}</dd></div>
+              <div class="info-list__row"><dt>Oluşturulma</dt><dd>{{ r.createdAt | date: 'dd.MM.yyyy HH:mm' }}</dd></div>
+            </dl>
+            @if (r.description) { <div class="prose"><h4>Açıklama</h4><p>{{ r.description }}</p></div> }
+          </div>
+
+          <div class="rel-grid__side">
+            <div class="gms-card">
+              <h3 class="card-title">{{ 'releases.risk.title' | transloco }}</h3>
+              <div class="risk-summary">
+                <gms-badge kind="risk" [value]="r.riskLevel" />
+                <span class="risk-summary__score">{{ 'releases.risk.score' | transloco }}: <strong>{{ r.riskScore }}</strong></span>
+              </div>
+              <p class="hint">{{ 'releases.risk.authoritative' | transloco }}</p>
+            </div>
+            <div class="gms-card">
+              <h3 class="card-title">Özet</h3>
+              <dl class="info-list">
+                <div class="info-list__row"><dt>Değişiklik Sayısı</dt><dd>{{ r.items.length }}</dd></div>
+                <div class="info-list__row"><dt>Tahmini Süre (dk)</dt><dd>{{ r.totalEstimatedMinutes }}</dd></div>
+                <div class="info-list__row"><dt>İş Sahibi</dt><dd>{{ r.businessOwner || '—' }}</dd></div>
+                <div class="info-list__row"><dt>Teknik Sahip</dt><dd>{{ r.technicalOwner || '—' }}</dd></div>
+                <div class="info-list__row"><dt>Rollback Penceresi</dt><dd>{{ r.rollbackWindow || '—' }}</dd></div>
+              </dl>
+            </div>
+          </div>
+        </div>
+      }
+
+      @case ('changes') {
+        <div class="gms-card">
+          <h3 class="card-title">Yayına Dahil Değişiklikler <span class="count">{{ r.items.length }}</span></h3>
+          @if (r.items.length === 0) { <p class="hint">Değişiklik yok.</p> }
+          @else {
+            <ul class="item-list">
+              @for (i of r.items; track i.id) {
+                <li class="item-list__row" (click)="openChange(i.changeRequestId)">
+                  <span class="item-list__order">{{ i.deploymentOrder }}</span>
+                  <div class="item-list__body">
+                    <span class="item-list__name">{{ i.changeNo }} — {{ i.changeTitle }}</span>
+                    <span class="item-list__meta">{{ i.estimatedMinutes }} dk@if (i.rollbackRequired) { · Rollback gerekli }</span>
+                  </div>
+                  <gms-badge kind="risk" [value]="i.changeRiskLevel" />
+                  <gms-badge kind="status" [value]="i.changeStatus" />
+                </li>
+              }
+            </ul>
+          }
+        </div>
+      }
+
+      @case ('deployment') {
+        <div class="gms-card">
+          <h3 class="card-title">Dağıtım Planı</h3>
+          @if (r.deploymentPlan; as dp) {
+            <dl class="info-list">
+              <div class="info-list__row"><dt>Dağıtım Stratejisi</dt><dd>{{ dp.deploymentStrategy || '—' }}</dd></div>
+              <div class="info-list__row"><dt>İletişim Planı</dt><dd>{{ dp.communicationPlan || '—' }}</dd></div>
+              <div class="info-list__row"><dt>Rollback Stratejisi</dt><dd>{{ dp.rollbackStrategy || '—' }}</dd></div>
+              <div class="info-list__row"><dt>Kesinti Bekleniyor</dt><dd>{{ dp.downtimeExpected ? 'Evet' : 'Hayır' }}</dd></div>
+              <div class="info-list__row"><dt>Tahmini Kesinti (dk)</dt><dd>{{ dp.estimatedDowntimeMinutes || '—' }}</dd></div>
+            </dl>
+            @if (dp.notes) { <div class="prose"><h4>Notlar</h4><p>{{ dp.notes }}</p></div> }
+          } @else {
+            <p class="hint">Dağıtım planı tanımlanmamış.</p>
+          }
+        </div>
+      }
+
+      @case ('audit') {
+        <div class="gms-card">
+          <h3 class="card-title">Denetim Geçmişi <span class="count">{{ r.auditEvents.length }}</span></h3>
+          @if (r.auditEvents.length === 0) { <p class="hint">Denetim kaydı yok.</p> }
+          @else {
+            <ul class="audit-list">
+              @for (e of r.auditEvents; track e.id) {
+                <li class="audit-list__item">
+                  <span class="audit-list__dot"></span>
+                  <div class="audit-list__body">
+                    <span class="audit-list__type">{{ auditLabelKey(e.eventType) | transloco }}</span>
+                    <span class="audit-list__desc">{{ e.description }}</span>
+                    <span class="audit-list__meta">{{ e.actorUserName || 'Sistem' }} · {{ e.createdAt | date: 'dd.MM.yyyy HH:mm' }}</span>
+                  </div>
+                </li>
+              }
+            </ul>
+          }
+        </div>
+      }
+    }
+  }
+
+  <ng-container panel>
+    @if (release(); as r) {
+      <gms-context-section title="Özet" icon="release">
+        <dl class="mini-list">
+          <div><dt>Yayın No</dt><dd>{{ r.releaseNo }}</dd></div>
+          <div><dt>Durum</dt><dd><gms-badge kind="status" [value]="r.status" /></dd></div>
+          <div><dt>Risk</dt><dd><gms-badge kind="risk" [value]="r.riskLevel" /></dd></div>
+          <div><dt>Değişiklik</dt><dd>{{ r.items.length }}</dd></div>
+        </dl>
+      </gms-context-section>
+    }
+  </ng-container>
+
+</gms-page>
+
+<!-- ── Edit drawer ── -->
+<gms-drawer [open]="editOpen()" title="Yayını Düzenle" (closed)="editOpen.set(false)">
+  <form class="rel-form" (ngSubmit)="saveEdit()">
+    <label class="field"><span>Ad</span>
+      <input type="text" [ngModel]="eName()" (ngModelChange)="eName.set($event)" name="eName" /></label>
+    <label class="field"><span>Sürüm</span>
+      <input type="text" [ngModel]="eVersion()" (ngModelChange)="eVersion.set($event)" name="eVersion" /></label>
+    <label class="field"><span>Tür</span>
+      <select [ngModel]="eType()" (ngModelChange)="eType.set($event)" name="eType">
+        @for (t of typeOptions; track t) { <option [value]="t">{{ typeLabelKey(t) | transloco }}</option> }
+      </select></label>
+    <label class="field"><span>Planlanan Başlangıç</span>
+      <input type="date" [ngModel]="ePlannedStart()" (ngModelChange)="ePlannedStart.set($event)" name="eStart" /></label>
+    <label class="field"><span>Planlanan Bitiş</span>
+      <input type="date" [ngModel]="ePlannedEnd()" (ngModelChange)="ePlannedEnd.set($event)" name="eEnd" /></label>
+    <label class="field"><span>İş Sahibi</span>
+      <input type="text" [ngModel]="eBusinessOwner()" (ngModelChange)="eBusinessOwner.set($event)" name="eBiz" /></label>
+    <label class="field"><span>Teknik Sahip</span>
+      <input type="text" [ngModel]="eTechnicalOwner()" (ngModelChange)="eTechnicalOwner.set($event)" name="eTech" /></label>
+    <label class="field"><span>Açıklama</span>
+      <textarea rows="3" [ngModel]="eDescription()" (ngModelChange)="eDescription.set($event)" name="eDesc"></textarea></label>
+
+    @if (editError(); as err) {
+      <div class="form-error" role="alert">
+        <p>{{ err.message }}</p>
+        @if (err.kind === 'conflict') {
+          <button type="button" gmsButton variant="primary" (click)="reloadForConflict()">
+            <gms-icon name="clock" [size]="14" /> {{ 'releases.actions.reload' | transloco }}
+          </button>
+        }
+      </div>
+    }
+
+    <div class="form-actions">
+      <button type="button" gmsButton variant="ghost" (click)="editOpen.set(false)">Vazgeç</button>
+      <button type="submit" gmsButton variant="primary" [disabled]="submitting()">
+        {{ (submitting() ? 'releases.actions.saving' : 'releases.actions.save') | transloco }}
+      </button>
+    </div>
+  </form>
+</gms-drawer>

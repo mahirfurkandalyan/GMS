@@ -1,0 +1,138 @@
+@if (loading()) {
+  <section class="gms-page"><div class="gms-card"><gms-state variant="loading" /></div></section>
+} @else if (notFound()) {
+  <section class="gms-page">
+    <div class="gms-card">
+      <gms-state variant="error" title="Denetim kaydı bulunamadı" text="Aradığınız kayıt mevcut değil ya da erişiminiz yok.">
+        <button gmsButton variant="secondary" (click)="back()"><gms-icon name="chevron-left" [size]="15" /> Audit Center'a dön</button>
+      </gms-state>
+    </div>
+  </section>
+} @else if (record(); as r) {
+  <gms-page [contextPanel]="true" panelTitle="Bağlam">
+
+    <gms-page-header
+      header
+      [title]="r.code"
+      [subtitle]="(r.timestamp | date: 'dd.MM.yyyy HH:mm:ss') + ' · ' + actionMeta(r.action).label + ' · ' + r.objectName"
+      [breadcrumbs]="breadcrumbs()"
+      [status]="{ label: statusLabel(), tone: statusTone() }"
+      [context]="headerContext()"
+      lastUpdated="değişmez kayıt">
+      <gms-menu secondary [items]="extraActions()" />
+      <button actions gmsButton variant="secondary" (click)="back()">
+        <gms-icon name="chevron-left" [size]="15" /> Listeye dön
+      </button>
+    </gms-page-header>
+
+    <div toolbar class="ad-toolbar">
+      <gms-relationship-strip [nodes]="relationChain()" />
+    </div>
+
+    <gms-tabs [tabs]="tabs()" [(active)]="activeTab" />
+
+    @switch (activeTab()) {
+
+      @case ('overview') {
+        <div class="gms-grid gms-grid--2">
+          <div class="gms-card">
+            <h3 class="gms-section-title">Genel Bilgiler</h3>
+            <dl class="kv">
+              <div><dt>Etkilenen Modül</dt><dd>{{ r.module }}</dd></div>
+              <div><dt>Etkilenen Nesne</dt><dd>{{ r.objectName }}</dd></div>
+              <div><dt>Nesne ID</dt><dd><span class="mono">{{ r.objectId }}</span></dd></div>
+              <div><dt>İşlem</dt><dd><span class="act-chip" [class]="'act-chip--' + actionMeta(r.action).tone"><gms-icon [name]="actionMeta(r.action).icon" [size]="12" /> {{ actionMeta(r.action).label }}</span></dd></div>
+              <div><dt>Gerçekleştiren</dt><dd>{{ r.user }} · {{ r.userRole }}</dd></div>
+              <div><dt>Tarih</dt><dd>{{ r.timestamp | date: 'dd.MM.yyyy HH:mm:ss' }}</dd></div>
+              <div><dt>Sonuç</dt><dd><span class="badge" [class]="'badge--' + statusTone()">{{ statusLabel() }}</span></dd></div>
+              <div><dt>Ortam</dt><dd>{{ r.environment }}</dd></div>
+              <div><dt>IP Adresi</dt><dd><span class="mono">{{ r.ip }}</span></dd></div>
+              <div class="kv__full"><dt>Açıklama</dt><dd>{{ r.description }}</dd></div>
+            </dl>
+          </div>
+
+          <div class="ad-side">
+            <div class="gms-card">
+              <h3 class="gms-section-title">Özet</h3>
+              <div class="ad-metrics">
+                <div class="ad-metric"><span class="ad-metric__v">{{ fields().length }}</span><span class="ad-metric__l">Alan Değişikliği</span></div>
+                <div class="ad-metric"><span class="ad-metric__v">{{ related().length }}</span><span class="ad-metric__l">İlgili Nesne</span></div>
+              </div>
+              <p class="ad-note">Bu kayıt değişmez denetim izine yazılmıştır ve düzenlenemez. Uyumluluk incelemeleri için kalıcı olarak saklanır.</p>
+            </div>
+            <div class="gms-card">
+              <h3 class="gms-section-title">Önce / Sonra</h3>
+              <div class="ba">
+                <div class="ba__col"><span class="ba__label">Önceki</span><span class="prev">{{ r.previousPreview }}</span></div>
+                <gms-icon name="chevron-right" [size]="16" />
+                <div class="ba__col"><span class="ba__label">Yeni</span><span class="curr">{{ r.currentPreview }}</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      }
+
+      @case ('fields') {
+        @if (fields().length) {
+          <div class="gms-card gms-card--flush">
+            <gms-data-grid [rows]="fields()" [columns]="fieldColumns()" idKey="field" [searchable]="false" [pageSize]="0"
+              emptyIcon="change" emptyTitle="Alan değişikliği yok" emptyText="Bu işlem alan düzeyinde değişiklik içermiyor.">
+              <ng-template [gmsCell]="'previous'" let-row><span class="prev">{{ row.previous }}</span></ng-template>
+              <ng-template [gmsCell]="'current'" let-row><span class="curr" [class.curr--muted]="row.changeType === 'removed'">{{ row.current }}</span></ng-template>
+              <ng-template [gmsCell]="'changeType'" let-row>
+                <span class="badge" [class]="'badge--' + changeTypeMeta(row.changeType).tone">{{ changeTypeMeta(row.changeType).label }}</span>
+              </ng-template>
+            </gms-data-grid>
+          </div>
+        } @else {
+          <div class="gms-card">
+            <gms-state variant="empty" iconOverride="change" title="Alan değişikliği yok"
+              text="Bu işlem alan düzeyinde bir karşılaştırma içermiyor (ör. giriş/çıkış veya dışa aktarma)." />
+          </div>
+        }
+      }
+
+      @case ('timeline') {
+        <div class="gms-card">
+          <h3 class="gms-section-title">Zaman Çizelgesi</h3>
+          <gms-timeline [items]="timeline()" />
+        </div>
+      }
+
+      @case ('related') {
+        <div class="gms-card">
+          <h3 class="gms-section-title">İlgili Nesneler</h3>
+          @if (related().length) { <gms-item-list [items]="related()" /> }
+          @else { <gms-state variant="empty" iconOverride="folder" title="İlgili nesne yok" text="Bu kayıt başka bir yönetişim nesnesine bağlı değil." /> }
+        </div>
+      }
+
+      @default {
+        <div class="gms-card">
+          <gms-state variant="empty" [iconOverride]="activeTabMeta().icon ?? 'inbox'" [title]="activeTabMeta().label + ' — yakında'"
+            text="Denetim kayıtlarına yorum ekleme ve inceleme iş birliği sonraki fazda eklenecektir. Kayıt modeli bu özelliği destekleyecek şekilde hazırdır." />
+        </div>
+      }
+    }
+
+    <!-- Right context panel (reusable) -->
+    <ng-container panel>
+      <gms-context-section title="İlgili Yayınlar" icon="release" [count]="relReleases().length">
+        @if (relReleases().length) { <gms-item-list [items]="relReleases()" /> }
+        @else { <p class="muted">Bağlı yayın yok.</p> }
+      </gms-context-section>
+      <gms-context-section title="İlgili Değişiklikler" icon="change" [count]="relChanges().length">
+        @if (relChanges().length) { <gms-item-list [items]="relChanges()" /> }
+        @else { <p class="muted">Bağlı değişiklik yok.</p> }
+      </gms-context-section>
+      <gms-context-section title="İlgili Dokümanlar" icon="document" [count]="relDocuments().length">
+        @if (relDocuments().length) { <gms-item-list [items]="relDocuments()" /> }
+        @else { <p class="muted">Bağlı doküman yok.</p> }
+      </gms-context-section>
+      <gms-context-section title="Son Aktiviteler" icon="activity">
+        <gms-activity-feed [items]="activity()" />
+      </gms-context-section>
+    </ng-container>
+
+  </gms-page>
+}

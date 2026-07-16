@@ -1,0 +1,360 @@
+<gms-page [contextPanel]="true" panelTitle="Bağlam">
+
+  @if (change(); as c) {
+    <gms-page-header
+      header
+      [title]="c.changeNo"
+      [subtitle]="c.title"
+      [breadcrumbs]="breadcrumbs()"
+      [status]="null">
+      <div actions class="chg-actions">
+        <gms-badge kind="status" [value]="c.status" />
+        @if (isDraft()) {
+          <button gmsButton variant="ghost" (click)="openEdit()" *gmsHasPermission="'change.update'">
+            <gms-icon name="document" [size]="15" /> {{ 'changes.actions.edit' | transloco }}
+          </button>
+        }
+        @if (canRevise()) {
+          <button gmsButton variant="ghost" (click)="openRevision()" *gmsHasPermission="'change.revision.create'">
+            <gms-icon name="document" [size]="15" /> {{ 'changes.actions.revision' | transloco }}
+          </button>
+        }
+        @if (isDraft()) {
+          <button gmsButton variant="primary" [disabled]="submitting()" (click)="doSubmit()" *gmsHasPermission="'change.submit'">
+            <gms-icon name="approval" [size]="15" /> {{ 'changes.actions.submit' | transloco }}
+          </button>
+        }
+        @if (canCancel()) {
+          <button gmsButton variant="ghost" [disabled]="submitting()" (click)="doCancel()" *gmsHasPermission="'change.cancel'">
+            <gms-icon name="close" [size]="15" /> {{ 'changes.actions.cancel' | transloco }}
+          </button>
+        }
+      </div>
+    </gms-page-header>
+  }
+
+  <div toolbar>
+    @if (change()) { <gms-tabs [tabs]="tabs" [(active)]="activeTab" /> }
+  </div>
+
+  @if (loading()) {
+    <div class="gms-card"><gms-state variant="loading" /></div>
+  } @else if (error()) {
+    <div class="gms-card">
+      <gms-state
+        [variant]="error()!.kind === 'notFound' ? 'empty' : 'error'"
+        [title]="error()!.title"
+        [text]="error()!.message">
+        <button gmsButton variant="ghost" (click)="back()">
+          <gms-icon name="chevron-left" [size]="15" /> Listeye dön
+        </button>
+      </gms-state>
+    </div>
+  } @else if (change(); as c) {
+
+    <!-- Readiness blocking banner (submit 400) -->
+    @if (readinessBlock(); as rb) {
+      <div class="gms-card readiness-block">
+        <div class="readiness-block__head">
+          <gms-icon name="shield" [size]="18" />
+          <div>
+            <strong>{{ 'changes.readiness.blockingTitle' | transloco }}</strong>
+            <p>{{ 'changes.readiness.blockingText' | transloco }}</p>
+          </div>
+        </div>
+        <ul class="finding-list">
+          @for (f of rb; track f.code) {
+            <li class="finding finding--critical">
+              <span class="finding__sev">{{ 'changes.readiness.critical' | transloco }}</span>
+              <div>
+                <span class="finding__msg">{{ f.message }}</span>
+                @if (f.recommendation) { <span class="finding__rec">{{ 'changes.readiness.recommendation' | transloco }}: {{ f.recommendation }}</span> }
+              </div>
+            </li>
+          }
+        </ul>
+      </div>
+    }
+
+    @switch (activeTab()) {
+
+      <!-- ── Overview ── -->
+      @case ('overview') {
+        <div class="chg-grid">
+          <div class="gms-card">
+            <h3 class="card-title">Genel Bilgiler</h3>
+            <dl class="info-list">
+              <div class="info-list__row"><dt>Müşteri</dt><dd>{{ c.customerName }}</dd></div>
+              <div class="info-list__row"><dt>Proje</dt><dd>{{ c.projectName }}</dd></div>
+              <div class="info-list__row"><dt>Ortam</dt><dd><gms-badge kind="environment" [value]="c.environmentName" /></dd></div>
+              <div class="info-list__row"><dt>Sınıf</dt><dd>{{ classLabelKey(c.changeClass) | transloco }}</dd></div>
+              <div class="info-list__row"><dt>Tür</dt><dd>{{ typeLabelKey(c.changeType) | transloco }}</dd></div>
+              <div class="info-list__row"><dt>Öncelik</dt><dd><gms-badge kind="priority" [value]="c.priority" /></dd></div>
+              <div class="info-list__row"><dt>Planlanan Uygulama</dt><dd>{{ c.plannedImplementationDate ? (c.plannedImplementationDate | date: 'dd.MM.yyyy') : '—' }}</dd></div>
+              <div class="info-list__row"><dt>Oluşturan</dt><dd>{{ c.createdByUserName }}</dd></div>
+              <div class="info-list__row"><dt>Oluşturma</dt><dd>{{ c.createdAt | date: 'dd.MM.yyyy HH:mm' }}</dd></div>
+            </dl>
+            @if (c.businessReason) {
+              <div class="prose"><h4>İş Gerekçesi</h4><p>{{ c.businessReason }}</p></div>
+            }
+            @if (c.description) {
+              <div class="prose"><h4>Açıklama</h4><p>{{ c.description }}</p></div>
+            }
+          </div>
+
+          <div class="chg-grid__side">
+            <!-- Risk (backend authoritative) -->
+            <div class="gms-card">
+              <h3 class="card-title">{{ 'changes.risk.title' | transloco }}</h3>
+              <div class="risk-summary">
+                <gms-badge kind="risk" [value]="c.riskLevel" />
+                <span class="risk-summary__score">{{ 'changes.risk.score' | transloco }}: <strong>{{ c.riskScore }}</strong></span>
+              </div>
+              <p class="hint">{{ 'changes.risk.authoritative' | transloco }}</p>
+            </div>
+
+            <!-- Readiness -->
+            <div class="gms-card">
+              <h3 class="card-title">{{ 'changes.readiness.title' | transloco }}</h3>
+              <div class="risk-summary">
+                <span class="readiness-score">{{ c.readiness.readinessScore }}</span>
+                <span class="risk-summary__score">/ 100</span>
+              </div>
+              @if (c.readiness.findings.length === 0) {
+                <p class="hint hint--ok">{{ 'changes.readiness.noFindings' | transloco }}</p>
+              } @else {
+                <ul class="finding-list">
+                  @for (f of criticalFindings(); track f.code) {
+                    <li class="finding finding--critical">
+                      <span class="finding__sev">{{ 'changes.readiness.critical' | transloco }}</span>
+                      <div><span class="finding__msg">{{ f.message }}</span>
+                        @if (f.recommendation) { <span class="finding__rec">{{ 'changes.readiness.recommendation' | transloco }}: {{ f.recommendation }}</span> }
+                      </div>
+                    </li>
+                  }
+                  @for (f of warningFindings(); track f.code) {
+                    <li class="finding finding--warning">
+                      <span class="finding__sev">{{ 'changes.readiness.warning' | transloco }}</span>
+                      <div><span class="finding__msg">{{ f.message }}</span>
+                        @if (f.recommendation) { <span class="finding__rec">{{ 'changes.readiness.recommendation' | transloco }}: {{ f.recommendation }}</span> }
+                      </div>
+                    </li>
+                  }
+                </ul>
+              }
+            </div>
+          </div>
+        </div>
+
+        <!-- Affected assets + documents -->
+        <div class="chg-grid">
+          <div class="gms-card">
+            <h3 class="card-title">Etkilenen Varlıklar <span class="count">{{ c.assets.length }}</span></h3>
+            @if (c.assets.length === 0) { <p class="hint">Etkilenen varlık eklenmemiş.</p> }
+            @else {
+              <ul class="asset-list">
+                @for (a of c.assets; track a.id) {
+                  <li class="asset-list__item">
+                    <gms-icon name="server" [size]="16" />
+                    <div><span class="asset-list__name">{{ a.assetName }}</span><span class="asset-list__meta">{{ a.assetType }} · {{ a.criticality }}</span></div>
+                  </li>
+                }
+              </ul>
+            }
+          </div>
+          <div class="gms-card">
+            <h3 class="card-title">Dokümanlar <span class="count">{{ c.documents.length }}</span></h3>
+            @if (c.documents.length === 0) { <p class="hint">Doküman referansı eklenmemiş.</p> }
+            @else {
+              <ul class="asset-list">
+                @for (d of c.documents; track d.id) {
+                  <li class="asset-list__item">
+                    <gms-icon name="document" [size]="16" />
+                    <div><span class="asset-list__name">{{ d.documentName }}</span><span class="asset-list__meta">{{ d.documentType }}@if (d.version) { · v{{ d.version }} }</span></div>
+                  </li>
+                }
+              </ul>
+            }
+          </div>
+        </div>
+      }
+
+      <!-- ── Revision ── -->
+      @case ('revision') {
+        <div class="gms-card">
+          @if (c.latestRevision; as r) {
+            <h3 class="card-title">Son Revizyon <span class="count">v{{ r.revisionNo }}</span></h3>
+            <dl class="info-list">
+              <div class="info-list__row"><dt>Teknik Özet</dt><dd>{{ r.technicalSummary || '—' }}</dd></div>
+              <div class="info-list__row"><dt>Uygulama Notları</dt><dd>{{ r.implementationNotes || '—' }}</dd></div>
+              <div class="info-list__row"><dt>Dağıtım Talimatları</dt><dd>{{ r.deploymentInstructions || '—' }}</dd></div>
+              <div class="info-list__row"><dt>Geri Alma Stratejisi</dt><dd>{{ r.rollbackStrategy || '—' }}</dd></div>
+              <div class="info-list__row"><dt>Geri Alma Sahibi</dt><dd>{{ r.rollbackOwner || '—' }}</dd></div>
+              <div class="info-list__row"><dt>Tahmini Süre (dk)</dt><dd>{{ r.estimatedDurationMinutes || '—' }}</dd></div>
+            </dl>
+            @if (r.sqlScript) { <div class="prose"><h4>SQL Script</h4><pre class="code">{{ r.sqlScript }}</pre></div> }
+            @if (r.rollbackScript) { <div class="prose"><h4>Geri Alma Script</h4><pre class="code">{{ r.rollbackScript }}</pre></div> }
+          } @else {
+            <p class="hint">Bu değişiklik için revizyon bulunmuyor.</p>
+          }
+        </div>
+      }
+
+      <!-- ── Workflow ── -->
+      @case ('workflow') {
+        <div class="gms-card">
+          <h3 class="card-title">{{ 'changes.workflow.title' | transloco }}</h3>
+          @if (workflowLoading()) { <gms-state variant="loading" /> }
+          @else if (workflow(); as wf) {
+            <dl class="info-list">
+              <div class="info-list__row"><dt>{{ 'changes.workflow.instance' | transloco }}</dt><dd>{{ wf.instanceNo }} · {{ wf.workflowName }} (v{{ wf.versionNumber }})</dd></div>
+              <div class="info-list__row"><dt>{{ 'changes.workflow.status' | transloco }}</dt><dd><gms-badge kind="status" [value]="wf.status" /></dd></div>
+              @if (activeStep(); as s) {
+                <div class="info-list__row"><dt>{{ 'changes.workflow.currentStep' | transloco }}</dt><dd>{{ s.name }} ({{ wfStepTypeKey(s.stepType) | transloco }})</dd></div>
+                <div class="info-list__row"><dt>{{ 'changes.workflow.role' | transloco }}</dt><dd>{{ s.assignedRole ?? '—' }}</dd></div>
+              }
+            </dl>
+            <button gmsButton variant="ghost" (click)="openWorkflow()">
+              <gms-icon name="approval" [size]="15" /> {{ 'changes.workflow.view' | transloco }}
+            </button>
+
+            <h4 class="sub-title">{{ 'changes.workflow.timeline' | transloco }}</h4>
+            <ul class="wf-steps">
+              @for (s of wf.steps; track s.id) {
+                <li class="wf-steps__item">
+                  <gms-badge kind="status" [value]="s.status" />
+                  <span class="wf-steps__name">{{ s.name }}</span>
+                  <span class="wf-steps__type">{{ wfStepTypeKey(s.stepType) | transloco }}</span>
+                </li>
+              }
+            </ul>
+          } @else {
+            <p class="hint">{{ 'changes.workflow.none' | transloco }}</p>
+          }
+        </div>
+      }
+
+      <!-- ── Audit ── -->
+      @case ('audit') {
+        <div class="gms-card">
+          <h3 class="card-title">Denetim Geçmişi <span class="count">{{ c.auditEvents.length }}</span></h3>
+          @if (c.auditEvents.length === 0) { <p class="hint">Denetim kaydı yok.</p> }
+          @else {
+            <ul class="audit-list">
+              @for (e of c.auditEvents; track e.id) {
+                <li class="audit-list__item">
+                  <span class="audit-list__dot"></span>
+                  <div class="audit-list__body">
+                    <span class="audit-list__type">{{ auditLabelKey(e.eventType) | transloco }}</span>
+                    <span class="audit-list__desc">{{ e.description }}</span>
+                    <span class="audit-list__meta">{{ e.actorUserName || 'Sistem' }} · {{ e.createdAt | date: 'dd.MM.yyyy HH:mm' }}</span>
+                  </div>
+                </li>
+              }
+            </ul>
+          }
+        </div>
+      }
+    }
+  }
+
+  <!-- Context panel -->
+  <ng-container panel>
+    @if (change(); as c) {
+      <gms-context-section title="Özet" icon="change">
+        <dl class="mini-list">
+          <div><dt>Değişiklik No</dt><dd>{{ c.changeNo }}</dd></div>
+          <div><dt>Durum</dt><dd><gms-badge kind="status" [value]="c.status" /></dd></div>
+          <div><dt>Risk</dt><dd><gms-badge kind="risk" [value]="c.riskLevel" /></dd></div>
+        </dl>
+      </gms-context-section>
+      <gms-context-section title="İş Akışı" icon="approval">
+        @if (workflow(); as wf) {
+          <p class="panel-empty">{{ wf.instanceNo }} — <gms-badge kind="status" [value]="wf.status" /></p>
+        } @else {
+          <p class="panel-empty">{{ 'changes.workflow.none' | transloco }}</p>
+        }
+      </gms-context-section>
+    }
+  </ng-container>
+
+</gms-page>
+
+<!-- ── Edit drawer ── -->
+<gms-drawer [open]="editOpen()" title="Değişikliği Düzenle" (closed)="editOpen.set(false)">
+  <form class="chg-form" (ngSubmit)="saveEdit()">
+    <label class="field"><span>Başlık</span>
+      <input type="text" [ngModel]="eTitle()" (ngModelChange)="eTitle.set($event)" name="eTitle" /></label>
+    <label class="field"><span>İş Gerekçesi</span>
+      <textarea rows="3" [ngModel]="eBusinessReason()" (ngModelChange)="eBusinessReason.set($event)" name="eReason"></textarea></label>
+    <label class="field"><span>Açıklama</span>
+      <textarea rows="3" [ngModel]="eDescription()" (ngModelChange)="eDescription.set($event)" name="eDesc"></textarea></label>
+    <label class="field"><span>Sınıf</span>
+      <select [ngModel]="eClass()" (ngModelChange)="eClass.set($event)" name="eClass">
+        @for (c of classOptions; track c) { <option [value]="c">{{ classLabelKey(c) | transloco }}</option> }
+      </select></label>
+    <label class="field"><span>Tür</span>
+      <select [ngModel]="eType()" (ngModelChange)="eType.set($event)" name="eType">
+        @for (t of typeOptions; track t) { <option [value]="t">{{ typeLabelKey(t) | transloco }}</option> }
+      </select></label>
+    <label class="field"><span>Öncelik</span>
+      <select [ngModel]="ePriority()" (ngModelChange)="ePriority.set($event)" name="ePriority">
+        @for (p of priorityOptions; track p) { <option [value]="p">{{ priorityLabelKey(p) | transloco }}</option> }
+      </select></label>
+    <label class="field"><span>Ortam</span>
+      <select [ngModel]="eEnvironmentId()" (ngModelChange)="eEnvironmentId.set($event)" name="eEnv">
+        @for (e of environments(); track e.id) { <option [value]="e.id">{{ e.name }}</option> }
+      </select></label>
+    <label class="field"><span>Planlanan Uygulama Tarihi</span>
+      <input type="date" [ngModel]="ePlannedDate()" (ngModelChange)="ePlannedDate.set($event)" name="eDate" /></label>
+
+    @if (editError(); as err) {
+      <div class="form-error" role="alert">
+        <p>{{ err.message }}</p>
+        @if (err.kind === 'conflict') {
+          <button type="button" gmsButton variant="primary" (click)="reloadForConflict()">
+            <gms-icon name="clock" [size]="14" /> {{ 'changes.actions.reload' | transloco }}
+          </button>
+        }
+      </div>
+    }
+
+    <div class="form-actions">
+      <button type="button" gmsButton variant="ghost" (click)="editOpen.set(false)">Vazgeç</button>
+      <button type="submit" gmsButton variant="primary" [disabled]="submitting()">
+        {{ (submitting() ? 'changes.actions.saving' : 'changes.actions.save') | transloco }}
+      </button>
+    </div>
+  </form>
+</gms-drawer>
+
+<!-- ── Revision drawer ── -->
+<gms-drawer [open]="revisionOpen()" title="Yeni Revizyon" (closed)="revisionOpen.set(false)">
+  <form class="chg-form" (ngSubmit)="saveRevision()">
+    <label class="field"><span>Teknik Özet</span>
+      <textarea rows="2" [ngModel]="rTechnicalSummary()" (ngModelChange)="rTechnicalSummary.set($event)" name="rSum"></textarea></label>
+    <label class="field"><span>Uygulama Notları</span>
+      <textarea rows="2" [ngModel]="rImplementationNotes()" (ngModelChange)="rImplementationNotes.set($event)" name="rImpl"></textarea></label>
+    <label class="field"><span>Dağıtım Talimatları</span>
+      <textarea rows="2" [ngModel]="rDeploymentInstructions()" (ngModelChange)="rDeploymentInstructions.set($event)" name="rDep"></textarea></label>
+    <label class="field"><span>SQL Script</span>
+      <textarea rows="3" [ngModel]="rSqlScript()" (ngModelChange)="rSqlScript.set($event)" name="rSql"></textarea></label>
+    <label class="field"><span>Geri Alma Script</span>
+      <textarea rows="3" [ngModel]="rRollbackScript()" (ngModelChange)="rRollbackScript.set($event)" name="rRb"></textarea></label>
+    <label class="field"><span>Geri Alma Stratejisi</span>
+      <input type="text" [ngModel]="rRollbackStrategy()" (ngModelChange)="rRollbackStrategy.set($event)" name="rRbs" /></label>
+    <label class="field"><span>Geri Alma Sahibi</span>
+      <input type="text" [ngModel]="rRollbackOwner()" (ngModelChange)="rRollbackOwner.set($event)" name="rRbo" /></label>
+    <label class="field"><span>Tahmini Süre (dk)</span>
+      <input type="number" min="0" [ngModel]="rDuration()" (ngModelChange)="rDuration.set($event)" name="rDur" /></label>
+
+    @if (revisionError(); as err) { <div class="form-error" role="alert"><p>{{ err.message }}</p></div> }
+
+    <div class="form-actions">
+      <button type="button" gmsButton variant="ghost" (click)="revisionOpen.set(false)">Vazgeç</button>
+      <button type="submit" gmsButton variant="primary" [disabled]="submitting()">
+        {{ (submitting() ? 'changes.actions.saving' : 'changes.actions.save') | transloco }}
+      </button>
+    </div>
+  </form>
+</gms-drawer>

@@ -1,0 +1,25 @@
+{
+  "pageTitle": "Training",
+  "pageSubtitle": "Your assigned trainings, completed courses, and certificates.",
+  "breadcrumbWorkspace": "Workspace",
+  "tab": {
+    "all": "All",
+    "assigned": "Assigned",
+    "completed": "Completed",
+    "upcoming": "Upcoming",
+    "expired": "Expired"
+  },
+  "status": {
+    "assigned": "Assigned",
+    "completed": "Completed",
+    "expired": "Expired",
+    "upcoming": "Upcoming"
+  },
+  "emptyTitle": "No trainings in this category",
+  "emptyText": "There are no trainings to display for the selected status.",
+  "completed": "completed",
+  "dueDate": "Due date",
+  "certificates": "Certificates",
+  "noCertificates": "No certificates yet.",
+  "validUntil": "Valid until"
+}

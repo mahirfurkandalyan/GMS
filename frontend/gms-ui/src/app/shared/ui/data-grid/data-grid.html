@@ -1,0 +1,149 @@
+<div class="dg" (keydown)="onGridKeydown($event)">
+
+  @if (showToolbar()) {
+    <div class="dg__toolbar">
+      @if (searchable()) {
+        <div class="dg__search">
+          <gms-icon name="search" [size]="16" />
+          <input type="text" [placeholder]="'dataGrid.searchPlaceholder' | transloco" [value]="search()" (input)="onSearch($any($event.target).value)" />
+        </div>
+      }
+      <span class="dg__spacer"></span>
+      <span class="dg__count">{{ total() }} {{ 'dataGrid.records' | transloco }}</span>
+
+      <gms-menu [items]="colMenuItems()" (select)="toggleColumn($event)">
+        <button trigger type="button" class="gms-btn gms-btn--ghost gms-btn--sm">
+          <gms-icon name="sidebar" [size]="15" /> {{ 'dataGrid.columns' | transloco }}
+        </button>
+      </gms-menu>
+
+      <button type="button" class="gms-btn gms-btn--ghost gms-btn--sm" (click)="exportRequested.emit()">
+        <gms-icon name="document" [size]="15" /> {{ 'dataGrid.export' | transloco }}
+      </button>
+    </div>
+  }
+
+  @if (selectable() && bulkActions().length && selectedRows().length > 0) {
+    <div class="dg__bulk">
+      <span class="dg__bulk-count">{{ selectedRows().length }} {{ 'dataGrid.recordsSelected' | transloco }}</span>
+      <span class="dg__spacer"></span>
+      @for (a of bulkActions(); track a.value) {
+        <button
+          type="button"
+          class="gms-btn gms-btn--sm"
+          [class.gms-btn--ghost]="a.tone !== 'danger'"
+          [class.gms-btn--destructive]="a.tone === 'danger'"
+          (click)="onBulk(a.value)">
+          @if (a.icon) { <gms-icon [name]="a.icon" [size]="15" /> } {{ a.label }}
+        </button>
+      }
+      <button type="button" class="gms-btn gms-btn--ghost gms-btn--sm gms-btn--icon" (click)="clearSelection()" [attr.aria-label]="'dataGrid.clearSelection' | transloco">
+        <gms-icon name="close" [size]="16" />
+      </button>
+    </div>
+  }
+
+  <div class="gms-table-wrap dg__wrap">
+    <table class="gms-table dg__table">
+      <thead>
+        <tr>
+          @if (selectable()) {
+            <th class="dg__check">
+              <input type="checkbox" [checked]="allSelected()" (change)="toggleAll()" [attr.aria-label]="'dataGrid.selectAll' | transloco" />
+            </th>
+          }
+          @for (col of visibleColumns(); track col.key) {
+            <th
+              [class.is-sticky]="col.sticky"
+              [style.text-align]="col.align || 'left'"
+              [style.width]="col.width">
+              @if (col.sortable) {
+                <button type="button" class="gms-th-sort" (click)="toggleSort(col)">
+                  {{ col.header }}
+                  <gms-icon [name]="sortKey() === col.key ? (sortDir() === 'asc' ? 'chevron-down' : 'chevron-down') : 'sort'" [size]="13" />
+                </button>
+              } @else {
+                {{ col.header }}
+              }
+            </th>
+          }
+          @if (rowActions().length) { <th class="dg__actions-h"></th> }
+        </tr>
+      </thead>
+
+      <tbody>
+        @if (loading()) {
+          @for (i of [1,2,3,4,5]; track i) {
+            <tr>
+              @if (selectable()) { <td class="dg__check"><gms-skeleton width="16px" height="16px" /></td> }
+              @for (col of visibleColumns(); track col.key) { <td><gms-skeleton width="72%" /></td> }
+              @if (rowActions().length) { <td></td> }
+            </tr>
+          }
+        } @else {
+          @for (row of pagedRows(); track row[idKey()]) {
+            <tr
+              tabindex="0"
+              [class.is-selected]="isSelected(row)"
+              (click)="rowClick.emit(row)"
+              (contextmenu)="openContext($event, row)"
+              (keydown)="onRowKeydown($event, row)">
+              @if (selectable()) {
+                <td class="dg__check">
+                  <input type="checkbox" [checked]="isSelected(row)" (click)="toggleRow(row, $event)" [attr.aria-label]="'dataGrid.selectRow' | transloco" />
+                </td>
+              }
+              @for (col of visibleColumns(); track col.key) {
+                <td [class.is-sticky]="col.sticky" [style.text-align]="col.align || 'left'">
+                  @if (cellTemplate(col.key); as tpl) {
+                    <ng-container *ngTemplateOutlet="tpl; context: { $implicit: row, row: row }"></ng-container>
+                  } @else if (col.type === 'badge') {
+                    <gms-badge [kind]="col.badgeKind ?? 'status'" [value]="row[col.key]" />
+                  } @else {
+                    {{ formatCell(row, col) }}
+                  }
+                </td>
+              }
+              @if (rowActions().length) {
+                <td class="dg__actions" (click)="$event.stopPropagation()">
+                  <gms-menu [items]="rowActions()" (select)="rowAction.emit({ action: $event, row: row })" />
+                </td>
+              }
+            </tr>
+          }
+        }
+      </tbody>
+    </table>
+
+    @if (!loading() && total() === 0) {
+      <gms-empty-state [icon]="emptyIcon()" [title]="emptyTitle()" [text]="emptyText()" />
+    }
+  </div>
+
+  @if (pageSize() > 0 && total() > 0) {
+    <div class="dg__footer">
+      <span class="dg__pageinfo">{{ 'dataGrid.page' | transloco }} {{ page() + 1 }} / {{ pageCount() }}</span>
+      <div class="dg__pager">
+        <button type="button" class="gms-btn gms-btn--ghost gms-btn--sm gms-btn--icon" [disabled]="page() === 0" (click)="prevPage()" [attr.aria-label]="'dataGrid.previous' | transloco">
+          <gms-icon name="chevron-left" [size]="16" />
+        </button>
+        <button type="button" class="gms-btn gms-btn--ghost gms-btn--sm gms-btn--icon" [disabled]="page() >= pageCount() - 1" (click)="nextPage()" [attr.aria-label]="'dataGrid.next' | transloco">
+          <gms-icon name="chevron-right" [size]="16" />
+        </button>
+      </div>
+    </div>
+  }
+
+  <!-- Right-click context menu -->
+  @if (ctxMenu(); as ctx) {
+    <div class="dg__ctx-backdrop" (click)="ctxMenu.set(null)" (contextmenu)="$event.preventDefault(); ctxMenu.set(null)"></div>
+    <div class="dg__ctx" [style.left.px]="ctx.x" [style.top.px]="ctx.y" role="menu">
+      @for (a of rowActions(); track a.value) {
+        <button type="button" class="dg__ctx-item" [class.dg__ctx-item--danger]="a.tone === 'danger'"
+          [disabled]="a.disabled" (click)="onContextAction(a.value)">
+          @if (a.icon) { <gms-icon [name]="a.icon" [size]="15" /> } <span>{{ a.label }}</span>
+        </button>
+      }
+    </div>
+  }
+</div>

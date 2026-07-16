@@ -1,0 +1,153 @@
+@if (loading()) {
+  <section class="gms-page"><div class="gms-card"><gms-state variant="loading" /></div></section>
+} @else if (notFound()) {
+  <section class="gms-page">
+    <div class="gms-card">
+      <gms-state variant="error" title="Doğrulama bulunamadı" text="Aradığınız doğrulama kaydı mevcut değil ya da kaldırılmış olabilir.">
+        <button gmsButton variant="secondary" (click)="back()"><gms-icon name="chevron-left" [size]="15" /> Doğrulama Merkezi'ne dön</button>
+      </gms-state>
+    </div>
+  </section>
+} @else if (validation(); as v) {
+  <gms-page [contextPanel]="true" panelTitle="Bağlam">
+
+    <gms-page-header
+      header
+      [title]="v.code"
+      [subtitle]="v.rule"
+      [breadcrumbs]="breadcrumbs()"
+      [status]="{ label: resultLabel(), tone: resultTone() }"
+      [context]="headerContext()"
+      [lastUpdated]="'çalıştırıldı'">
+      <button secondary gmsButton variant="ghost" (click)="viewChange()"><gms-icon name="change" [size]="16" /> İlgili Değişikliği Gör</button>
+      <gms-menu actions [items]="extraActions()" (select)="onExtra($event)" />
+    </gms-page-header>
+
+    <div toolbar class="vd-toolbar">
+      <gms-relationship-strip [nodes]="relationChain()" />
+
+      <!-- Verdict banner: is this Change valid / can it continue? -->
+      <div class="verdict" [class]="'verdict--' + verdict().tone">
+        <span class="verdict__icon"><gms-icon [name]="verdict().icon" [size]="20" /></span>
+        <div class="verdict__body">
+          <span class="verdict__title">{{ verdict().title }}</span>
+          <span class="verdict__msg">{{ v.summary }}</span>
+        </div>
+        <div class="verdict__counts">
+          <span class="verdict__chip verdict__chip--success"><gms-icon name="check" [size]="13" /> {{ counts().passed }} Başarılı</span>
+          <span class="verdict__chip verdict__chip--warning"><gms-icon name="clock" [size]="13" /> {{ counts().warning }} Uyarı</span>
+          <span class="verdict__chip verdict__chip--danger"><gms-icon name="close" [size]="13" /> {{ counts().failed }} Başarısız</span>
+          <span class="verdict__chip verdict__chip--neutral"><gms-icon name="inbox" [size]="13" /> {{ counts().skipped }} Atlandı</span>
+        </div>
+      </div>
+    </div>
+
+    <gms-tabs [tabs]="tabs()" [(active)]="activeTab" />
+
+    @switch (activeTab()) {
+      @case ('overview') {
+        <div class="gms-grid gms-grid--2">
+          <div class="gms-card">
+            <h3 class="gms-section-title">Genel Bilgiler</h3>
+            <dl class="kv">
+              <div><dt>İlgili Değişiklik</dt><dd>{{ v.changeCode }}</dd></div>
+              <div><dt>İlgili Yayın</dt><dd>{{ v.releaseCode }}</dd></div>
+              <div><dt>Proje</dt><dd>{{ v.projectName }}</dd></div>
+              <div><dt>Ortam</dt><dd>{{ v.environmentName }}</dd></div>
+              <div><dt>Yürüten</dt><dd>{{ v.executedBy }}</dd></div>
+              <div><dt>Yürütme Tarihi</dt><dd>{{ v.executedAt | date: 'dd.MM.yyyy HH:mm' }}</dd></div>
+              <div><dt>Sonuç</dt><dd><span class="badge" [class]="'badge--' + resultTone()">{{ resultLabel() }}</span></dd></div>
+              <div><dt>Doğrulama Durumu</dt><dd>Tamamlandı</dd></div>
+            </dl>
+          </div>
+
+          <div class="vd-side">
+            <div class="gms-card">
+              <h3 class="gms-section-title">Doğrulama Özeti</h3>
+              <p class="vd-summary">{{ v.summary }}</p>
+              <div class="vd-badges">
+                <span class="badge" [class]="'badge--' + resultTone()">{{ resultLabel() }}</span>
+                <span class="badge" [class]="'badge--' + severityTone()">{{ severityLabelText() }} Önem</span>
+              </div>
+            </div>
+            <div class="gms-card">
+              <h3 class="gms-section-title">Risk Özeti</h3>
+              <div class="vd-metrics">
+                <div class="vd-metric vd-metric--danger"><span class="vd-metric__v">{{ counts().failed }}</span><span class="vd-metric__l">Başarısız</span></div>
+                <div class="vd-metric vd-metric--warning"><span class="vd-metric__v">{{ counts().warning }}</span><span class="vd-metric__l">Uyarı</span></div>
+                <div class="vd-metric vd-metric--success"><span class="vd-metric__v">{{ counts().passed }}</span><span class="vd-metric__l">Başarılı</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="gms-card">
+          <h3 class="gms-section-title">Zaman Çizelgesi</h3>
+          <gms-timeline [items]="timeline()" />
+        </div>
+      }
+
+      @case ('findings') {
+        <div class="vd-tabhead">
+          <div>
+            <h3 class="gms-section-title">Doğrulama Bulguları</h3>
+            <p class="vd-tabhead__sub">{{ findings().length }} kural değerlendirildi.</p>
+          </div>
+        </div>
+        <div class="findings">
+          @for (f of findings(); track f.ruleKey) {
+            <div class="finding" [class]="'finding--' + findingTone(f.result)">
+              <span class="finding__icon"><gms-icon [name]="findingIcon(f.result)" [size]="18" /></span>
+              <div class="finding__body">
+                <div class="finding__head">
+                  <span class="finding__rule">{{ f.rule }}</span>
+                  <span class="badge" [class]="'badge--' + findingTone(f.result)">{{ resultLabelOf(f.result) }}</span>
+                  <span class="badge" [class]="'badge--' + severityToneFor(f.severity)">{{ severityText(f.severity) }}</span>
+                  <span class="finding__spacer"></span>
+                  <span class="badge" [class]="f.status === 'Resolved' ? 'badge--success' : f.status === 'Skipped' ? 'badge--neutral' : 'badge--warning'">
+                    {{ f.status === 'Resolved' ? 'Giderildi' : f.status === 'Skipped' ? 'Atlandı' : 'Açık' }}
+                  </span>
+                </div>
+                <p class="finding__desc">{{ f.description }}</p>
+                @if (f.recommendation && f.recommendation !== '—') {
+                  <p class="finding__rec"><gms-icon name="activity" [size]="14" /> <strong>Öneri:</strong> {{ f.recommendation }}</p>
+                }
+              </div>
+            </div>
+          }
+        </div>
+      }
+
+      @default {
+        <div class="gms-card">
+          <gms-state variant="empty" [iconOverride]="activeTabMeta().icon ?? 'inbox'"
+            [title]="activeTabMeta().label"
+            text="Bu modül sonraki geliştirme aşamasında eklenecektir. Mimari, Doğrulama süreci ile ilişkili olacak şekilde hazırdır.">
+          </gms-state>
+        </div>
+      }
+    }
+
+    <!-- Right context panel -->
+    <ng-container panel>
+      <gms-context-section title="Son Aktivite" icon="activity">
+        <gms-activity-feed [items]="activity()" />
+      </gms-context-section>
+      <gms-context-section title="Son Doğrulamalar" icon="shield" [count]="recent$().length">
+        @if (recent$().length) { <gms-item-list [items]="recent$()" /> }
+        @else { <p class="panel-empty">Başka doğrulama yok.</p> }
+      </gms-context-section>
+      <gms-context-section title="İlgili Nesneler" icon="folder" [count]="related().length">
+        <gms-item-list [items]="related()" />
+      </gms-context-section>
+      <gms-context-section title="İlgili Dokümanlar" icon="document" [count]="documents().length">
+        <gms-item-list [items]="documents()" />
+      </gms-context-section>
+      <gms-context-section title="Yaklaşan Aksiyonlar" icon="clock" [count]="upcoming().length">
+        @if (upcoming().length) { <gms-item-list [items]="upcoming()" /> }
+        @else { <p class="panel-empty">Bekleyen aksiyon yok.</p> }
+      </gms-context-section>
+    </ng-container>
+
+  </gms-page>
+}

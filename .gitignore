@@ -1,0 +1,19 @@
+# ---- .NET / Backend ----
+backend/**/bin/
+backend/**/obj/
+backend/**/storage/
+*.user
+*.suo
+.vs/
+
+# ---- Node / Angular Frontend ----
+frontend/**/node_modules/
+frontend/**/dist/
+frontend/**/.angular/
+frontend/**/*.log
+
+# ---- Environment / IDE ----
+.env
+.env.*
+.idea/
+*.DS_Store

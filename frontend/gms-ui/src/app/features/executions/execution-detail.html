@@ -1,0 +1,180 @@
+@if (loading()) {
+  <section class="gms-page"><div class="gms-card"><gms-state variant="loading" /></div></section>
+} @else if (notFound()) {
+  <section class="gms-page">
+    <div class="gms-card">
+      <gms-state variant="error" title="Yürütme bulunamadı" text="Aradığınız yürütme kaydı mevcut değil ya da kaldırılmış olabilir.">
+        <button gmsButton variant="secondary" (click)="back()"><gms-icon name="chevron-left" [size]="15" /> Yürütme Merkezi'ne dön</button>
+      </gms-state>
+    </div>
+  </section>
+} @else if (execution(); as e) {
+  <gms-page [contextPanel]="true" panelTitle="Bağlam">
+
+    <gms-page-header
+      header
+      [title]="e.code"
+      [subtitle]="e.releaseCode + ' · ' + e.changeCode"
+      [breadcrumbs]="breadcrumbs()"
+      [status]="{ label: statusLabel(), tone: statusTone() }"
+      [context]="headerContext()"
+      [lastUpdated]="e.currentStep">
+      <button secondary gmsButton variant="ghost" (click)="viewChange()"><gms-icon name="change" [size]="16" /> İlgili Değişikliği Gör</button>
+      <gms-menu actions [items]="extraActions" (select)="onExtra($event)" />
+    </gms-page-header>
+
+    <div toolbar class="ed-toolbar">
+      <gms-relationship-strip [nodes]="relationChain()" />
+
+      <!-- Mission-control bar -->
+      <div class="control" [class]="'control--' + statusTone()">
+        <span class="control__icon"><gms-icon name="execution" [size]="20" /></span>
+        <div class="control__main">
+          <div class="control__head">
+            <span class="control__status"><span class="badge" [class]="'badge--' + statusTone()">{{ statusLabel() }}</span></span>
+            <span class="control__step">Mevcut Adım: <strong>{{ e.currentStep }}</strong></span>
+          </div>
+          <div class="control__progress">
+            <span class="control__track"><span class="control__bar" [style.width.%]="e.progress"></span></span>
+            <span class="control__val">%{{ e.progress }}</span>
+          </div>
+        </div>
+        <div class="control__actions">
+          @if (canStart()) { <button gmsButton variant="primary" (click)="onStart()"><gms-icon name="execution" [size]="15" /> Başlat</button> }
+          @if (canPause()) { <button gmsButton variant="secondary" (click)="onPause()"><gms-icon name="clock" [size]="15" /> Duraklat</button> }
+          @if (canResume()) { <button gmsButton variant="primary" (click)="onResume()"><gms-icon name="execution" [size]="15" /> Devam Et</button> }
+          @if (canCancel()) { <button gmsButton variant="destructive" (click)="onCancel()"><gms-icon name="close" [size]="15" /> İptal</button> }
+          @if (isTerminal()) { <span class="control__done">Bu yürütme için ek işlem gerekmiyor.</span> }
+        </div>
+      </div>
+    </div>
+
+    <gms-tabs [tabs]="tabs" [(active)]="activeTab" />
+
+    @switch (activeTab()) {
+      @case ('overview') {
+        <div class="gms-grid gms-grid--2">
+          <div class="gms-card">
+            <h3 class="gms-section-title">Genel Bilgiler</h3>
+            <dl class="kv">
+              <div><dt>İlgili Yayın</dt><dd>{{ e.releaseCode }}</dd></div>
+              <div><dt>İlgili Değişiklik</dt><dd>{{ e.changeCode }}</dd></div>
+              <div><dt>Ortam</dt><dd>{{ e.environmentName }}</dd></div>
+              <div><dt>Yürütücü</dt><dd>{{ e.executor }}</dd></div>
+              <div><dt>Başlangıç</dt><dd>{{ e.startedAt ? (e.startedAt | date: 'dd.MM.yyyy HH:mm') : '—' }}</dd></div>
+              <div><dt>Bitiş</dt><dd>{{ e.completedAt ? (e.completedAt | date: 'dd.MM.yyyy HH:mm') : '—' }}</dd></div>
+              <div><dt>Mevcut Adım</dt><dd>{{ e.currentStep }}</dd></div>
+              <div><dt>Durum</dt><dd><span class="badge" [class]="'badge--' + statusTone()">{{ statusLabel() }}</span></dd></div>
+            </dl>
+          </div>
+
+          <div class="ed-side">
+            <div class="gms-card">
+              <h3 class="gms-section-title">Yürütme Özeti</h3>
+              <p class="ed-summary">{{ e.summary }}</p>
+              <div class="ed-badges">
+                <span class="badge" [class]="'badge--' + statusTone()">{{ statusLabel() }}</span>
+                <span class="badge" [class]="'badge--' + riskTone()">{{ riskLabel() }} Risk</span>
+              </div>
+            </div>
+            <div class="gms-card">
+              <h3 class="gms-section-title">İlerleme Özeti</h3>
+              <div class="ed-metrics">
+                <div class="ed-metric"><span class="ed-metric__v">{{ steps().length }}</span><span class="ed-metric__l">Adım</span></div>
+                <div class="ed-metric ed-metric--success"><span class="ed-metric__v">%{{ e.progress }}</span><span class="ed-metric__l">Tamamlandı</span></div>
+                <div class="ed-metric"><span class="ed-metric__v">{{ upcoming().length }}</span><span class="ed-metric__l">Kalan</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="gms-card">
+          <h3 class="gms-section-title">Zaman Çizelgesi</h3>
+          <gms-timeline [items]="timeline()" />
+        </div>
+      }
+
+      @case ('plan') {
+        <div class="gms-card">
+          <h3 class="gms-section-title">Yürütme Planı</h3>
+          <ol class="plan">
+            @for (s of steps(); track s.number; let last = $last) {
+              <li class="plan__step">
+                <span class="plan__node" [class]="'plan__node--' + stepTone(s.status)">
+                  @if (s.status === 'completed') { <gms-icon name="check" [size]="15" /> }
+                  @else if (s.status === 'running') { <gms-icon name="execution" [size]="15" /> }
+                  @else if (s.status === 'failed') { <gms-icon name="close" [size]="15" /> }
+                  @else { {{ s.number }} }
+                </span>
+                <div class="plan__body" [class.plan__body--last]="last">
+                  <div class="plan__head">
+                    <span class="plan__title">{{ s.number }}. {{ s.title }}</span>
+                    <span class="badge" [class]="'badge--' + stepTone(s.status)">{{ stepLabel(s.status) }}</span>
+                    <span class="plan__runner"><gms-icon name="server" [size]="12" /> {{ runnerLabel(s.runner) }}</span>
+                  </div>
+                  <p class="plan__desc">{{ s.description }}</p>
+                  <div class="plan__meta">
+                    <span><gms-icon name="clock" [size]="12" /> Tahmini: {{ s.expectedDuration }}</span>
+                    <span><gms-icon name="user" [size]="12" /> {{ s.assignedUser }}</span>
+                  </div>
+                </div>
+              </li>
+            }
+          </ol>
+        </div>
+      }
+
+      @case ('log') {
+        <div class="gms-card gms-card--flush">
+          <div class="gms-table-wrap">
+            <table class="gms-table log-table">
+              <thead>
+                <tr><th>Zaman</th><th>Adım</th><th>Mesaj</th><th>Önem</th><th>Oluşturan</th></tr>
+              </thead>
+              <tbody>
+                @for (l of log(); track l.timestamp + l.message) {
+                  <tr>
+                    <td class="log-table__time">{{ l.timestamp | date: 'dd.MM HH:mm:ss' }}</td>
+                    <td>{{ l.step }}</td>
+                    <td class="gms-table__strong">{{ l.message }}</td>
+                    <td><span class="badge" [class]="'badge--' + sevTone(l.severity)">{{ sevLabel(l.severity) }}</span></td>
+                    <td>{{ l.createdBy }}</td>
+                  </tr>
+                } @empty {
+                  <tr><td colspan="5" class="log-table__empty">Henüz kayıt yok. Yürütme başlatıldığında günlük burada oluşur.</td></tr>
+                }
+              </tbody>
+            </table>
+          </div>
+        </div>
+      }
+
+      @default {
+        <div class="gms-card">
+          <gms-state variant="empty" [iconOverride]="activeTabMeta().icon ?? 'inbox'"
+            [title]="activeTabMeta().label"
+            text="Bu modül sonraki geliştirme aşamasında eklenecektir. Mimari, Yürütme süreci ile ilişkili olacak şekilde hazırdır.">
+          </gms-state>
+        </div>
+      }
+    }
+
+    <!-- Right context panel -->
+    <ng-container panel>
+      <gms-context-section title="Son Aktivite" icon="activity">
+        <gms-activity-feed [items]="activity()" />
+      </gms-context-section>
+      <gms-context-section title="İlgili Dokümanlar" icon="document" [count]="documents().length">
+        <gms-item-list [items]="documents()" />
+      </gms-context-section>
+      <gms-context-section title="İlgili Doğrulama" icon="shield" [count]="related().length">
+        <gms-item-list [items]="related()" />
+      </gms-context-section>
+      <gms-context-section title="Yaklaşan Adımlar" icon="clock" [count]="upcoming().length">
+        @if (upcoming().length) { <gms-item-list [items]="upcoming()" /> }
+        @else { <p class="panel-empty">Kalan adım yok.</p> }
+      </gms-context-section>
+    </ng-container>
+
+  </gms-page>
+}

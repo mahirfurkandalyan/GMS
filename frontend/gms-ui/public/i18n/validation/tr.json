@@ -1,0 +1,160 @@
+{
+  "pageTitle": "Doğrulama",
+  "pageSubtitle": "Değişikliklerin doğrulama sonuçlarını görüntüleyin ve yönetin.",
+  "breadcrumbWorkspace": "Çalışma Alanı",
+  "contextPanelTitle": "Bağlam",
+  "healthy": "Sağlıklı",
+  "failedSuffix": "başarısız",
+  "totalLabel": "Toplam",
+  "unit": "doğrulama",
+  "lastUpdatedRecently": "birkaç dk önce",
+  "export": "Dışa Aktar",
+  "refresh": "Yenile",
+  "reset": "Sıfırla",
+  "searchPlaceholder": "Doğrulama, değişiklik, yayın veya kural ara…",
+  "allReleases": "Tüm Yayınlar",
+  "allProjects": "Tüm Projeler",
+  "allEnvironments": "Tüm Ortamlar",
+  "allResults": "Tüm Sonuçlar",
+  "allSeverities": "Tüm Önem Düzeyleri",
+  "allExecutors": "Tüm Yürütenler",
+  "dateFromTitle": "Yürütme tarihinden itibaren",
+  "empty": {
+    "title": "Doğrulama kaydı yok",
+    "text": "Doğrulamalar; bir değişikliğin yürütmeye hazır olup olmadığını değerlendirir. Bir değişiklik doğrulandığında burada görünür.",
+    "step1": "Bir değişiklik oluşturun",
+    "step2": "Doğrulama kurallarını çalıştırın",
+    "step3": "Bulguları ve önerileri inceleyin"
+  },
+  "grid": {
+    "emptyTitle": "Eşleşen doğrulama yok",
+    "emptyText": "Filtre kriterlerinizi genişletmeyi deneyin."
+  },
+  "columns": {
+    "code": "Doğrulama No",
+    "change": "İlgili Değişiklik",
+    "release": "Yayın",
+    "project": "Proje",
+    "environment": "Ortam",
+    "rule": "Doğrulama Kuralı",
+    "severity": "Önem",
+    "result": "Sonuç",
+    "executedBy": "Yürüten",
+    "executedAt": "Yürütme Tarihi"
+  },
+  "rowActions": {
+    "open": "Aç",
+    "change": "İlgili Değişiklik",
+    "copyLink": "Bağlantıyı Kopyala"
+  },
+  "toast": {
+    "linkCopied": "Bağlantı panoya kopyalandı.",
+    "exportSoon": "Dışa aktarma yakında eklenecek."
+  },
+  "domainName": "Yönetişim",
+  "moduleName": "Doğrulama Merkezi",
+  "relationType": {
+    "area": "Alan",
+    "module": "Modül",
+    "customer": "Müşteri",
+    "project": "Proje",
+    "release": "Yayın",
+    "change": "Değişiklik",
+    "validation": "Doğrulama"
+  },
+  "panel": {
+    "recentActivity": "Son Aktivite",
+    "relatedChanges": "İlgili Değişiklikler",
+    "failedValidations": "Başarısız Doğrulamalar",
+    "failedValidationsText": "{{count}} doğrulama başarısız — inceleme gerekiyor.",
+    "recentValidations": "Son Doğrulamalar",
+    "recentValidationsNone": "Başka doğrulama yok.",
+    "relatedObjects": "İlgili Nesneler",
+    "relatedDocuments": "İlgili Dokümanlar",
+    "upcomingActions": "Yaklaşan Aksiyonlar",
+    "upcomingActionsNone": "Bekleyen aksiyon yok."
+  },
+  "activity": {
+    "ran": "çalıştırdı",
+    "foundFailed": "başarısız buldu",
+    "passed": "geçti"
+  },
+  "vmActivity": {
+    "ranValidation": "doğrulamayı çalıştırdı",
+    "evaluatedRules": "{{count}} kural değerlendirdi",
+    "reviewedFinding": "bulguyu inceledi",
+    "systemActor": "Sistem"
+  },
+  "detail": {
+    "notFoundTitle": "Doğrulama bulunamadı",
+    "notFoundText": "Aradığınız doğrulama kaydı mevcut değil ya da kaldırılmış olabilir.",
+    "backToCenter": "Doğrulama Merkezi'ne dön",
+    "fallbackTitle": "Doğrulama",
+    "viewChange": "İlgili Değişikliği Gör",
+    "ranSuffix": "çalıştırıldı"
+  },
+  "extra": {
+    "exportReport": "Rapor Dışa Aktar (yakında)",
+    "rerun": "Yeniden Doğrula (yakında)",
+    "exportSoon": "Rapor dışa aktarma yakında.",
+    "rerunSoon": "Yeniden doğrulama yakında."
+  },
+  "tabs": {
+    "overview": "Genel Bakış",
+    "findings": "Doğrulama Bulguları",
+    "recommendations": "Öneriler",
+    "related": "İlgili Nesneler",
+    "timeline": "Zaman Çizelgesi",
+    "audit": "Denetim"
+  },
+  "verdict": {
+    "blocked": "Yürütme engellendi",
+    "warn": "Uyarılarla devam edilebilir",
+    "ready": "Yürütmeye hazır",
+    "passedCount": "Başarılı",
+    "warningCount": "Uyarı",
+    "failedCount": "Başarısız",
+    "skippedCount": "Atlandı"
+  },
+  "overview": {
+    "generalInfo": "Genel Bilgiler",
+    "summary": "Doğrulama Özeti",
+    "riskSummary": "Risk Özeti",
+    "timelineTitle": "Zaman Çizelgesi"
+  },
+  "kv": {
+    "relatedChange": "İlgili Değişiklik",
+    "relatedRelease": "İlgili Yayın",
+    "project": "Proje",
+    "environment": "Ortam",
+    "executedBy": "Yürüten",
+    "executedAt": "Yürütme Tarihi",
+    "result": "Sonuç",
+    "validationStatus": "Doğrulama Durumu",
+    "completed": "Tamamlandı"
+  },
+  "metrics": {
+    "failed": "Başarısız",
+    "warning": "Uyarı",
+    "passed": "Başarılı"
+  },
+  "severityWord": "Önem",
+  "findings": {
+    "title": "Doğrulama Bulguları",
+    "evaluatedCount": "{{count}} kural değerlendirildi.",
+    "recommendation": "Öneri:"
+  },
+  "moduleComingSoon": "Bu modül sonraki geliştirme aşamasında eklenecektir. Mimari, Doğrulama süreci ile ilişkili olacak şekilde hazırdır.",
+  "vmTimeline": {
+    "created": "Doğrulama oluşturuldu",
+    "createdDesc": "{{change}} için doğrulama planlandı.",
+    "started": "Doğrulama başlatıldı",
+    "completed": "Doğrulama tamamlandı",
+    "recommendationsCreated": "Öneriler oluşturuldu",
+    "notNeeded": "Gerek yok"
+  },
+  "vmLinks": {
+    "relatedChange": "İlgili Değişiklik",
+    "relatedRelease": "İlgili Yayın"
+  }
+}

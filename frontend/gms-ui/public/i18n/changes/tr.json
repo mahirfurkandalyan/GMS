@@ -1,0 +1,82 @@
+{
+  "class": {
+    "Standard": "Standart",
+    "Normal": "Normal",
+    "Emergency": "Acil"
+  },
+  "type": {
+    "ApplicationDeployment": "Uygulama Dağıtımı",
+    "DatabaseSchemaChange": "Veritabanı Şema Değişikliği",
+    "SqlDataFix": "SQL Veri Düzeltmesi",
+    "StoredProcedureFunctionChange": "Saklı Yordam / Fonksiyon Değişikliği",
+    "ApiChange": "API Değişikliği",
+    "ConfigurationChange": "Konfigürasyon Değişikliği",
+    "InfrastructureChange": "Altyapı Değişikliği",
+    "IntegrationChange": "Entegrasyon Değişikliği",
+    "DocumentSopChange": "Doküman / SOP Değişikliği",
+    "Other": "Diğer"
+  },
+  "priority": {
+    "Low": "Düşük",
+    "Medium": "Orta",
+    "High": "Yüksek",
+    "Critical": "Kritik"
+  },
+  "audit": {
+    "ChangeCreated": "Değişiklik oluşturuldu",
+    "ChangeUpdated": "Değişiklik güncellendi",
+    "ChangeSubmitted": "İncelemeye gönderildi",
+    "ChangeCancelled": "Değişiklik iptal edildi",
+    "RevisionCreated": "Revizyon oluşturuldu",
+    "ApprovalRequested": "Onay talep edildi",
+    "ChangeApproved": "Değişiklik onaylandı",
+    "ChangeApprovalRejected": "Onay reddedildi",
+    "ChangeRevisionRequested": "Revizyon istendi",
+    "ChangeScheduled": "Yayına planlandı",
+    "ChangeImplemented": "Uygulandı",
+    "ChangeUnscheduled": "Plandan çıkarıldı"
+  },
+  "readiness": {
+    "title": "Hazırlık Değerlendirmesi",
+    "score": "Hazırlık Puanı",
+    "noFindings": "Hazırlık bulgusu yok. Değişiklik gönderime hazır.",
+    "critical": "Kritik",
+    "warning": "Uyarı",
+    "recommendation": "Öneri",
+    "blockingTitle": "Gönderim engellendi",
+    "blockingText": "Aşağıdaki kritik hazırlık bulguları giderilmeden değişiklik gönderilemez."
+  },
+  "risk": {
+    "title": "Risk",
+    "score": "Risk Puanı",
+    "authoritative": "Resmî risk değeri backend tarafından hesaplanır."
+  },
+  "workflow": {
+    "title": "İş Akışı Durumu",
+    "instance": "İş akışı örneği",
+    "currentStep": "Aktif adım",
+    "assignee": "Atanan",
+    "role": "Rol",
+    "status": "Durum",
+    "none": "Bu değişiklik için henüz bir iş akışı başlatılmadı.",
+    "view": "İş akışını görüntüle",
+    "timeline": "İş akışı zaman çizelgesi"
+  },
+  "actions": {
+    "edit": "Düzenle",
+    "submit": "İncelemeye Gönder",
+    "cancel": "İptal Et",
+    "revision": "Yeni Revizyon",
+    "save": "Kaydet",
+    "saving": "Kaydediliyor…",
+    "reload": "Güncel veriyi yükle",
+    "confirmSubmitTitle": "Değişikliği gönder",
+    "confirmSubmitText": "Değişiklik incelemeye gönderilecek ve yönetişim iş akışı başlatılacak. Devam edilsin mi?",
+    "confirmCancelTitle": "Değişikliği iptal et",
+    "confirmCancelText": "Bu değişiklik iptal edilecek ve varsa aktif iş akışı sonlandırılacak. Devam edilsin mi?",
+    "submitted": "Değişiklik incelemeye gönderildi.",
+    "cancelled": "Değişiklik iptal edildi.",
+    "updated": "Değişiklik güncellendi.",
+    "revisionCreated": "Yeni revizyon oluşturuldu."
+  }
+}

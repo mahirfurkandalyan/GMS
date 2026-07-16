@@ -1,0 +1,113 @@
+<gms-page [contextPanel]="true" panelTitle="Bağlam">
+
+  <gms-page-header
+    header
+    title="Yayınlar"
+    subtitle="Onaylı değişikliklerden oluşturulan yayın planlarını yönetin ve takip edin."
+    [breadcrumbs]="[{ label: 'Çalışma Alanı' }, { label: 'Yayınlar' }]"
+    [status]="{ label: total() + ' yayın', tone: 'info' }">
+    <button actions gmsButton variant="primary" (click)="newRelease()" *gmsHasPermission="'release.create'">
+      <gms-icon name="plus" [size]="16" /> Yeni Yayın
+    </button>
+  </gms-page-header>
+
+  <div toolbar class="rel-toolbar">
+    <div class="filters">
+      <div class="filters__search">
+        <gms-icon name="search" [size]="17" />
+        <input type="text" placeholder="Yayın no veya ad ara…"
+          [ngModel]="fSearch()" (ngModelChange)="onSearch($event)" [ngModelOptions]="{ standalone: true }" />
+      </div>
+
+      <select class="filters__select" [ngModel]="fCustomer()" (ngModelChange)="onCustomer($event)" [ngModelOptions]="{ standalone: true }">
+        <option value="">Tüm Müşteriler</option>
+        @for (c of customers(); track c.id) { <option [value]="c.id">{{ c.name }}</option> }
+      </select>
+
+      <select class="filters__select" [ngModel]="fProject()" (ngModelChange)="onProject($event)" [ngModelOptions]="{ standalone: true }" [disabled]="!fCustomer()">
+        <option value="">Tüm Projeler</option>
+        @for (p of projects(); track p.id) { <option [value]="p.id">{{ p.name }}</option> }
+      </select>
+
+      <select class="filters__select" [ngModel]="fEnvironment()" (ngModelChange)="onEnvironment($event)" [ngModelOptions]="{ standalone: true }" [disabled]="!fProject()">
+        <option value="">Tüm Ortamlar</option>
+        @for (e of environments(); track e.id) { <option [value]="e.id">{{ e.name }}</option> }
+      </select>
+
+      <select class="filters__select" [ngModel]="fStatus()" (ngModelChange)="onStatus($event)" [ngModelOptions]="{ standalone: true }">
+        <option value="">Tüm Durumlar</option>
+        @for (s of statusOptions; track s) { <option [value]="s">{{ statusLabelKey(s) | transloco }}</option> }
+      </select>
+
+      <button type="button" class="gms-btn gms-btn--ghost gms-btn--icon gms-btn--sm" (click)="reload()" title="Yenile" aria-label="Yenile">
+        <gms-icon name="clock" [size]="16" />
+      </button>
+
+      @if (hasFilters()) {
+        <button type="button" class="gms-btn gms-btn--ghost gms-btn--sm" (click)="resetFilters()">Sıfırla</button>
+      }
+    </div>
+  </div>
+
+  @if (error()) {
+    <div class="gms-card">
+      <gms-state variant="error" [title]="error()!.title" [text]="error()!.message">
+        <button gmsButton variant="primary" (click)="reload()"><gms-icon name="clock" [size]="15" /> Tekrar dene</button>
+      </gms-state>
+    </div>
+  } @else if (loading() && rows().length === 0) {
+    <div class="gms-card"><gms-state variant="loading" /></div>
+  } @else if (isEmpty()) {
+    <div class="gms-card">
+      <gms-state
+        variant="empty"
+        iconOverride="release"
+        [title]="hasFilters() ? 'Eşleşen yayın yok' : 'Henüz yayın yok'"
+        [text]="hasFilters() ? 'Filtre kriterlerinizi genişletmeyi deneyin.' : 'Onaylı değişikliklerden ilk yayın planınızı oluşturun.'">
+        @if (!hasFilters()) {
+          <button gmsButton variant="primary" (click)="newRelease()" *gmsHasPermission="'release.create'">
+            <gms-icon name="plus" [size]="15" /> İlk yayını oluştur
+          </button>
+        }
+      </gms-state>
+    </div>
+  } @else {
+    <gms-data-grid
+      [rows]="rows()"
+      [columns]="columns()"
+      idKey="id"
+      [loading]="loading()"
+      [searchable]="false"
+      [selectable]="false"
+      [pageSize]="0"
+      [showToolbar]="false"
+      (rowClick)="openRelease($event)">
+      <ng-template [gmsCell]="'releaseType'" let-row><span class="type-cell">{{ typeLabelKey(row.releaseType) | transloco }}</span></ng-template>
+      <ng-template [gmsCell]="'plannedDeploymentStart'" let-row>{{ row.plannedDeploymentStart ? (row.plannedDeploymentStart | date: 'dd.MM.yyyy') : '—' }}</ng-template>
+      <ng-template [gmsCell]="'createdAt'" let-row>{{ row.createdAt | date: 'dd.MM.yyyy' }}</ng-template>
+    </gms-data-grid>
+
+    <div class="rel-pager">
+      <span class="rel-pager__info">{{ rangeStart() }}–{{ rangeEnd() }} / {{ total() }}</span>
+      <div class="rel-pager__controls">
+        <button type="button" class="gms-btn gms-btn--ghost gms-btn--sm" [disabled]="page() <= 1" (click)="prevPage()">
+          <gms-icon name="chevron-left" [size]="15" /> Önceki
+        </button>
+        <span class="rel-pager__page">Sayfa {{ page() }} / {{ totalPages() }}</span>
+        <button type="button" class="gms-btn gms-btn--ghost gms-btn--sm" [disabled]="page() >= totalPages()" (click)="nextPage()">
+          Sonraki <gms-icon name="chevron-right" [size]="15" />
+        </button>
+      </div>
+    </div>
+  }
+
+  <ng-container panel>
+    <gms-context-section title="Bilgi" icon="activity">
+      <p class="panel-empty">Yayınlar gerçek GMS backend'inden yüklenir. Filtreler, sıralama ve sayfalama sunucu tarafında uygulanır.</p>
+    </gms-context-section>
+    <gms-context-section title="Yaşam Döngüsü" icon="release">
+      <p class="panel-empty">Bir yayın yalnızca <strong>onaylı (Approved)</strong> değişikliklerden oluşturulur; ardından zamanlanır (Scheduled) ve yürütmeye geçer.</p>
+    </gms-context-section>
+  </ng-container>
+
+</gms-page>

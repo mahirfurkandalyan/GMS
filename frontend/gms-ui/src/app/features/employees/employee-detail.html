@@ -1,0 +1,108 @@
+<section class="gms-page">
+
+  <a class="back-link" routerLink="/employees">{{ 'employees.backToList' | transloco }}</a>
+
+  @if (loaded() && !employee()) {
+    <div class="gms-card">
+      <div class="empty-state">
+        <div class="empty-state__icon">🔎</div>
+        <span class="empty-state__title">{{ 'employees.notFoundTitle' | transloco }}</span>
+        <span class="empty-state__text">{{ 'employees.notFoundText' | transloco }}</span>
+      </div>
+    </div>
+  } @else if (employee(); as emp) {
+
+    <!-- Header -->
+    <div class="profile-hero gms-card">
+      <span class="avatar profile-hero__avatar">{{ initials(emp.fullName) }}</span>
+      <div class="profile-hero__info">
+        <h1 class="profile-hero__name">{{ emp.fullName }}</h1>
+        <p class="profile-hero__title">{{ emp.title }} · {{ emp.department }}</p>
+        <div class="profile-hero__badges">
+          <span class="badge badge--gray">
+            <span class="dot" [class]="meta[emp.availability].dot"></span>
+            {{ availabilityLabelKeys[emp.availability] | transloco }}
+          </span>
+          <span class="chip">{{ emp.currentProject }}</span>
+        </div>
+      </div>
+      <div class="profile-hero__actions">
+        <button type="button" class="gms-btn gms-btn--primary gms-btn--sm">{{ 'employees.actionMessage' | transloco }}</button>
+        <button type="button" class="gms-btn gms-btn--ghost gms-btn--sm">{{ 'employees.actionAddProject' | transloco }}</button>
+        <button type="button" class="gms-btn gms-btn--ghost gms-btn--sm">{{ 'employees.actionAssignTask' | transloco }}</button>
+      </div>
+    </div>
+
+    <div class="gms-grid gms-grid--2">
+
+      <!-- Contact -->
+      <div class="gms-card">
+        <h2 class="gms-section-title">{{ 'employees.sectionContact' | transloco }}</h2>
+        <dl class="kv">
+          <div><dt>{{ 'employees.fieldEmail' | transloco }}</dt><dd>{{ emp.email }}</dd></div>
+          <div><dt>{{ 'employees.fieldPhone' | transloco }}</dt><dd>{{ emp.phone }}</dd></div>
+          <div><dt>{{ 'employees.fieldDepartment' | transloco }}</dt><dd>{{ emp.department }}</dd></div>
+          <div><dt>{{ 'employees.fieldStatus' | transloco }}</dt><dd>{{ availabilityLabelKeys[emp.availability] | transloco }}</dd></div>
+        </dl>
+      </div>
+
+      <!-- Skills -->
+      <div class="gms-card">
+        <h2 class="gms-section-title">{{ 'employees.sectionSkills' | transloco }}</h2>
+        <ul class="skills">
+          @for (skill of emp.skills; track skill.name) {
+            <li class="skills__row">
+              <span class="skills__name">{{ skill.name }}</span>
+              <span class="skills__stars">
+                @for (on of stars(skill.level); track $index) {
+                  <span class="star" [class.star--on]="on">★</span>
+                }
+              </span>
+            </li>
+          }
+        </ul>
+      </div>
+
+      <!-- Current tasks -->
+      <div class="gms-card">
+        <h2 class="gms-section-title">{{ 'employees.sectionTasks' | transloco }}</h2>
+        @if (emp.currentTasks.length === 0) {
+          <p class="muted">{{ 'employees.noTasks' | transloco }}</p>
+        } @else {
+          <ul class="bullet-list">
+            @for (task of emp.currentTasks; track task) {
+              <li>{{ task }}</li>
+            }
+          </ul>
+        }
+      </div>
+
+      <!-- Projects + Training + Certificates -->
+      <div class="gms-card">
+        <h2 class="gms-section-title">{{ 'employees.sectionProjectsDev' | transloco }}</h2>
+        <div class="mini-block">
+          <span class="mini-block__label">{{ 'employees.activeProject' | transloco }}</span>
+          <span class="chip">{{ emp.currentProject }}</span>
+        </div>
+        <div class="mini-block">
+          <span class="mini-block__label">{{ 'employees.trainings' | transloco }}</span>
+          <div class="tag-row">
+            @for (t of emp.trainings; track t) {
+              <span class="badge badge--blue">{{ t }}</span>
+            }
+          </div>
+        </div>
+        <div class="mini-block">
+          <span class="mini-block__label">{{ 'employees.certificates' | transloco }}</span>
+          <div class="tag-row">
+            @for (c of emp.certificates; track c) {
+              <span class="badge badge--green">{{ c }}</span>
+            }
+          </div>
+        </div>
+      </div>
+
+    </div>
+  }
+
+</section>

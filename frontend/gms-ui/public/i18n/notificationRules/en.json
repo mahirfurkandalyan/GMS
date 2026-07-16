@@ -1,0 +1,99 @@
+{
+  "pageTitle": "Notification Rules",
+  "pageSubtitle": "Configure automatic notification rules based on module events.",
+  "breadcrumbAdmin": "Administration",
+  "notificationCenterLabel": "Notification Center",
+  "panelContext": "Context",
+  "ruleCountSuffix": "rules",
+  "lastUpdated": "a few minutes ago",
+  "backToCenter": "Back to Center",
+  "newRule": "New Rule",
+  "searchPlaceholder": "Search rules or triggers…",
+  "savedViewAll": "All Rules",
+  "savedViewActive": "Active Rules",
+  "filter": {
+    "trigger": "Trigger",
+    "status": "Status",
+    "all": "All"
+  },
+  "trigger": {
+    "approval-created": "Approval Created",
+    "approval-completed": "Approval Completed",
+    "release-planned": "Release Planned",
+    "release-completed": "Release Completed",
+    "validation-failed": "Validation Failed",
+    "execution-started": "Execution Started",
+    "execution-failed": "Execution Failed",
+    "workflow-published": "Workflow Published",
+    "document-uploaded": "Document Uploaded"
+  },
+  "channel": {
+    "in-app": "In-App",
+    "email": "Email",
+    "teams": "Microsoft Teams",
+    "slack": "Slack",
+    "sms": "SMS",
+    "push": "Push Notification"
+  },
+  "module": {
+    "release": "Release",
+    "change": "Change",
+    "approval": "Approval",
+    "validation": "Validation",
+    "execution": "Execution",
+    "workflow": "Workflow",
+    "document": "Document",
+    "audit": "Audit",
+    "system": "System"
+  },
+  "comingSoon": "Coming soon",
+  "column": {
+    "name": "Rule Name",
+    "trigger": "Trigger",
+    "channels": "Delivery Channels",
+    "status": "Status",
+    "updatedAt": "Updated"
+  },
+  "action": {
+    "view": "View details",
+    "edit": "Edit (coming soon)",
+    "duplicate": "Duplicate"
+  },
+  "emptyTitle": "No rules",
+  "emptyText": "No notification rules match your filters.",
+  "lifecycleTitle": "Notification Lifecycle",
+  "lifecycle": {
+    "created": { "title": "Notification Created", "time": "Source module event", "description": "A notification is generated when a module event matches a rule." },
+    "delivered": { "title": "Delivered", "time": "Selected channels", "description": "Delivered to in-app and email channels." },
+    "read": { "title": "Read", "time": "User interaction", "description": "Marked as read when the recipient views the notification." },
+    "archived": { "title": "Archived", "time": "Automatic / manual", "description": "Archived automatically after the retention period, or manually." }
+  },
+  "recentNotifsTitle": "Recent Notifications",
+  "recentRuleChangesTitle": "Recent Rule Changes",
+  "upcomingEventsTitle": "Upcoming Events",
+  "upcoming": {
+    "releaseProdToday": "scheduled for production today",
+    "approvalDueSoon": "approval deadline approaching",
+    "revalidationNeeded": "revalidation required",
+    "today": "Today",
+    "tomorrow": "Tomorrow",
+    "in2Days": "2 days"
+  },
+  "ruleDetailTitle": "Rule Detail",
+  "detail": {
+    "trigger": "Trigger",
+    "conditions": "Conditions",
+    "recipients": "Recipients",
+    "channels": "Channels",
+    "priority": "Priority",
+    "status": "Status"
+  },
+  "placeholderTag": "Placeholder",
+  "conditionsNote": "The condition editor, recipient management, and channel configuration will be added in a later phase.",
+  "toast": {
+    "duplicated": "{{name}} duplicated.",
+    "duplicatedTitle": "Duplicated",
+    "editSoon": "Rule editing is coming soon.",
+    "newRuleSoon": "The rule creation wizard is coming soon."
+  }
+}
