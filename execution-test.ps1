@@ -1,10 +1,10 @@
 # =====================================================================
 #  GMS Execution Domain — Uçtan Uca Deneme Senaryosu
 #  Çalıştırma:  powershell -ExecutionPolicy Bypass -File .\execution-test.ps1
-#  Ön koşul  :  API çalışıyor olmalı (http://localhost:5080)
+#  Ön koşul  :  API çalışıyor olmalı (http://localhost:18080)
 # =====================================================================
 
-$base = "http://localhost:5080/api"
+$base = "http://localhost:18080/api"
 
 # Seed (hazır) kayıt kimlikleri
 $cust = "d4444444-4444-4444-4444-444444444401"
@@ -97,4 +97,4 @@ Write-Host "`n=========== SENARYO 3: KURAL KONTROLLERI (400 beklenir) ==========
 try { Post "$base/deployments" @{ releasePlanId=$rel.id; actorUserId=$usr } | Out-Null; Write-Host "Tamamlanmis release icin yurutme -> 200 (BEKLENMEDIK)" }
 catch { Write-Host "Tamamlanmis release icin yurutme -> HTTP $(Code $_)  (dogru)" }
 
-Write-Host "`nBitti. Detaylari gormek icin:  $base/deployments  veya  http://localhost:5080/swagger`n" -ForegroundColor Cyan
+Write-Host "`nBitti. Detaylari gormek icin:  $base/deployments  veya  http://localhost:18080/swagger`n" -ForegroundColor Cyan

@@ -2,7 +2,7 @@
 
 **Platform:** GMS (Kurumsal Yönetişim Yönetim Sistemi) — Angular 22 (standalone + signals) frontend, ASP.NET Core 8 backend.
 **Kapsam:** Angular Release Planning ekranlarının (liste / detay / oluşturma sihirbazı) mock/localStorage davranışının kaldırılıp gerçek GMS backend'ine bağlanması. Önceki sprintlerin paylaşılan temeli yeniden kullanıldı: `AuthStateService`, `authInterceptor`, `API_BASE_URL`, `ApiError`, `PagedResult<T>`, request-state deseni, izin guard'ları/direktifleri, RowVersion çakışma yönetimi.
-**Durum:** Tamamlandı. Angular production derlemesi **0 hata / 0 uyarı**. **57 otomatik test yeşil** (42 mevcut + 15 yeni Release). Gerçek backend'e (`localhost:5080`) karşı **Change → Release → Schedule yaşam döngüsü uçtan uca doğrulandı** (onaylı değişiklikler görünür → yayın oluştur → zamanla → detay/audit güncellenir).
+**Durum:** Tamamlandı. Angular production derlemesi **0 hata / 0 uyarı**. **57 otomatik test yeşil** (42 mevcut + 15 yeni Release). Gerçek backend'e (`localhost:18080`) karşı **Change → Release → Schedule yaşam döngüsü uçtan uca doğrulandı** (onaylı değişiklikler görünür → yayın oluştur → zamanla → detay/audit güncellenir).
 
 > **Kapsam sınırı (bilinçli):** UI yeniden tasarlanmadı, mevcut tasarım sistemi/rotalar/UX korundu, NgRx veya başka state kütüphanesi eklenmedi, mock API eklenmedi. Backend API'leri değiştirilmedi — yalnızca **tek bir additif DTO alanı** eklendi (denetim zaman çizelgesi aktör adı; bkz. §Mimari). Mock/localStorage yalnızca **Release** özelliğinden kaldırıldı; ilgisiz modüllere dokunulmadı. `actorUserId` / `X-Actor-User-Id` yeniden kullanılmadı — aktör her zaman JWT'den çözülür.
 
@@ -90,7 +90,7 @@ Mevcut çok-adımlı tasarım korunarak 4 adım: **Bilgiler → Değişiklikler 
 
 ## 8. Gerçek Backend Uçtan Uca Test Sonuçları
 
-Backend `localhost:5080`, frontend `localhost:4200`, `admin@gms.local` (release.create/schedule/cancel izinli):
+Backend `localhost:18080`, frontend `localhost:18420`, `admin@gms.local` (release.create/schedule/cancel izinli):
 
 | # | Senaryo | Sonuç |
 |---|---|---|

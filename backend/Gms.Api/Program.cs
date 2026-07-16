@@ -22,7 +22,7 @@ var builder = WebApplication.CreateBuilder(args);
 // ── CORS (Bearer tokens → no credentials needed; explicit origins only) ──
 const string AngularCorsPolicy = "AngularDevCors";
 var allowedOrigins = builder.Configuration.GetSection("Cors:AllowedOrigins").Get<string[]>()
-    ?? new[] { "http://localhost:4200", "http://localhost:4300" };
+    ?? new[] { "http://localhost:18420" };
 builder.Services.AddCors(options =>
 {
     options.AddPolicy(AngularCorsPolicy, policy =>

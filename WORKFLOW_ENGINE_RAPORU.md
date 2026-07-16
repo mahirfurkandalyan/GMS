@@ -138,7 +138,7 @@ Mevcut 39 testin ikisi (onay akışı) Strateji A’ya uyarlandı; biri (bildiri
 
 ## 16. Gerçek SQL Server Uçtan Uca Senaryo (25 Adım)
 
-Çalışan API’ye (`http://localhost:5080`, gerçek `GmsDb`) karşı 25 adımlık senaryo **tam başarılı**:
+Çalışan API’ye (`http://localhost:18080`, gerçek `GmsDb`) karşı 25 adımlık senaryo **tam başarılı**:
 giriş → 3 sistem akışı → Normal/Orta (Architect→QA→END, değişiklik `Approved`) → Normal/Kritik (Architect→QA→RM→`Approved`) → Emergency (Architect→RM→Admin) → reddetme → iptal → RBAC (403) → özel tanım oluştur/doğrula/yayınla/aktifleştir/klonla/arşivle → sistem tanımı arşiv koruması → birleşik denetim WORKFLOW (131 kayıt). Tek doğruluk kaynağı (workflow ↔ change durumu) her senaryoda doğrulandı.
 
 ## 17. Kapsam Dışı, Notlar ve Gelecek Çalışmalar

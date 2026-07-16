@@ -2,7 +2,7 @@
 
 **Platform:** GMS (Kurumsal Yönetişim Yönetim Sistemi) — Angular 22 (standalone + signals) frontend, ASP.NET Core 8 backend.
 **Kapsam:** Mevcut Angular Change ekranlarının (liste / detay / oluşturma sihirbazı) ve Workflow Görev deneyiminin gerçek GMS backend'ine bağlanması. Authentication ve paylaşılan API temeli (önceki sprint) yeniden kullanıldı: `AuthStateService`, `authInterceptor`, `API_BASE_URL`, `ApiError`, `PagedResult<T>`, izin guard'ları/direktifleri, RowVersion çakışma yönetimi.
-**Durum:** Tamamlandı. Angular production derlemesi **0 hata / 0 uyarı**. **42 otomatik test yeşil** (16 mevcut auth/app + 26 yeni Change/Workflow). Gerçek backend'e (`localhost:5080`) karşı **Change → Workflow yaşam döngüsü uçtan uca doğrulandı** (oluştur → gönder → UnderReview → Architect görevi → tamamla → **Approved**).
+**Durum:** Tamamlandı. Angular production derlemesi **0 hata / 0 uyarı**. **42 otomatik test yeşil** (16 mevcut auth/app + 26 yeni Change/Workflow). Gerçek backend'e (`localhost:18080`) karşı **Change → Workflow yaşam döngüsü uçtan uca doğrulandı** (oluştur → gönder → UnderReview → Architect görevi → tamamla → **Approved**).
 
 > **Kapsam sınırı (bilinçli):** UI yeniden tasarlanmadı, yeni iş modülü eklenmedi, mevcut tasarım sistemi/rotalar/UX korundu, çalışan backend API'leri değiştirilmedi (yalnızca additif bir DTO alanı eklendi — bkz. §14). Mock/localStorage yalnızca Change ve Workflow **runtime/görev** özelliklerinden kaldırıldı. Release, Execution, Validation, Documents, Notifications, Audit, Reports, Integrations **taşınmadı**. `actorUserId` / `X-Actor-User-Id` yeniden kullanılmadı — aktör her zaman JWT'den çözülür.
 
@@ -112,7 +112,7 @@ Altyapı: **Vitest** + `HttpTestingController` + `apiErrorInterceptor` (gerçek 
 
 ## 13. Gerçek Backend Uçtan Uca Test Sonuçları
 
-Backend `localhost:5080`, frontend `localhost:4200`, seed kullanıcılar `@gms.local` / `Gms.Dev.2026!`. Tarayıcı üzerinden doğrulanan adımlar:
+Backend `localhost:18080`, frontend `localhost:18420`, seed kullanıcılar `@gms.local` / `Gms.Dev.2026!`. Tarayıcı üzerinden doğrulanan adımlar:
 
 | # | Senaryo | Sonuç |
 |---|---|---|

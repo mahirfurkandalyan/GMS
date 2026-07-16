@@ -4,8 +4,8 @@
     {
       "name": "gms-ui",
       "runtimeExecutable": "npm",
-      "runtimeArgs": ["start", "--", "--port", "4300"],
-      "port": 4300
+      "runtimeArgs": ["start"],
+      "port": 18420
     }
   ]
 }

@@ -2,7 +2,7 @@
 
 **Platform:** GMS (Kurumsal Yönetişim Yönetim Sistemi) — Angular 22 (standalone + signals) frontend, ASP.NET Core 8 Identity/RBAC backend.
 **Kapsam:** Frontend'in gerçek GMS Identity/RBAC backend'ine bağlanması. Gerçek login, JWT access token, dönen (rotating) refresh token, kimlik doğrulamalı API çağrıları, current-user state, izin/rol guard'ları, session restorasyonu, logout/logout-all, 401/403 yönetimi, paylaşılan API hata modeli ve mock authentication temizliği. Bu, sonraki tüm modül entegrasyonlarının tekrar kullanacağı **paylaşılan frontend API temelidir**.
-**Durum:** Tamamlandı. Angular production derlemesi **0 hata / 0 uyarı**. **16 otomatik test yeşil** (14 yeni auth + 2 güncellenmiş app). Gerçek backend'e (`localhost:5080`) karşı **uçtan uca senaryo başarılı** (login, RBAC 403, session restore, refresh rotation, logout, admin erişimi).
+**Durum:** Tamamlandı. Angular production derlemesi **0 hata / 0 uyarı**. **16 otomatik test yeşil** (14 yeni auth + 2 güncellenmiş app). Gerçek backend'e (`localhost:18080`) karşı **uçtan uca senaryo başarılı** (login, RBAC 403, session restore, refresh rotation, logout, admin erişimi).
 
 > **Kapsam sınırı (bilinçli):** UI yeniden tasarlanmadı, yeni iş modülü eklenmedi, mevcut tasarım sistemi ve rotalar korundu, çalışan backend API'leri değiştirilmedi. Mock/localStorage davranışı **yalnızca authentication ve paylaşılan API temeli** için kaldırıldı; feature modüllerinin mock'ları bu sprintte taşınmadı.
 
@@ -23,7 +23,7 @@
 - **Change password:** profil ekranında; başarıda backend tüm refresh token'ları iptal eder → yerel oturum kapatılır, login'e yönlendirilir.
 - **401/403 ayrımı:** 401 → sessiz refresh + tek retry, başarısızsa login'e; **403 → oturum korunur**, `/forbidden` sayfası.
 - **Paylaşılan API hata modeli:** `normalizeHttpError` ile normalize edilmiş `ApiError`; 409 için standart Türkçe eşzamanlılık mesajı.
-- **Merkezî backend URL** (`api.config.ts`, dev `http://localhost:5080/api`).
+- **Merkezî backend URL** (`api.config.ts`, dev `http://localhost:18080/api`).
 - **Rota izinleri:** koruma altındaki iş rotalarına `data.permission` uygulandı.
 - **Mock authentication temizliği:** mock login, sabit kodlu kullanıcılar, localStorage kimliği, `X-Actor-User-Id` başlığı ve statik rol-adı kararları kaldırıldı; tek aktif authentication sistemi.
 - **14 odaklı Angular testi** + baseline build onarımı (34 hata → 0).
@@ -188,7 +188,7 @@ Test altyapısı: **Vitest** (`@angular/build:unit-test`), `HttpTestingControlle
 
 ## 13. Gerçek Backend Uçtan Uca Test Sonuçları
 
-Backend `localhost:5080`, frontend `localhost:4200`, seed kullanıcılar `@gms.local` / `Gms.Dev.2026!`. Tarayıcı üzerinden doğrulanan adımlar:
+Backend `localhost:18080`, frontend `localhost:18420`, seed kullanıcılar `@gms.local` / `Gms.Dev.2026!`. Tarayıcı üzerinden doğrulanan adımlar:
 
 | # | Senaryo | Sonuç |
 |---|---|---|

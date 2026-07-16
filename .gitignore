@@ -11,6 +11,7 @@ frontend/**/node_modules/
 frontend/**/dist/
 frontend/**/.angular/
 frontend/**/*.log
+*.log
 
 # ---- Environment / IDE ----
 .env

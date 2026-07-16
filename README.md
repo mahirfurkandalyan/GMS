@@ -70,7 +70,7 @@ npm install
 npm start
 ```
 
-Ardından `http://localhost:4200` adresinde giriş ekranı açılır.
+Ardından `http://localhost:18420` adresinde giriş ekranı açılır.
 Ayrıntılar için aşağıdaki bölümlere bakın.
 
 ---
@@ -117,8 +117,8 @@ dotnet run
 
 Çalıştıktan sonra:
 
-- Swagger UI: `http://localhost:5080/swagger`
-- Sağlık kontrolü: `http://localhost:5080/health`
+- Swagger UI: `http://localhost:18080/swagger`
+- Sağlık kontrolü: `http://localhost:18080/health`
 
 `/health` yanıtı:
 
@@ -140,7 +140,7 @@ npm install
 npm start
 ```
 
-Uygulama: `http://localhost:4200`
+Uygulama: `http://localhost:18420`
 
 Uygulama Türkçedir. Giriş sonrası kullanıcı **GMS Hub** (`/hub`) sayfasına düşer;
 Hub, çalışma alanının merkezidir (karşılama, profil kartı, iş özeti, hızlı aksiyonlar,
@@ -297,7 +297,7 @@ göre filtrelenir). Gösterge Paneli'ndeki **Planlanan Yayınlar** KPI'ı, durum
 ## Notlar
 
 - Değişiklik talebi, onay ve yürütme modülleri bu adımda **kasıtlı olarak** eklenmemiştir.
-- CORS, Angular yerel geliştirme sunucusu (`http://localhost:4200`) için açıktır.
+- CORS, Angular yerel geliştirme sunucusu (`http://localhost:18420`) için açıktır.
 - Backend ve frontend bu aşamada tam olarak dockerize edilmemiştir; yalnızca
   SQL Server konteyner üzerinden çalışır.
 
